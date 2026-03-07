@@ -9,18 +9,30 @@
   <section class="daily-log__card">
     <mat-card class="mb-4 rounded-xl shadow-sm">
       <mat-card-header>
-        <mat-card-title class="text-base font-semibold text-(--mat-sys-on-surface-variant)">Progress photo</mat-card-title>
+        <mat-card-title class="text-base font-semibold text-(--mat-sys-on-surface-variant)"
+          >Progress photo</mat-card-title
+        >
       </mat-card-header>
       <mat-card-content>
-        @if (log().photoDataUrl) {
+        @if (getPhotoDisplayUrl()) {
           <div class="daily-log__photo-preview relative max-w-[200px]">
-            <img [src]="log().photoDataUrl" alt="Day photo" class="block w-full rounded-lg" />
-            <button mat-icon-button type="button" class="daily-log__photo-remove absolute right-2 top-2 !bg-black/60 !text-white" (click)="removePhoto()" aria-label="Remove photo">
+            <img [src]="getPhotoDisplayUrl()" alt="Day photo" class="block w-full rounded-lg" />
+            <button
+              mat-icon-button
+              type="button"
+              class="daily-log__photo-remove absolute right-2 top-2 !bg-black/60 !text-white"
+              (click)="removePhoto()"
+              aria-label="Remove photo"
+            >
               <mat-icon>close</mat-icon>
             </button>
           </div>
+        } @else if (photoUploading()) {
+          <p class="m-0 text-(--mat-sys-on-surface-variant)">Uploading…</p>
         } @else {
-          <label class="daily-log__upload-zone flex cursor-pointer items-center justify-center rounded-lg border-2 border-dashed border-[var(--border)] p-8 text-[var(--mat-sys-on-surface-variant)] transition-colors hover:border-[var(--mat-sys-primary)] hover:bg-[var(--surface-hover)]">
+          <label
+            class="daily-log__upload-zone flex cursor-pointer items-center justify-center rounded-lg border-2 border-dashed border-[var(--border)] p-8 text-[var(--mat-sys-on-surface-variant)] transition-colors hover:border-[var(--mat-sys-primary)] hover:bg-[var(--surface-hover)]"
+          >
             <input type="file" accept="image/*" (change)="onPhotoChange($event)" class="hidden" />
             Full-body progress photo
           </label>
@@ -32,7 +44,9 @@
   <section class="daily-log__card">
     <mat-card class="mb-4 rounded-xl shadow-sm">
       <mat-card-header>
-        <mat-card-title class="text-base font-semibold text-(--mat-sys-on-surface-variant)">Weight (kg)</mat-card-title>
+        <mat-card-title class="text-base font-semibold text-(--mat-sys-on-surface-variant)"
+          >Weight (kg)</mat-card-title
+        >
       </mat-card-header>
       <mat-card-content>
         <mat-form-field appearance="outline" class="w-full">
@@ -42,7 +56,7 @@
             type="number"
             step="0.1"
             [value]="log().weightKg ?? ''"
-            (input)="setWeight(($any($event.target).valueAsNumber) ?? null)"
+            (input)="setWeight($any($event.target).valueAsNumber ?? null)"
             placeholder="e.g. 72.5"
           />
         </mat-form-field>
@@ -53,7 +67,9 @@
   <section class="daily-log__card">
     <mat-card class="mb-4 rounded-xl shadow-sm">
       <mat-card-header>
-        <mat-card-title class="text-base font-semibold text-(--mat-sys-on-surface-variant)">How did you feel?</mat-card-title>
+        <mat-card-title class="text-base font-semibold text-(--mat-sys-on-surface-variant)"
+          >How did you feel?</mat-card-title
+        >
       </mat-card-header>
       <mat-card-content>
         <mat-form-field appearance="outline" class="w-full">
@@ -61,10 +77,10 @@
           <textarea
             matInput
             [value]="log().mood ?? ''"
-            (input)="setMood(($any($event.target).value))"
+            (input)="setMood($any($event.target).value)"
             placeholder="Energy, mood, anything..."
             rows="3"
-         ></textarea>
+          ></textarea>
         </mat-form-field>
       </mat-card-content>
     </mat-card>
@@ -73,7 +89,9 @@
   <section class="daily-log__card">
     <mat-card class="mb-4 rounded-xl shadow-sm">
       <mat-card-header>
-        <mat-card-title class="text-base font-semibold text-(--mat-sys-on-surface-variant)">Notes</mat-card-title>
+        <mat-card-title class="text-base font-semibold text-(--mat-sys-on-surface-variant)"
+          >Notes</mat-card-title
+        >
       </mat-card-header>
       <mat-card-content>
         <mat-form-field appearance="outline" class="w-full">
@@ -81,10 +99,10 @@
           <textarea
             matInput
             [value]="log().notes ?? ''"
-            (input)="setNotes(($any($event.target).value))"
+            (input)="setNotes($any($event.target).value)"
             placeholder="Optional notes for the day"
             rows="2"
-         ></textarea>
+          ></textarea>
         </mat-form-field>
       </mat-card-content>
     </mat-card>
@@ -93,7 +111,9 @@
   <section class="daily-log__card">
     <mat-card class="mb-4 rounded-xl shadow-sm">
       <mat-card-header>
-        <mat-card-title class="text-base font-semibold text-(--mat-sys-on-surface-variant)">5 daily tasks</mat-card-title>
+        <mat-card-title class="text-base font-semibold text-(--mat-sys-on-surface-variant)"
+          >5 daily tasks</mat-card-title
+        >
       </mat-card-header>
       <mat-card-content>
         <div class="daily-log__habits flex flex-col gap-2">
@@ -115,7 +135,9 @@
   <section class="daily-log__card">
     <mat-card class="mb-4 rounded-xl shadow-sm">
       <mat-card-header>
-        <mat-card-title class="text-base font-semibold text-(--mat-sys-on-surface-variant)">Food log</mat-card-title>
+        <mat-card-title class="text-base font-semibold text-(--mat-sys-on-surface-variant)"
+          >Food log</mat-card-title
+        >
       </mat-card-header>
       <mat-card-content>
         <div class="daily-log__food-add mb-3 flex flex-wrap gap-2">
@@ -136,12 +158,22 @@
         </div>
         <ul class="daily-log__food-list m-0 list-none p-0">
           @for (entry of log().foodEntries; track entry.id) {
-            <li class="daily-log__food-item flex items-center gap-3 border-b border-(--border) py-2 last:border-b-0">
-              <span class="daily-log__food-time min-w-16 text-sm text-(--mat-sys-on-surface-variant)">{{ entry.time }}</span>
+            <li
+              class="daily-log__food-item flex items-center gap-3 border-b border-(--border) py-2 last:border-b-0"
+            >
+              <span
+                class="daily-log__food-time min-w-16 text-sm text-(--mat-sys-on-surface-variant)"
+                >{{ entry.time }}</span
+              >
               <span class="daily-log__food-desc flex-1">{{ entry.description }}</span>
-              <button mat-icon-button type="button" (click)="removeFood(entry.id)" aria-label="Remove">
-              <mat-icon>close</mat-icon>
-            </button>
+              <button
+                mat-icon-button
+                type="button"
+                (click)="removeFood(entry.id)"
+                aria-label="Remove"
+              >
+                <mat-icon>close</mat-icon>
+              </button>
             </li>
           }
         </ul>

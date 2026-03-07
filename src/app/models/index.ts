@@ -4,7 +4,10 @@ export type DateString = string;
 export interface DayLog {
   date: DateString;
   weightKg?: number;
+  /** In-memory/base64 preview (guest or before upload). */
   photoDataUrl?: string;
+  /** Storage path when persisted (e.g. userId/date.jpg). */
+  photoPath?: string;
   mood?: string;
   notes?: string;
   foodEntries: FoodEntry[];

@@ -66,7 +66,7 @@ function rowToDayLog(row: DayLogRow): DayLog {
     notes: row.notes ?? undefined,
     habitChecks: (row.habit_checks as Record<string, boolean>) ?? {},
     foodEntries: (row.food_entries as FoodEntry[]) ?? [],
-    photoDataUrl: undefined, // TODO: load from Storage when photo_path is set
+    photoPath: row.photo_path ?? undefined,
   };
 }
 
@@ -232,7 +232,8 @@ export class ChallengeStoreService {
     }
     const measurements =
       (measurementsRes.data as MeasurementRow[] | null)?.map(rowToMeasurement) ?? [];
-    const habits = (habitsRes.data as HabitRow[] | null)?.map(rowToHabit) ?? defaultHabits();
+    const rawHabits = (habitsRes.data as HabitRow[] | null) ?? [];
+    const habits = rawHabits.length > 0 ? rawHabits.map(rowToHabit) : defaultHabits();
 
     this.state.set({
       startDate,
@@ -269,7 +270,7 @@ export class ChallengeStoreService {
       notes: log.notes ?? null,
       habit_checks: log.habitChecks,
       food_entries: log.foodEntries,
-      photo_path: null,
+      photo_path: log.photoPath ?? null,
       updated_at: new Date().toISOString(),
     }));
     if (dayLogRows.length > 0) {
