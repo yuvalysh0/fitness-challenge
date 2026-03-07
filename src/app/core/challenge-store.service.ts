@@ -240,6 +240,11 @@ export class ChallengeStoreService {
       measurements,
       habits,
     });
+
+    const isNewUser = !settingsRes.data || !habitsRes.data?.length;
+    if (isNewUser) {
+      this.saveToSupabase();
+    }
   }
 
   private saveToSupabase(): void {

@@ -4,23 +4,70 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
+import { MatMenuModule } from '@angular/material/menu';
 import { ChallengeStoreService } from '../../core/challenge-store.service';
 import { HabitDefinition } from '../../models';
+
+/** Emojis offered in the icon picker (fitness/habits + common). */
+const EMOJI_OPTIONS = [
+  '🥗',
+  '💧',
+  '💪',
+  '🌤️',
+  '📖',
+  '🏃',
+  '🧘',
+  '📚',
+  '☀️',
+  '🛏️',
+  '🍎',
+  '🥑',
+  '✨',
+  '🎯',
+  '📝',
+  '🏋️',
+  '🚴',
+  '🧊',
+  '🥛',
+  '✓',
+  '❤️',
+  '⭐',
+  '🔥',
+  '💯',
+  '🏆',
+  '📅',
+  '⏰',
+  '🧴',
+  '🪥',
+  '🧹',
+];
 
 @Component({
   selector: 'app-habits',
   standalone: true,
-  imports: [FormsModule, MatButtonModule, MatCardModule, MatFormFieldModule, MatInputModule],
+  imports: [
+    FormsModule,
+    MatButtonModule,
+    MatCardModule,
+    MatFormFieldModule,
+    MatInputModule,
+    MatMenuModule,
+  ],
   templateUrl: './habits.component.html',
   styleUrl: './habits.component.scss',
 })
 export class HabitsComponent {
   private readonly store = inject(ChallengeStoreService);
 
+  readonly emojiOptions = EMOJI_OPTIONS;
   readonly habits = this.store.habits;
   editingId = signal<string | null>(null);
   newLabel = signal('');
   newIcon = signal('✓');
+
+  setIcon(emoji: string): void {
+    this.newIcon.set(emoji);
+  }
 
   startAdd(): void {
     this.editingId.set('__new__');
@@ -54,7 +101,7 @@ export class HabitsComponent {
       const id = this.editingId();
       if (!id) return;
       const updated = list.map((h) =>
-        h.id === id ? { ...h, label, icon: this.newIcon() || undefined } : h
+        h.id === id ? { ...h, label, icon: this.newIcon() || undefined } : h,
       );
       this.store.updateHabits(updated);
     }

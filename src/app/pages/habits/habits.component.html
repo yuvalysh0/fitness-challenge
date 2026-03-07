@@ -1,45 +1,132 @@
 <div class="habits-page">
   <h1 class="habits-page__title m-0 mb-1 text-2xl font-bold">75 Hard – Daily tasks</h1>
-  <p class="habits-page__subtitle m-0 mb-4 text-sm text-[var(--mat-sys-on-surface-variant)]">The 5 non-negotiable rules. Complete all every day or restart from Day 1. You can reorder or add notes; the defaults match the official 75 Hard program.</p>
+  <p class="habits-page__subtitle m-0 mb-4 text-sm text-[var(--mat-sys-on-surface-variant)]">
+    The 5 non-negotiable rules. Complete all every day or restart from Day 1. You can reorder or add
+    notes; the defaults match the official 75 Hard program.
+  </p>
 
-  <button matButton [matButton]="'filled'" type="button" (click)="startAdd()" class="mb-4">Add task</button>
+  <button matButton [matButton]="'filled'" type="button" (click)="startAdd()" class="mb-4">
+    Add task
+  </button>
 
   <mat-card class="habits-page__list rounded-xl p-4 shadow-sm">
     @for (habit of habits(); track habit.id) {
-      <div class="habits-page__row flex items-center gap-3 border-b border-[var(--border)] py-3 last:border-b-0">
+      <div class="habits-page__row border-b border-[var(--border)] py-3 last:border-b-0">
         @if (editingId() === habit.id) {
-          <div class="habits-page__edit flex flex-wrap items-center gap-2">
-            <mat-form-field appearance="outline" class="w-14">
-              <mat-label>Icon</mat-label>
-              <input matInput [ngModel]="newIcon()" (ngModelChange)="newIcon.set($event)" placeholder="✓" />
-            </mat-form-field>
-            <mat-form-field appearance="outline" class="min-w-[150px] flex-1">
+          <div class="habits-page__edit">
+            <div class="habits-page__icon-cell">
+              <div class="habits-page__icon-picker">
+                <span class="habits-page__icon-label">Icon</span>
+                <button
+                  mat-button
+                  type="button"
+                  [matMenuTriggerFor]="emojiPicker"
+                  class="habits-page__icon-trigger"
+                >
+                  <span class="habits-page__icon-value" aria-hidden="true">{{
+                    newIcon() || '✓'
+                  }}</span>
+                </button>
+                <mat-menu #emojiPicker="matMenu" panelClass="habits-page__emoji-menu">
+                  <div class="habits-page__emoji-grid">
+                    @for (emoji of emojiOptions; track emoji) {
+                      <button
+                        mat-menu-item
+                        type="button"
+                        (click)="setIcon(emoji)"
+                        class="habits-page__emoji-btn"
+                      >
+                        {{ emoji }}
+                      </button>
+                    }
+                  </div>
+                </mat-menu>
+              </div>
+            </div>
+            <mat-form-field appearance="outline" class="habits-page__label-cell min-w-0">
               <mat-label>Label</mat-label>
-              <input matInput [ngModel]="newLabel()" (ngModelChange)="newLabel.set($event)" placeholder="Label" />
+              <input
+                matInput
+                [ngModel]="newLabel()"
+                (ngModelChange)="newLabel.set($event)"
+                placeholder="Label"
+              />
             </mat-form-field>
-            <button matButton [matButton]="'filled'" type="button" (click)="save()">Save</button>
-            <button matButton [matButton]="'outlined'" type="button" (click)="cancelEdit()">Cancel</button>
+            <div class="habits-page__actions-cell flex gap-2">
+              <button matButton [matButton]="'filled'" type="button" (click)="save()">Save</button>
+              <button matButton [matButton]="'outlined'" type="button" (click)="cancelEdit()">
+                Cancel
+              </button>
+            </div>
           </div>
         } @else {
-          <span class="habits-page__habit-icon text-xl min-w-6">{{ habit.icon ?? '✓' }}</span>
-          <span class="habits-page__habit-label flex-1">{{ habit.label }}</span>
-          <button mat-button type="button" class="habits-page__btn-link text-[var(--mat-sys-primary)]" (click)="startEdit(habit)">Edit</button>
-          <button mat-button type="button" class="habits-page__btn-link habits-page__btn-link--danger text-red-700" (click)="remove(habit.id)">Remove</button>
+          <span class="habits-page__habit-icon">{{ habit.icon ?? '✓' }}</span>
+          <span class="habits-page__habit-label">{{ habit.label }}</span>
+          <div class="habits-page__actions-cell flex gap-1">
+            <button
+              mat-button
+              type="button"
+              class="habits-page__btn-link text-[var(--mat-sys-primary)]"
+              (click)="startEdit(habit)"
+            >
+              Edit
+            </button>
+            <button
+              mat-button
+              type="button"
+              class="habits-page__btn-link habits-page__btn-link--danger text-red-700"
+              (click)="remove(habit.id)"
+            >
+              Remove
+            </button>
+          </div>
         }
       </div>
     }
     @if (editingId() === '__new__') {
-      <div class="habits-page__edit flex flex-wrap items-center gap-2 border-b border-[var(--border)] py-3">
-        <mat-form-field appearance="outline" class="w-14">
-          <mat-label>Icon</mat-label>
-          <input matInput [ngModel]="newIcon()" (ngModelChange)="newIcon.set($event)" placeholder="✓" />
-        </mat-form-field>
-        <mat-form-field appearance="outline" class="min-w-[150px] flex-1">
+      <div class="habits-page__row border-b border-[var(--border)] py-3">
+        <div class="habits-page__icon-cell">
+          <div class="habits-page__icon-picker">
+            <span class="habits-page__icon-label">Icon</span>
+            <button
+              mat-button
+              type="button"
+              [matMenuTriggerFor]="emojiPickerNew"
+              class="habits-page__icon-trigger"
+            >
+              <span class="habits-page__icon-value" aria-hidden="true">{{ newIcon() || '✓' }}</span>
+            </button>
+            <mat-menu #emojiPickerNew="matMenu" panelClass="habits-page__emoji-menu">
+              <div class="habits-page__emoji-grid">
+                @for (emoji of emojiOptions; track emoji) {
+                  <button
+                    mat-menu-item
+                    type="button"
+                    (click)="setIcon(emoji)"
+                    class="habits-page__emoji-btn"
+                  >
+                    {{ emoji }}
+                  </button>
+                }
+              </div>
+            </mat-menu>
+          </div>
+        </div>
+        <mat-form-field appearance="outline" class="habits-page__label-cell min-w-0">
           <mat-label>Label</mat-label>
-          <input matInput [ngModel]="newLabel()" (ngModelChange)="newLabel.set($event)" placeholder="Label" />
+          <input
+            matInput
+            [ngModel]="newLabel()"
+            (ngModelChange)="newLabel.set($event)"
+            placeholder="Label"
+          />
         </mat-form-field>
-        <button matButton [matButton]="'filled'" type="button" (click)="save()">Save</button>
-        <button matButton [matButton]="'outlined'" type="button" (click)="cancelEdit()">Cancel</button>
+        <div class="habits-page__actions-cell flex gap-2">
+          <button matButton [matButton]="'filled'" type="button" (click)="save()">Save</button>
+          <button matButton [matButton]="'outlined'" type="button" (click)="cancelEdit()">
+            Cancel
+          </button>
+        </div>
       </div>
     }
   </mat-card>
