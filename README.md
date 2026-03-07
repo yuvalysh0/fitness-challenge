@@ -1,6 +1,22 @@
-# FitnessChallenge
+# 75 Hard
 
-This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 21.0.4.
+75 Hard mental toughness challenge tracker – Angular 21, Material, Tailwind. Data can be stored locally (localStorage) or synced to **Supabase** when you sign in.
+
+## Supabase setup
+
+1. Create a project at [supabase.com](https://supabase.com).
+2. In **Project Settings → API**, copy the **Project URL** and **anon public** key.
+3. Put them in `src/environments/environment.development.ts` (and `environment.ts` for production):
+
+   ```ts
+   supabaseUrl: 'https://your-project-ref.supabase.co',
+   supabaseAnonKey: 'your-anon-key',
+   ```
+
+4. In the Supabase **SQL Editor**, run the migration in `supabase/migrations/20250307000000_initial_schema.sql` to create tables and RLS.
+5. (Optional) In **Storage**, create a bucket `progress-photos` for daily progress photos; add RLS so users can only access their own folder.
+
+When signed in, the app syncs challenge data (start date, day logs, measurements, habits) to Supabase. When signed out, it uses localStorage only.
 
 ## Development server
 

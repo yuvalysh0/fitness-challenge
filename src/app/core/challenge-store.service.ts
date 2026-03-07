@@ -1,4 +1,4 @@
-import { Injectable, signal, computed } from '@angular/core';
+import { Injectable, signal, computed, effect } from '@angular/core';
 import {
   ChallengeState,
   DayLog,
@@ -8,6 +8,9 @@ import {
   DateString,
   CHALLENGE_DAYS,
 } from '../models';
+import type { DayLogRow, MeasurementRow, HabitRow } from './supabase.types';
+import { AuthService } from './auth.service';
+import { SupabaseService } from './supabase.service';
 
 const STORAGE_KEY = '75-hard-challenge';
 
@@ -26,7 +29,7 @@ function defaultHabits(): HabitDefinition[] {
   ];
 }
 
-function loadState(): ChallengeState {
+function loadStateFromStorage(): ChallengeState {
   try {
     const raw = localStorage.getItem(STORAGE_KEY);
     if (raw) {
@@ -47,7 +50,7 @@ function loadState(): ChallengeState {
   };
 }
 
-function saveState(state: ChallengeState): void {
+function saveStateToStorage(state: ChallengeState): void {
   try {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
   } catch {
@@ -55,9 +58,45 @@ function saveState(state: ChallengeState): void {
   }
 }
 
+function rowToDayLog(row: DayLogRow): DayLog {
+  return {
+    date: row.date,
+    weightKg: row.weight_kg ?? undefined,
+    mood: row.mood ?? undefined,
+    notes: row.notes ?? undefined,
+    habitChecks: (row.habit_checks as Record<string, boolean>) ?? {},
+    foodEntries: (row.food_entries as FoodEntry[]) ?? [],
+    photoDataUrl: undefined, // TODO: load from Storage when photo_path is set
+  };
+}
+
+function rowToMeasurement(row: MeasurementRow): MeasurementSet {
+  return {
+    id: row.id,
+    date: row.date,
+    chest: row.chest ?? undefined,
+    waist: row.waist ?? undefined,
+    hips: row.hips ?? undefined,
+    armL: row.arm_l ?? undefined,
+    armR: row.arm_r ?? undefined,
+    thighL: row.thigh_l ?? undefined,
+    thighR: row.thigh_r ?? undefined,
+    notes: row.notes ?? undefined,
+  };
+}
+
+function rowToHabit(row: HabitRow): HabitDefinition {
+  return {
+    id: row.id,
+    label: row.label,
+    icon: row.icon ?? undefined,
+    order: row.order,
+  };
+}
+
 @Injectable({ providedIn: 'root' })
 export class ChallengeStoreService {
-  private readonly state = signal<ChallengeState>(loadState());
+  private readonly state = signal<ChallengeState>(loadStateFromStorage());
 
   readonly startDate = computed(() => this.state().startDate);
   readonly dayLogs = computed(() => this.state().dayLogs);
@@ -72,6 +111,19 @@ export class ChallengeStoreService {
   });
 
   readonly progressPercent = computed(() => (this.currentDay() / CHALLENGE_DAYS) * 100);
+
+  constructor(
+    private readonly auth: AuthService,
+    private readonly supabase: SupabaseService,
+  ) {
+    effect(() => {
+      if (this.auth.isAuthenticated()) {
+        this.loadFromSupabase();
+      } else {
+        this.state.set(loadStateFromStorage());
+      }
+    });
+  }
 
   getDayLog(date: DateString): DayLog | undefined {
     return this.state().dayLogs[date];
@@ -139,7 +191,7 @@ export class ChallengeStoreService {
     this.state.update((s) => ({
       ...s,
       measurements: [...s.measurements, measurement].sort(
-        (a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()
+        (a, b) => new Date(b.date).getTime() - new Date(a.date).getTime(),
       ),
     }));
     this.persist();
@@ -151,6 +203,116 @@ export class ChallengeStoreService {
   }
 
   private persist(): void {
-    saveState(this.state());
+    if (this.auth.isAuthenticated()) {
+      this.saveToSupabase();
+    } else {
+      saveStateToStorage(this.state());
+    }
+  }
+
+  private async loadFromSupabase(): Promise<void> {
+    const userId = this.auth.user()?.id;
+    if (!userId) return;
+
+    const sb = this.supabase.supabase;
+
+    const [settingsRes, dayLogsRes, measurementsRes, habitsRes] = await Promise.all([
+      sb.from('challenge_settings').select('start_date').eq('user_id', userId).maybeSingle(),
+      sb.from('day_logs').select('*').eq('user_id', userId),
+      sb.from('measurements').select('*').eq('user_id', userId).order('date', { ascending: false }),
+      sb.from('habits').select('*').eq('user_id', userId).order('order', { ascending: true }),
+    ]);
+
+    const startDate = (settingsRes.data?.start_date as string) ?? todayString();
+    const dayLogs: Record<DateString, DayLog> = {};
+    if (dayLogsRes.data?.length) {
+      for (const row of dayLogsRes.data as DayLogRow[]) {
+        dayLogs[row.date] = rowToDayLog(row);
+      }
+    }
+    const measurements =
+      (measurementsRes.data as MeasurementRow[] | null)?.map(rowToMeasurement) ?? [];
+    const habits = (habitsRes.data as HabitRow[] | null)?.map(rowToHabit) ?? defaultHabits();
+
+    this.state.set({
+      startDate,
+      dayLogs,
+      measurements,
+      habits,
+    });
+  }
+
+  private saveToSupabase(): void {
+    const userId = this.auth.user()?.id;
+    if (!userId) return;
+
+    const s = this.state();
+    const sb = this.supabase.supabase;
+
+    sb.from('challenge_settings')
+      .upsert(
+        { user_id: userId, start_date: s.startDate, updated_at: new Date().toISOString() },
+        { onConflict: 'user_id' },
+      )
+      .then(() => {});
+
+    const dayLogRows = Object.values(s.dayLogs).map((log) => ({
+      user_id: userId,
+      date: log.date,
+      weight_kg: log.weightKg ?? null,
+      mood: log.mood ?? null,
+      notes: log.notes ?? null,
+      habit_checks: log.habitChecks,
+      food_entries: log.foodEntries,
+      photo_path: null,
+      updated_at: new Date().toISOString(),
+    }));
+    if (dayLogRows.length > 0) {
+      sb.from('day_logs')
+        .upsert(dayLogRows, { onConflict: 'user_id,date' })
+        .then(() => {});
+    }
+
+    sb.from('measurements')
+      .delete()
+      .eq('user_id', userId)
+      .then(() => {
+        if (s.measurements.length > 0) {
+          const rows = s.measurements.map((m) => ({
+            id: m.id,
+            user_id: userId,
+            date: m.date,
+            chest: m.chest ?? null,
+            waist: m.waist ?? null,
+            hips: m.hips ?? null,
+            arm_l: m.armL ?? null,
+            arm_r: m.armR ?? null,
+            thigh_l: m.thighL ?? null,
+            thigh_r: m.thighR ?? null,
+            notes: m.notes ?? null,
+          }));
+          sb.from('measurements')
+            .insert(rows)
+            .then(() => {});
+        }
+      });
+
+    sb.from('habits')
+      .delete()
+      .eq('user_id', userId)
+      .then(() => {
+        if (s.habits.length > 0) {
+          const rows = s.habits.map((h) => ({
+            id: h.id,
+            user_id: userId,
+            label: h.label,
+            icon: h.icon ?? null,
+            order: h.order,
+          }));
+          sb.from('habits')
+            .insert(rows)
+            .then(() => {});
+        }
+      });
   }
 }
