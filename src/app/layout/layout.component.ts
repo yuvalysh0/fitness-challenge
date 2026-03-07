@@ -2,6 +2,7 @@ import { Component, inject } from '@angular/core';
 import { Router, RouterLink, RouterOutlet } from '@angular/router';
 import { MatButtonModule } from '@angular/material/button';
 import { MatToolbarModule } from '@angular/material/toolbar';
+import { AuthService } from '../core/auth.service';
 
 @Component({
   selector: 'app-layout',
@@ -12,10 +13,16 @@ import { MatToolbarModule } from '@angular/material/toolbar';
 })
 export class LayoutComponent {
   private readonly router = inject(Router);
+  readonly auth = inject(AuthService);
 
   isActive(path: string): boolean {
     const url = this.router.url;
     if (path === '/') return url === '/' || url === '';
     return url.startsWith(path);
+  }
+
+  async signOut(): Promise<void> {
+    await this.auth.signOut();
+    this.router.navigate(['/login']);
   }
 }

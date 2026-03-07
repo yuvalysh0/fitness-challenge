@@ -1,0 +1,10 @@
+.auth {
+  &__spinner {
+    display: inline-block;
+    margin-right: 8px;
+    vertical-align: middle;
+  }
+  &__submit :host ::ng-deep .mat-mdc-button-touch-target {
+    height: 40px;
+  }
+}

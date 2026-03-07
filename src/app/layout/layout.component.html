@@ -1,5 +1,7 @@
 <div class="layout flex min-h-screen flex-col">
-  <mat-toolbar class="layout__toolbar flex flex-wrap gap-1 border-b border-[var(--border)] bg-[var(--mat-sys-surface)] px-4 py-2">
+  <mat-toolbar
+    class="layout__toolbar flex flex-wrap items-center gap-1 border-b border-[var(--border)] bg-[var(--mat-sys-surface)] px-4 py-2"
+  >
     <a
       matButton
       [matButton]="'text'"
@@ -40,6 +42,17 @@
       <span class="material-icons layout__nav-icon" aria-hidden="true">check_circle</span>
       Tasks
     </a>
+    <span class="flex-1"></span>
+    <button
+      matButton
+      [matButton]="'text'"
+      type="button"
+      (click)="signOut()"
+      class="layout__sign-out"
+    >
+      <span class="material-icons layout__nav-icon" aria-hidden="true">logout</span>
+      Sign out
+    </button>
   </mat-toolbar>
   <main class="layout__main flex-1 p-6 max-w-3xl mx-auto w-full">
     <router-outlet />

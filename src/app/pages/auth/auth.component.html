@@ -1,0 +1,62 @@
+<div class="auth flex min-h-screen items-center justify-center p-4">
+  <mat-card class="auth__card w-full max-w-md rounded-xl p-6 shadow-lg">
+    <mat-card-header class="auth__header mb-6">
+      <mat-card-title class="auth__title text-2xl font-bold">75 Hard</mat-card-title>
+      <mat-card-subtitle class="auth__subtitle text-(--mat-sys-on-surface-variant)">
+        {{
+          isLogin() ? 'Log in to sync your progress' : 'Create an account to sync across devices'
+        }}
+      </mat-card-subtitle>
+    </mat-card-header>
+    <mat-card-content>
+      <form class="auth__form flex flex-col gap-4" [formGroup]="loginForm" (ngSubmit)="onSubmit()">
+        @if (errorMessage(); as msg) {
+          <p
+            class="auth__error m-0 rounded-lg bg-red-100 px-3 py-2 text-sm text-red-800"
+            role="alert"
+          >
+            {{ msg }}
+          </p>
+        }
+        <mat-form-field appearance="outline" class="w-full">
+          <mat-label>Email</mat-label>
+          <input matInput type="email" formControlName="email" placeholder="you@example.com" />
+          @if (loginForm.get('email')?.invalid && loginForm.get('email')?.touched) {
+            <mat-error>Enter a valid email</mat-error>
+          }
+        </mat-form-field>
+        <mat-form-field appearance="outline" class="w-full">
+          <mat-label>Password</mat-label>
+          <input
+            matInput
+            type="password"
+            formControlName="password"
+            placeholder="Min 6 characters"
+          />
+          @if (loginForm.get('password')?.invalid && loginForm.get('password')?.touched) {
+            <mat-error>At least 6 characters</mat-error>
+          }
+        </mat-form-field>
+        <div class="auth__actions flex flex-col gap-2">
+          <button
+            matButton
+            [matButton]="'filled'"
+            type="submit"
+            class="auth__submit"
+            [disabled]="loginForm.invalid || loading()"
+          >
+            @if (loading()) {
+              <mat-spinner diameter="24" class="auth__spinner" />
+              <span>{{ isLogin() ? 'Logging in…' : 'Signing up…' }}</span>
+            } @else {
+              {{ isLogin() ? 'Log in' : 'Sign up' }}
+            }
+          </button>
+          <button mat-button type="button" (click)="toggleMode()" [disabled]="loading()">
+            {{ isLogin() ? "Don't have an account? Sign up" : 'Already have an account? Log in' }}
+          </button>
+        </div>
+      </form>
+    </mat-card-content>
+  </mat-card>
+</div>
