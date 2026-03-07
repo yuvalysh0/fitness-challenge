@@ -4,9 +4,6 @@
     <p class="dashboard__subtitle m-0 mb-1 text-[var(--text-muted)]">
       Day {{ currentDay() }} of {{ totalDays }}
     </p>
-    <p class="dashboard__tagline m-0 text-sm text-[var(--text-muted)]">
-      Mental toughness program. Miss one task = restart from Day 1.
-    </p>
   </header>
 
   <div class="card dashboard__progress-card mb-6">
@@ -52,129 +49,11 @@
         </p>
       </div>
     }
-    <div class="card dashboard__photos-card">
-      <h2 class="dashboard__section-title m-0 mb-3 text-base font-semibold">Progress reference</h2>
-      <div class="dashboard__photos-grid">
-        @if (firstPhoto(); as entry) {
-          <a
-            [routerLink]="['/daily']"
-            [queryParams]="{ date: entry.date }"
-            class="dashboard__photo-block dashboard__photo-block--double"
-          >
-            <div class="dashboard__photo-pair">
-              @if (getPhotoUrl(entry, 'front')) {
-                <div class="dashboard__photo-wrap">
-                  <img
-                    [src]="getPhotoUrl(entry, 'front')"
-                    alt="Day 1 front"
-                    class="dashboard__photo-img"
-                  />
-                </div>
-                <span class="dashboard__photo-type">Front</span>
-              } @else {
-                <div class="dashboard__photo-placeholder dashboard__photo-placeholder--small">
-                  <span class="material-icons dashboard__photo-placeholder-icon" aria-hidden="true"
-                    >photo_camera</span
-                  >
-                  <span class="text-xs text-[var(--text-muted)]">Front</span>
-                </div>
-              }
-              @if (getPhotoUrl(entry, 'side')) {
-                <div class="dashboard__photo-wrap">
-                  <img
-                    [src]="getPhotoUrl(entry, 'side')"
-                    alt="Day 1 side"
-                    class="dashboard__photo-img"
-                  />
-                </div>
-                <span class="dashboard__photo-type">Side</span>
-              } @else {
-                <div class="dashboard__photo-placeholder dashboard__photo-placeholder--small">
-                  <span class="material-icons dashboard__photo-placeholder-icon" aria-hidden="true"
-                    >photo_camera</span
-                  >
-                  <span class="text-xs text-[var(--text-muted)]">Side</span>
-                </div>
-              }
-            </div>
-            <p class="dashboard__photo-meta m-0 mt-2 text-sm font-medium">
-              Day {{ entry.dayNumber }}
-            </p>
-            @if (entry.weightKg != null) {
-              <p class="dashboard__photo-weight m-0 text-xs text-[var(--text-muted)]">
-                {{ entry.weightKg }} kg
-              </p>
-            }
-          </a>
-        } @else {
-          <div class="dashboard__photo-placeholder">
-            <span class="material-icons dashboard__photo-placeholder-icon" aria-hidden="true"
-              >photo_camera</span
-            >
-            <p class="m-0 text-xs text-[var(--text-muted)]">No day 1 photo yet</p>
-          </div>
-        }
-        @if (latestPhoto(); as entry) {
-          <a
-            [routerLink]="['/daily']"
-            [queryParams]="{ date: entry.date }"
-            class="dashboard__photo-block dashboard__photo-block--double"
-          >
-            <div class="dashboard__photo-pair">
-              @if (getPhotoUrl(entry, 'front')) {
-                <div class="dashboard__photo-wrap">
-                  <img
-                    [src]="getPhotoUrl(entry, 'front')"
-                    [alt]="'Day ' + entry.dayNumber + ' front'"
-                    class="dashboard__photo-img"
-                  />
-                </div>
-                <span class="dashboard__photo-type">Front</span>
-              } @else {
-                <div class="dashboard__photo-placeholder dashboard__photo-placeholder--small">
-                  <span class="material-icons dashboard__photo-placeholder-icon" aria-hidden="true"
-                    >photo_camera</span
-                  >
-                  <span class="text-xs text-[var(--text-muted)]">Front</span>
-                </div>
-              }
-              @if (getPhotoUrl(entry, 'side')) {
-                <div class="dashboard__photo-wrap">
-                  <img
-                    [src]="getPhotoUrl(entry, 'side')"
-                    [alt]="'Day ' + entry.dayNumber + ' side'"
-                    class="dashboard__photo-img"
-                  />
-                </div>
-                <span class="dashboard__photo-type">Side</span>
-              } @else {
-                <div class="dashboard__photo-placeholder dashboard__photo-placeholder--small">
-                  <span class="material-icons dashboard__photo-placeholder-icon" aria-hidden="true"
-                    >photo_camera</span
-                  >
-                  <span class="text-xs text-[var(--text-muted)]">Side</span>
-                </div>
-              }
-            </div>
-            <p class="dashboard__photo-meta m-0 mt-2 text-sm font-medium">
-              Latest (Day {{ entry.dayNumber }})
-            </p>
-            @if (entry.weightKg != null) {
-              <p class="dashboard__photo-weight m-0 text-xs text-[var(--text-muted)]">
-                {{ entry.weightKg }} kg
-              </p>
-            }
-          </a>
-        } @else {
-          <div class="dashboard__photo-placeholder">
-            <span class="material-icons dashboard__photo-placeholder-icon" aria-hidden="true"
-              >photo_camera</span
-            >
-            <p class="m-0 text-xs text-[var(--text-muted)]">No photo yet</p>
-          </div>
-        }
-      </div>
-    </div>
+    <app-progress-reference-card
+      [firstEntry]="firstPhoto()"
+      [latestEntry]="latestPhoto()"
+      [totalDays]="totalDays"
+    />
   </div>
 
   <div class="dashboard__actions flex flex-wrap gap-3">

@@ -5,8 +5,8 @@ import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { BaseChartDirective } from 'ng2-charts';
 import type { ChartConfiguration } from 'chart.js';
 import { ChallengeStoreService } from '../../core/challenge-store.service';
-import { SupabaseService } from '../../core/supabase.service';
-import type { DayLog, ProgressPhotoType } from '../../models';
+import type { DayLog } from '../../models';
+import { ProgressReferenceCardComponent } from './progress-reference-card/progress-reference-card.component';
 import { CHALLENGE_DAYS } from '../../models';
 
 export interface WeightPoint {
@@ -35,13 +35,18 @@ function dayNumberFromStart(startDate: string, logDate: string): number {
 @Component({
   selector: 'app-dashboard',
   standalone: true,
-  imports: [MatProgressBarModule, BaseChartDirective, RouterLink, DecimalPipe],
+  imports: [
+    MatProgressBarModule,
+    BaseChartDirective,
+    RouterLink,
+    DecimalPipe,
+    ProgressReferenceCardComponent,
+  ],
   templateUrl: './dashboard.component.html',
   styleUrl: './dashboard.component.scss',
 })
 export class DashboardComponent {
   private readonly store = inject(ChallengeStoreService);
-  private readonly supabase = inject(SupabaseService);
 
   readonly currentDay = this.store.currentDay;
   readonly progressPercent = this.store.progressPercent;
@@ -133,17 +138,6 @@ export class DashboardComponent {
       },
     },
   };
-
-  getPhotoUrl(entry: PhotoRefEntry, type: ProgressPhotoType): string {
-    if (type === 'front') {
-      if (entry.photoDataUrl) return entry.photoDataUrl;
-      if (entry.photoPath) return this.supabase.getPublicPhotoUrl(entry.photoPath);
-    } else {
-      if (entry.photoDataUrlSide) return entry.photoDataUrlSide;
-      if (entry.photoPathSide) return this.supabase.getPublicPhotoUrl(entry.photoPathSide);
-    }
-    return '';
-  }
 
   formatChartDate(dateStr: string): string {
     const d = new Date(dateStr + 'Z');

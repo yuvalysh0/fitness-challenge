@@ -1,0 +1,40 @@
+import { Component, input, inject } from '@angular/core';
+import { RouterLink } from '@angular/router';
+import { SupabaseService } from '../../../core/supabase.service';
+import type { ProgressPhotoType } from '../../../models';
+
+export interface ProgressRefEntry {
+  date: string;
+  dayNumber: number;
+  weightKg: number | undefined;
+  photoPath: string | undefined;
+  photoDataUrl: string | undefined;
+  photoPathSide: string | undefined;
+  photoDataUrlSide: string | undefined;
+}
+
+@Component({
+  selector: 'app-progress-reference-card',
+  standalone: true,
+  imports: [RouterLink],
+  templateUrl: './progress-reference-card.component.html',
+  styleUrl: './progress-reference-card.component.scss',
+})
+export class ProgressReferenceCardComponent {
+  private readonly supabase = inject(SupabaseService);
+
+  readonly firstEntry = input<ProgressRefEntry | null>(null);
+  readonly latestEntry = input<ProgressRefEntry | null>(null);
+  readonly totalDays = input.required<number>();
+
+  getPhotoUrl(entry: ProgressRefEntry, type: ProgressPhotoType): string {
+    if (type === 'front') {
+      if (entry.photoDataUrl) return entry.photoDataUrl;
+      if (entry.photoPath) return this.supabase.getPublicPhotoUrl(entry.photoPath);
+    } else {
+      if (entry.photoDataUrlSide) return entry.photoDataUrlSide;
+      if (entry.photoPathSide) return this.supabase.getPublicPhotoUrl(entry.photoPathSide);
+    }
+    return '';
+  }
+}

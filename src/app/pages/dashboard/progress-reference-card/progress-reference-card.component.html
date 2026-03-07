@@ -1,0 +1,124 @@
+<div class="progress-ref card">
+  <h2 class="progress-ref__title">Progress reference</h2>
+  <p class="progress-ref__subtitle">Day 1 vs latest — tap to open that day’s log</p>
+
+  <div class="progress-ref__grid">
+    <!-- Day 1 -->
+    <div class="progress-ref__column">
+      @if (firstEntry(); as entry) {
+        <a
+          [routerLink]="['/daily']"
+          [queryParams]="{ date: entry.date }"
+          class="progress-ref__link"
+        >
+          <div class="progress-ref__card">
+            <span class="progress-ref__badge">Day 1</span>
+            <div class="progress-ref__photos">
+              <div class="progress-ref__slot">
+                @if (getPhotoUrl(entry, 'front'); as src) {
+                  <img [src]="src" alt="Day 1 front" class="progress-ref__img" />
+                } @else {
+                  <div class="progress-ref__empty">
+                    <span class="material-icons progress-ref__empty-icon" aria-hidden="true"
+                      >add_a_photo</span
+                    >
+                    <span class="progress-ref__empty-label">Front</span>
+                  </div>
+                }
+              </div>
+              <div class="progress-ref__slot">
+                @if (getPhotoUrl(entry, 'side'); as src) {
+                  <img [src]="src" alt="Day 1 side" class="progress-ref__img" />
+                } @else {
+                  <div class="progress-ref__empty">
+                    <span class="material-icons progress-ref__empty-icon" aria-hidden="true"
+                      >add_a_photo</span
+                    >
+                    <span class="progress-ref__empty-label">Side</span>
+                  </div>
+                }
+              </div>
+            </div>
+            @if (entry.weightKg != null) {
+              <p class="progress-ref__weight">{{ entry.weightKg }} kg</p>
+            }
+          </div>
+        </a>
+      } @else {
+        <div class="progress-ref__card progress-ref__card--empty">
+          <span class="progress-ref__badge">Day 1</span>
+          <div class="progress-ref__empty-state">
+            <span class="material-icons progress-ref__empty-state-icon" aria-hidden="true"
+              >photo_camera</span
+            >
+            <p class="progress-ref__empty-state-text">No day 1 photo yet</p>
+            <a routerLink="/daily" class="progress-ref__empty-state-cta">Log day 1</a>
+          </div>
+        </div>
+      }
+    </div>
+
+    <!-- Latest -->
+    <div class="progress-ref__column">
+      @if (latestEntry(); as entry) {
+        <a
+          [routerLink]="['/daily']"
+          [queryParams]="{ date: entry.date }"
+          class="progress-ref__link"
+        >
+          <div class="progress-ref__card">
+            <span class="progress-ref__badge">Latest · Day {{ entry.dayNumber }}</span>
+            <div class="progress-ref__photos">
+              <div class="progress-ref__slot">
+                @if (getPhotoUrl(entry, 'front'); as src) {
+                  <img
+                    [src]="src"
+                    [alt]="'Day ' + entry.dayNumber + ' front'"
+                    class="progress-ref__img"
+                  />
+                } @else {
+                  <div class="progress-ref__empty">
+                    <span class="material-icons progress-ref__empty-icon" aria-hidden="true"
+                      >add_a_photo</span
+                    >
+                    <span class="progress-ref__empty-label">Front</span>
+                  </div>
+                }
+              </div>
+              <div class="progress-ref__slot">
+                @if (getPhotoUrl(entry, 'side'); as src) {
+                  <img
+                    [src]="src"
+                    [alt]="'Day ' + entry.dayNumber + ' side'"
+                    class="progress-ref__img"
+                  />
+                } @else {
+                  <div class="progress-ref__empty">
+                    <span class="material-icons progress-ref__empty-icon" aria-hidden="true"
+                      >add_a_photo</span
+                    >
+                    <span class="progress-ref__empty-label">Side</span>
+                  </div>
+                }
+              </div>
+            </div>
+            @if (entry.weightKg != null) {
+              <p class="progress-ref__weight">{{ entry.weightKg }} kg</p>
+            }
+          </div>
+        </a>
+      } @else {
+        <div class="progress-ref__card progress-ref__card--empty">
+          <span class="progress-ref__badge">Latest</span>
+          <div class="progress-ref__empty-state">
+            <span class="material-icons progress-ref__empty-state-icon" aria-hidden="true"
+              >photo_camera</span
+            >
+            <p class="progress-ref__empty-state-text">No photo yet</p>
+            <a routerLink="/daily" class="progress-ref__empty-state-cta">Log today</a>
+          </div>
+        </div>
+      }
+    </div>
+  </div>
+</div>
