@@ -1,0 +1,38 @@
+---
+description: UI libraries (Angular Material + Tailwind), BEM naming, and shared components
+alwaysApply: true
+---
+
+# UI Libraries & Styling
+
+## UI libraries
+
+- **Angular Material** ([material.angular.dev](https://material.angular.dev/)): Use for UI components (buttons, inputs, dialogs, tables, etc.). Import only the Material modules/components you need in each standalone component’s `imports: []`.
+- **TailwindCSS**: Use for layout, spacing, typography, and utility styling. Prefer Tailwind classes in templates and component styles over custom CSS when they fit.
+
+Use Material for component semantics and behavior; use Tailwind for layout and visual tweaks (e.g. `flex`, `gap-4`, `rounded-lg`).
+
+## BEM naming
+
+- Use **BEM** (Block__Element--Modifier) for custom CSS class names and component host/encapsulated styles.
+- **Block**: component or logical section (e.g. `challenge-card`, `workout-form`).
+- **Element**: part of the block (e.g. `challenge-card__title`, `workout-form__actions`).
+- **Modifier**: variant or state (e.g. `challenge-card--featured`, `button--primary`).
+
+```scss
+// Example
+.challenge-card { }
+.challenge-card__title { }
+.challenge-card__title--large { }
+.challenge-card--featured { }
+```
+
+Use BEM for component-specific styles; use Tailwind for one-off utilities.
+
+## Shared components
+
+- If the same UI pattern is used in more than one place (e.g. same button style, same card layout), extract a **shared component** (e.g. `SharedButtonComponent`, `SharedCardComponent`) in a `shared/` or `ui/` folder.
+- Shared components should use `input()` / `output()` and be reusable via props and events.
+- Prefer one shared component per pattern rather than duplicating markup and styles.
+
+Example: multiple “primary CTA” buttons → one `SharedButtonComponent` with variants (e.g. `variant: 'primary' | 'secondary' | 'text'`).

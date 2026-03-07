@@ -1,0 +1,5 @@
+.dashboard {
+  &__progress-bar::ng-deep .mdc-linear-progress__bar-inner {
+    border-radius: 9999px;
+  }
+}

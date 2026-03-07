@@ -1,0 +1,10 @@
+.habits-page {
+  &__btn-link {
+    min-width: auto;
+    padding: 0 0.25rem;
+
+    &--danger {
+      color: #b91c1c;
+    }
+  }
+}

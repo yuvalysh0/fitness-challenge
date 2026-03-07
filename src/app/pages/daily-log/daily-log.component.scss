@@ -1,0 +1,7 @@
+.daily-log {
+  &__photo-remove {
+    .mat-mdc-button-persistent-ripple::before {
+      background: rgba(255, 255, 255, 0.2);
+    }
+  }
+}

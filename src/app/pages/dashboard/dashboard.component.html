@@ -1,0 +1,35 @@
+<div class="dashboard max-w-md">
+  <h1 class="dashboard__title m-0 mb-1 text-2xl font-bold">75 Hard</h1>
+  <p class="dashboard__subtitle m-0 mb-1 text-(--mat-sys-on-surface-variant)">Day {{ currentDay() }} of {{ totalDays }}</p>
+  <p class="dashboard__tagline m-0 mb-6 text-sm text-(--mat-sys-on-surface-variant)/80">Mental toughness program. Miss one task = restart from Day 1.</p>
+
+  <mat-card class="dashboard__progress-card mb-6 rounded-xl p-5 shadow-sm">
+    <mat-card-content class="p-0">
+      <mat-progress-bar
+        mode="determinate"
+        [value]="progressPercent()"
+        class="dashboard__progress-bar mb-2 h-2.5 rounded-full"
+      />
+      <p class="dashboard__progress-label m-0 text-sm text-[var(--mat-sys-on-surface-variant)]">
+        {{ progressPercent() | number : '1.0-0' }}% complete
+      </p>
+    </mat-card-content>
+  </mat-card>
+
+  <div class="dashboard__stats flex gap-6 mb-6">
+    <div class="dashboard__stat flex flex-col">
+      <span class="dashboard__stat-value text-2xl font-bold text-[var(--mat-sys-primary)]">{{ daysCompleted() }}</span>
+      <span class="dashboard__stat-label text-sm text-[var(--mat-sys-on-surface-variant)]">Days logged</span>
+    </div>
+    <div class="dashboard__stat flex flex-col">
+      <span class="dashboard__stat-value text-2xl font-bold text-[var(--mat-sys-primary)]">{{ daysRemaining() }}</span>
+      <span class="dashboard__stat-label text-sm text-[var(--mat-sys-on-surface-variant)]">Days left</span>
+    </div>
+  </div>
+
+  <div class="dashboard__actions flex flex-wrap gap-3">
+    <a matButton [matButton]="'filled'" routerLink="/daily">Log today</a>
+    <a matButton [matButton]="'outlined'" routerLink="/measurements">Measurements</a>
+    <a matButton [matButton]="'outlined'" routerLink="/habits">Edit tasks</a>
+  </div>
+</div>
