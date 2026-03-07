@@ -42,6 +42,8 @@ __screenshots__/
 .DS_Store
 Thumbs.db
 
-# Local env (real keys). Copy from environment.example.ts.
+# Local env (real keys). Copy from environment.example.ts or .env.example.
 src/environments/environment.development.local.ts
 src/environments/environment.local.ts
+.env
+.env.local

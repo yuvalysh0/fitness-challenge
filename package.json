@@ -3,13 +3,14 @@
   "version": "0.0.0",
   "scripts": {
     "ng": "ng",
-    "start": "ng serve",
+    "start": "ng serve -c development-local",
     "build": "ng build",
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
     "prepare": "husky",
     "format": "prettier --write \"src/**/*.{ts,html,scss,css}\"",
-    "format:check": "prettier --check \"src/**/*.{ts,html,scss,css}\""
+    "format:check": "prettier --check \"src/**/*.{ts,html,scss,css}\"",
+    "seed:mock": "node --env-file=.env scripts/seed-mock-user.mjs"
   },
   "prettier": {
     "printWidth": 100,

@@ -1,4 +1,5 @@
 import { Component, inject, computed, signal } from '@angular/core';
+import { ActivatedRoute } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { MatCardModule } from '@angular/material/card';
 import { MatCheckboxModule } from '@angular/material/checkbox';
@@ -33,8 +34,16 @@ export class DailyLogComponent {
   private readonly store = inject(ChallengeStoreService);
   private readonly auth = inject(AuthService);
   private readonly supabase = inject(SupabaseService);
+  private readonly route = inject(ActivatedRoute);
 
   readonly date = signal(todayString());
+
+  constructor() {
+    this.route.queryParams.subscribe((params) => {
+      const d = params['date'];
+      if (d && /^\d{4}-\d{2}-\d{2}$/.test(d)) this.date.set(d);
+    });
+  }
   readonly log = computed(() => {
     const d = this.date();
     return this.store.getOrCreateDayLog(d);

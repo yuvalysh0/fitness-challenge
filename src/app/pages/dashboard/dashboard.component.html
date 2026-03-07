@@ -1,11 +1,13 @@
-<div class="dashboard max-w-md">
-  <h1 class="dashboard__title m-0 mb-1 text-2xl font-bold tracking-tight">75 Hard</h1>
-  <p class="dashboard__subtitle m-0 mb-1 text-[var(--text-muted)]">
-    Day {{ currentDay() }} of {{ totalDays }}
-  </p>
-  <p class="dashboard__tagline m-0 mb-6 text-sm text-[var(--text-muted)]">
-    Mental toughness program. Miss one task = restart from Day 1.
-  </p>
+<div class="dashboard w-full">
+  <header class="dashboard__header mb-6">
+    <h1 class="dashboard__title m-0 mb-1 text-2xl md:text-3xl font-bold tracking-tight">75 Hard</h1>
+    <p class="dashboard__subtitle m-0 mb-1 text-[var(--text-muted)]">
+      Day {{ currentDay() }} of {{ totalDays }}
+    </p>
+    <p class="dashboard__tagline m-0 text-sm text-[var(--text-muted)]">
+      Mental toughness program. Miss one task = restart from Day 1.
+    </p>
+  </header>
 
   <div class="card dashboard__progress-card mb-6">
     <mat-progress-bar
@@ -18,7 +20,7 @@
     </p>
   </div>
 
-  <div class="dashboard__stats flex gap-8 mb-8">
+  <div class="dashboard__stats flex gap-8 md:gap-12 mb-8">
     <div class="dashboard__stat flex flex-col">
       <span class="dashboard__stat-value text-2xl font-semibold text-[var(--accent)]">{{
         daysCompleted()
@@ -30,6 +32,103 @@
         daysRemaining()
       }}</span>
       <span class="dashboard__stat-label text-sm text-[var(--text-muted)]">Days left</span>
+    </div>
+  </div>
+
+  <div class="dashboard__middle grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+    @if (weightChartData().length > 0) {
+      <div class="card dashboard__chart-card">
+        <h2 class="dashboard__section-title m-0 mb-3 text-base font-semibold">Weight (kg)</h2>
+        <div class="dashboard__chart-wrap">
+          <svg
+            class="dashboard__chart"
+            viewBox="0 0 300 120"
+            preserveAspectRatio="none"
+            aria-hidden="true"
+          >
+            @let bounds = chartBounds();
+            @if (bounds.points.length > 0) {
+              <polyline
+                class="dashboard__chart-line"
+                [attr.points]="getChartPoints()"
+                fill="none"
+                stroke="var(--accent)"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              />
+            }
+          </svg>
+        </div>
+        <p class="dashboard__chart-hint m-0 mt-2 text-xs text-[var(--text-muted)]">
+          From day logs. Add weight on the Daily log.
+        </p>
+      </div>
+    }
+    <div class="card dashboard__photos-card">
+      <h2 class="dashboard__section-title m-0 mb-3 text-base font-semibold">Progress reference</h2>
+      <div class="dashboard__photos-grid">
+        @if (firstPhoto(); as entry) {
+          <a
+            [routerLink]="['/daily']"
+            [queryParams]="{ date: entry.date }"
+            class="dashboard__photo-block"
+          >
+            <div class="dashboard__photo-wrap">
+              <img
+                [src]="getPhotoUrl(entry)"
+                [alt]="'Day ' + entry.dayNumber"
+                class="dashboard__photo-img"
+              />
+            </div>
+            <p class="dashboard__photo-meta m-0 mt-2 text-sm font-medium">
+              Day {{ entry.dayNumber }}
+            </p>
+            @if (entry.weightKg != null) {
+              <p class="dashboard__photo-weight m-0 text-xs text-[var(--text-muted)]">
+                {{ entry.weightKg }} kg
+              </p>
+            }
+          </a>
+        } @else {
+          <div class="dashboard__photo-placeholder">
+            <span class="material-icons dashboard__photo-placeholder-icon" aria-hidden="true"
+              >photo_camera</span
+            >
+            <p class="m-0 text-xs text-[var(--text-muted)]">No day 1 photo yet</p>
+          </div>
+        }
+        @if (latestPhoto(); as entry) {
+          <a
+            [routerLink]="['/daily']"
+            [queryParams]="{ date: entry.date }"
+            class="dashboard__photo-block"
+          >
+            <div class="dashboard__photo-wrap">
+              <img
+                [src]="getPhotoUrl(entry)"
+                [alt]="'Day ' + entry.dayNumber"
+                class="dashboard__photo-img"
+              />
+            </div>
+            <p class="dashboard__photo-meta m-0 mt-2 text-sm font-medium">
+              Latest (Day {{ entry.dayNumber }})
+            </p>
+            @if (entry.weightKg != null) {
+              <p class="dashboard__photo-weight m-0 text-xs text-[var(--text-muted)]">
+                {{ entry.weightKg }} kg
+              </p>
+            }
+          </a>
+        } @else {
+          <div class="dashboard__photo-placeholder">
+            <span class="material-icons dashboard__photo-placeholder-icon" aria-hidden="true"
+              >photo_camera</span
+            >
+            <p class="m-0 text-xs text-[var(--text-muted)]">No photo yet</p>
+          </div>
+        }
+      </div>
     </div>
   </div>
 
