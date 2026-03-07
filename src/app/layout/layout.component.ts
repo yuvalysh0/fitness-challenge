@@ -1,13 +1,11 @@
 import { Component, inject } from '@angular/core';
 import { Router, RouterLink, RouterOutlet } from '@angular/router';
-import { MatButtonModule } from '@angular/material/button';
-import { MatToolbarModule } from '@angular/material/toolbar';
 import { AuthService } from '../core/auth.service';
 
 @Component({
   selector: 'app-layout',
   standalone: true,
-  imports: [MatToolbarModule, MatButtonModule, RouterLink, RouterOutlet],
+  imports: [RouterLink, RouterOutlet],
   templateUrl: './layout.component.html',
   styleUrl: './layout.component.scss',
 })

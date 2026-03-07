@@ -9,7 +9,7 @@
   <section class="daily-log__card">
     <mat-card class="mb-4 rounded-xl shadow-sm">
       <mat-card-header>
-        <mat-card-title class="text-base font-semibold text-(--mat-sys-on-surface-variant)"
+        <mat-card-title class="text-base font-semibold text-[var(--text-muted)]"
           >Progress photo</mat-card-title
         >
       </mat-card-header>
@@ -28,10 +28,10 @@
             </button>
           </div>
         } @else if (photoUploading()) {
-          <p class="m-0 text-(--mat-sys-on-surface-variant)">Uploading…</p>
+          <p class="m-0 text-[var(--text-muted)]">Uploading…</p>
         } @else {
           <label
-            class="daily-log__upload-zone flex cursor-pointer items-center justify-center rounded-lg border-2 border-dashed border-[var(--border)] p-8 text-[var(--mat-sys-on-surface-variant)] transition-colors hover:border-[var(--mat-sys-primary)] hover:bg-[var(--surface-hover)]"
+            class="daily-log__upload-zone flex cursor-pointer items-center justify-center rounded-lg border-2 border-dashed border-[var(--border)] p-8 text-[var(--text-muted)] transition-colors hover:border-[var(--accent)] hover:bg-[var(--surface)]"
           >
             <input type="file" accept="image/*" (change)="onPhotoChange($event)" class="hidden" />
             Full-body progress photo
@@ -44,7 +44,7 @@
   <section class="daily-log__card">
     <mat-card class="mb-4 rounded-xl shadow-sm">
       <mat-card-header>
-        <mat-card-title class="text-base font-semibold text-(--mat-sys-on-surface-variant)"
+        <mat-card-title class="text-base font-semibold text-[var(--text-muted)]"
           >Weight (kg)</mat-card-title
         >
       </mat-card-header>
@@ -67,7 +67,7 @@
   <section class="daily-log__card">
     <mat-card class="mb-4 rounded-xl shadow-sm">
       <mat-card-header>
-        <mat-card-title class="text-base font-semibold text-(--mat-sys-on-surface-variant)"
+        <mat-card-title class="text-base font-semibold text-[var(--text-muted)]"
           >How did you feel?</mat-card-title
         >
       </mat-card-header>
@@ -89,7 +89,7 @@
   <section class="daily-log__card">
     <mat-card class="mb-4 rounded-xl shadow-sm">
       <mat-card-header>
-        <mat-card-title class="text-base font-semibold text-(--mat-sys-on-surface-variant)"
+        <mat-card-title class="text-base font-semibold text-[var(--text-muted)]"
           >Notes</mat-card-title
         >
       </mat-card-header>
@@ -111,7 +111,7 @@
   <section class="daily-log__card">
     <mat-card class="mb-4 rounded-xl shadow-sm">
       <mat-card-header>
-        <mat-card-title class="text-base font-semibold text-(--mat-sys-on-surface-variant)"
+        <mat-card-title class="text-base font-semibold text-[var(--text-muted)]"
           >5 daily tasks</mat-card-title
         >
       </mat-card-header>
@@ -135,7 +135,7 @@
   <section class="daily-log__card">
     <mat-card class="mb-4 rounded-xl shadow-sm">
       <mat-card-header>
-        <mat-card-title class="text-base font-semibold text-(--mat-sys-on-surface-variant)"
+        <mat-card-title class="text-base font-semibold text-[var(--text-muted)]"
           >Food log</mat-card-title
         >
       </mat-card-header>
@@ -154,17 +154,16 @@
               (keydown.enter)="addFood()"
             />
           </mat-form-field>
-          <button matButton [matButton]="'filled'" type="button" (click)="addFood()">Add</button>
+          <button class="btn btn--primary" type="button" (click)="addFood()">Add</button>
         </div>
         <ul class="daily-log__food-list m-0 list-none p-0">
           @for (entry of log().foodEntries; track entry.id) {
             <li
-              class="daily-log__food-item flex items-center gap-3 border-b border-(--border) py-2 last:border-b-0"
+              class="daily-log__food-item flex items-center gap-3 border-b border-[var(--border)] py-2 last:border-b-0"
             >
-              <span
-                class="daily-log__food-time min-w-16 text-sm text-(--mat-sys-on-surface-variant)"
-                >{{ entry.time }}</span
-              >
+              <span class="daily-log__food-time min-w-16 text-sm text-[var(--text-muted)]">{{
+                entry.time
+              }}</span>
               <span class="daily-log__food-desc flex-1">{{ entry.description }}</span>
               <button
                 mat-icon-button

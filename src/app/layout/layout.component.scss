@@ -1,26 +1,6 @@
 .layout {
-  &__nav-item {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.5rem;
-    border-radius: var(--mat-sys-corner-full, 20px);
-    transition: background-color 0.15s ease, color 0.15s ease;
-
-    &:hover {
-      background-color: var(--mat-sys-surface-container-high, rgba(0, 0, 0, 0.04));
-    }
-
-    &--active {
-      background-color: var(--mat-sys-primary) !important;
-      color: var(--mat-sys-on-primary) !important;
-
-      &:hover {
-        background-color: color-mix(in srgb, var(--mat-sys-primary) 85%, black) !important;
-      }
-    }
-  }
-
   &__nav-icon {
     font-size: 1.25rem;
+    opacity: 0.9;
   }
 }

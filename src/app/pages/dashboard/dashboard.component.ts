@@ -1,8 +1,6 @@
 import { DecimalPipe } from '@angular/common';
 import { Component, inject, computed } from '@angular/core';
 import { RouterLink } from '@angular/router';
-import { MatButtonModule } from '@angular/material/button';
-import { MatCardModule } from '@angular/material/card';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { ChallengeStoreService } from '../../core/challenge-store.service';
 import { CHALLENGE_DAYS } from '../../models';
@@ -10,7 +8,7 @@ import { CHALLENGE_DAYS } from '../../models';
 @Component({
   selector: 'app-dashboard',
   standalone: true,
-  imports: [MatCardModule, MatProgressBarModule, MatButtonModule, RouterLink, DecimalPipe],
+  imports: [MatProgressBarModule, RouterLink, DecimalPipe],
   templateUrl: './dashboard.component.html',
   styleUrl: './dashboard.component.scss',
 })

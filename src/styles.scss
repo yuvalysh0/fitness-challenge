@@ -1,8 +1,4 @@
-// Include theming for Angular Material with `mat.theme()`.
-// This Sass mixin will define CSS variables that are used for styling Angular Material
-// components according to the Material 3 design spec.
-// Learn more about theming and how to use it for your application's
-// custom components at https://material.angular.dev/guide/theming
+// Material theme (minimal – for form fields, checkbox, progress bar only)
 @use '@angular/material' as mat;
 
 html {
@@ -11,53 +7,40 @@ html {
     (
       color: (
         theme-type: dark,
-        primary: mat.$rose-palette,
+        primary: mat.$violet-palette,
         tertiary: mat.$violet-palette,
       ),
-      typography: Roboto,
+      typography: null,
       density: 0,
     )
   );
-
-  --mat-button-text-container-shape: 8px;
-  --mat-button-filled-container-shape: 8px;
-  --mat-button-outlined-container-shape: 8px;
-  --mat-button-protected-container-shape: 8px;
-  --mat-button-tonal-container-shape: 8px;
-  --mat-icon-button-container-shape: 8px;
-
-  --mat-card-elevated-container-color: var(--mat-sys-surface-container-high);
-  --mat-card-elevated-container-elevation:
-    0 4px 12px rgba(0, 0, 0, 0.25), 0 2px 4px rgba(0, 0, 0, 0.2);
-  --mat-card-filled-container-color: var(--mat-sys-surface-container-high);
-  --mat-card-outlined-container-color: var(--mat-sys-surface-container-high);
+  // Flatten Material components to match custom UI
+  --mat-button-text-container-shape: 10px;
+  --mat-button-filled-container-shape: 10px;
+  --mat-button-outlined-container-shape: 10px;
+  --mat-button-tonal-container-shape: 10px;
+  --mat-icon-button-container-shape: 10px;
+  --mat-card-elevated-container-elevation: none;
+  --mat-card-elevated-container-color: var(--card-bg);
+  --mat-card-filled-container-color: var(--card-bg);
+  --mat-card-outlined-container-color: var(--card-bg);
 }
 
-body {
-  color-scheme: dark;
-
-  // Angular Material's system-level CSS variables. Learn more about these
-  // variables at https://material.angular.dev/guide/system-variables
-  background-color: var(--mat-sys-surface);
-  color: var(--mat-sys-on-surface);
-  font: var(--mat-sys-body-medium);
-
-  // Reset the user agent margin.
-  margin: 0;
-  height: 100%;
-}
+// —— Design system (modern, non-Material) ——
 :root {
-  --primary: #f0abfc;
-  --primary-hover: #e879f9;
-  --surface: #0f1419;
-  --surface-hover: #1a2332;
-  --border: #2d3748;
-  --text: #f1f5f9;
-  --text-secondary: #94a3b8;
-  --radius-sm: 6px;
-  --radius-md: 8px;
-  --radius-lg: 12px;
-  --shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  --bg: #0c0f14;
+  --surface: #141922;
+  --card-bg: #1a1f2e;
+  --border: #2a3142;
+  --text: #f1f3f6;
+  --text-muted: #8b95a8;
+  --accent: #a78bfa;
+  --accent-hover: #c4b5fd;
+  --radius: 12px;
+  --radius-sm: 8px;
+  --shadow: 0 1px 3px rgba(0, 0, 0, 0.25);
+  --shadow-lg: 0 4px 20px rgba(0, 0, 0, 0.35);
+  --font: 'Inter', system-ui, -apple-system, sans-serif;
 }
 
 *,
@@ -68,22 +51,13 @@ body {
 
 body {
   margin: 0;
-  font-family:
-    system-ui,
-    -apple-system,
-    'Segoe UI',
-    Roboto,
-    sans-serif;
+  height: 100%;
+  color-scheme: dark;
+  font-family: var(--font);
   font-size: 16px;
   line-height: 1.5;
   color: var(--text);
-  background: var(--surface);
-}
-
-// Ensure layout toolbar and other surfaces use dark theme vars
-.mat-mdc-toolbar {
-  --mat-toolbar-container-background-color: var(--mat-sys-surface);
-  --mat-toolbar-container-text-color: var(--mat-sys-on-surface);
+  background: var(--bg);
 }
 
 input,
@@ -94,4 +68,130 @@ button {
 
 button {
   cursor: pointer;
+}
+
+// —— Custom components (use instead of Material where possible) ——
+.card {
+  background: var(--card-bg);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 1.25rem 1.5rem;
+  box-shadow: var(--shadow);
+}
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.625rem 1.25rem;
+  font-weight: 500;
+  font-size: 0.9375rem;
+  border-radius: var(--radius-sm);
+  border: none;
+  transition:
+    background-color 0.15s,
+    color 0.15s,
+    border-color 0.15s;
+  text-decoration: none;
+  cursor: pointer;
+
+  &--primary {
+    background: var(--accent);
+    color: #0c0f14;
+
+    &:hover {
+      background: var(--accent-hover);
+    }
+  }
+
+  &--secondary {
+    background: transparent;
+    color: var(--text);
+    border: 1px solid var(--border);
+
+    &:hover {
+      background: var(--surface);
+      border-color: var(--text-muted);
+    }
+  }
+
+  &--ghost {
+    background: transparent;
+    color: var(--text-muted);
+
+    &:hover {
+      color: var(--text);
+      background: var(--surface);
+    }
+  }
+}
+
+.nav-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 0.75rem;
+  font-size: 0.9375rem;
+  font-weight: 500;
+  color: var(--text-muted);
+  text-decoration: none;
+  border-radius: var(--radius-sm);
+  transition:
+    background-color 0.15s,
+    color 0.15s;
+
+  &:hover {
+    color: var(--text);
+    background: var(--surface);
+  }
+
+  &--active {
+    color: var(--text);
+    background: var(--accent);
+    color: #0c0f14;
+
+    &:hover {
+      background: var(--accent-hover);
+    }
+  }
+}
+
+// —— Material overrides (flatten to match design system) ——
+.mat-mdc-card {
+  background: var(--card-bg) !important;
+  border: 1px solid var(--border) !important;
+  box-shadow: var(--shadow) !important;
+}
+
+.mat-mdc-form-field {
+  --mdc-outlined-text-field-container-shape: var(--radius-sm);
+  --mdc-outlined-text-field-outline-color: var(--border);
+  --mdc-outlined-text-field-hover-outline-color: var(--text-muted);
+  --mdc-outlined-text-field-focus-outline-color: var(--accent);
+  --mdc-outlined-text-field-input-text-color: var(--text);
+  --mdc-outlined-text-field-label-text-color: var(--text-muted);
+}
+
+.mat-mdc-button,
+.mat-mdc-raised-button,
+.mat-mdc-unelevated-button,
+.mat-mdc-outlined-button {
+  font-family: var(--font) !important;
+  font-weight: 500 !important;
+}
+
+.mat-mdc-progress-bar {
+  --mdc-linear-progress-track-color: var(--surface);
+  --mdc-linear-progress-track-height: 8px;
+}
+
+.mat-mdc-linear-progress .mdc-linear-progress__bar-inner {
+  border-radius: 9999px;
+}
+
+.mat-mdc-checkbox .mdc-checkbox--selected .mdc-checkbox__background,
+.mat-mdc-progress-bar .mdc-linear-progress__bar-inner {
+  background-color: var(--accent) !important;
+  border-color: var(--accent) !important;
 }

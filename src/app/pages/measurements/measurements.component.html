@@ -1,8 +1,10 @@
 <div class="measurements">
   <h1 class="measurements__title m-0 mb-1 text-2xl font-bold">Measurements</h1>
-  <p class="measurements__subtitle m-0 mb-4 text-sm text-[var(--mat-sys-on-surface-variant)]">Log every 2 weeks. All values in cm.</p>
+  <p class="measurements__subtitle m-0 mb-4 text-sm text-[var(--text-muted)]">
+    Log every 2 weeks. All values in cm.
+  </p>
 
-  <button matButton [matButton]="'filled'" type="button" (click)="openForm()" class="mb-4">Add measurement</button>
+  <button class="btn btn--primary mb-4" type="button" (click)="openForm()">Add measurement</button>
 
   @if (showForm()) {
     <mat-card class="measurements__form-card mb-4 rounded-xl p-5 shadow-sm">
@@ -10,47 +12,101 @@
         <mat-card-title class="text-base font-semibold">New measurement</mat-card-title>
       </mat-card-header>
       <mat-card-content>
-        <div class="measurements__form-grid grid grid-cols-[repeat(auto-fill,minmax(140px,1fr))] gap-3 mb-3">
+        <div
+          class="measurements__form-grid grid grid-cols-[repeat(auto-fill,minmax(140px,1fr))] gap-3 mb-3"
+        >
           <mat-form-field appearance="outline" class="w-full">
             <mat-label>Date</mat-label>
-            <input matInput type="date" [ngModel]="formDate()" (ngModelChange)="formDate.set($event)" />
+            <input
+              matInput
+              type="date"
+              [ngModel]="formDate()"
+              (ngModelChange)="formDate.set($event)"
+            />
           </mat-form-field>
           <mat-form-field appearance="outline" class="w-full">
             <mat-label>Chest (cm)</mat-label>
-            <input matInput type="number" step="0.1" [ngModel]="formChest()" (ngModelChange)="formChest.set($event)" />
+            <input
+              matInput
+              type="number"
+              step="0.1"
+              [ngModel]="formChest()"
+              (ngModelChange)="formChest.set($event)"
+            />
           </mat-form-field>
           <mat-form-field appearance="outline" class="w-full">
             <mat-label>Waist (cm)</mat-label>
-            <input matInput type="number" step="0.1" [ngModel]="formWaist()" (ngModelChange)="formWaist.set($event)" />
+            <input
+              matInput
+              type="number"
+              step="0.1"
+              [ngModel]="formWaist()"
+              (ngModelChange)="formWaist.set($event)"
+            />
           </mat-form-field>
           <mat-form-field appearance="outline" class="w-full">
             <mat-label>Hips (cm)</mat-label>
-            <input matInput type="number" step="0.1" [ngModel]="formHips()" (ngModelChange)="formHips.set($event)" />
+            <input
+              matInput
+              type="number"
+              step="0.1"
+              [ngModel]="formHips()"
+              (ngModelChange)="formHips.set($event)"
+            />
           </mat-form-field>
           <mat-form-field appearance="outline" class="w-full">
             <mat-label>Arm L (cm)</mat-label>
-            <input matInput type="number" step="0.1" [ngModel]="formArmL()" (ngModelChange)="formArmL.set($event)" />
+            <input
+              matInput
+              type="number"
+              step="0.1"
+              [ngModel]="formArmL()"
+              (ngModelChange)="formArmL.set($event)"
+            />
           </mat-form-field>
           <mat-form-field appearance="outline" class="w-full">
             <mat-label>Arm R (cm)</mat-label>
-            <input matInput type="number" step="0.1" [ngModel]="formArmR()" (ngModelChange)="formArmR.set($event)" />
+            <input
+              matInput
+              type="number"
+              step="0.1"
+              [ngModel]="formArmR()"
+              (ngModelChange)="formArmR.set($event)"
+            />
           </mat-form-field>
           <mat-form-field appearance="outline" class="w-full">
             <mat-label>Thigh L (cm)</mat-label>
-            <input matInput type="number" step="0.1" [ngModel]="formThighL()" (ngModelChange)="formThighL.set($event)" />
+            <input
+              matInput
+              type="number"
+              step="0.1"
+              [ngModel]="formThighL()"
+              (ngModelChange)="formThighL.set($event)"
+            />
           </mat-form-field>
           <mat-form-field appearance="outline" class="w-full">
             <mat-label>Thigh R (cm)</mat-label>
-            <input matInput type="number" step="0.1" [ngModel]="formThighR()" (ngModelChange)="formThighR.set($event)" />
+            <input
+              matInput
+              type="number"
+              step="0.1"
+              [ngModel]="formThighR()"
+              (ngModelChange)="formThighR.set($event)"
+            />
           </mat-form-field>
         </div>
         <mat-form-field appearance="outline" class="mb-4 block w-full">
           <mat-label>Notes</mat-label>
-          <textarea matInput [ngModel]="formNotes()" (ngModelChange)="formNotes.set($event)" rows="2"></textarea>
+          <textarea
+            matInput
+            [ngModel]="formNotes()"
+            (ngModelChange)="formNotes.set($event)"
+            rows="2"
+          ></textarea>
         </mat-form-field>
         <div class="measurements__form-actions flex gap-2 mt-4">
-          <button matButton [matButton]="'outlined'" type="button" (click)="closeForm()">Cancel</button>
-          <button matButton [matButton]="'filled'" type="button" (click)="saveMeasurement()">Save</button>
+          <button class="btn btn--secondary" type="button" (click)="closeForm()">Cancel</button>
+          <button class="btn btn--primary" type="button" (click)="saveMeasurement()">Save</button>
         </div>
       </mat-card-content>
     </mat-card>
@@ -64,16 +120,32 @@
         </mat-card-header>
         <mat-card-content>
           <div class="measurements__measurement-body flex flex-wrap gap-3 text-sm">
-            @if (m.chest != null) { <span>Chest: {{ m.chest }} cm</span> }
-            @if (m.waist != null) { <span>Waist: {{ m.waist }} cm</span> }
-            @if (m.hips != null) { <span>Hips: {{ m.hips }} cm</span> }
-            @if (m.armL != null) { <span>Arm L: {{ m.armL }} cm</span> }
-            @if (m.armR != null) { <span>Arm R: {{ m.armR }} cm</span> }
-            @if (m.thighL != null) { <span>Thigh L: {{ m.thighL }} cm</span> }
-            @if (m.thighR != null) { <span>Thigh R: {{ m.thighR }} cm</span> }
+            @if (m.chest != null) {
+              <span>Chest: {{ m.chest }} cm</span>
+            }
+            @if (m.waist != null) {
+              <span>Waist: {{ m.waist }} cm</span>
+            }
+            @if (m.hips != null) {
+              <span>Hips: {{ m.hips }} cm</span>
+            }
+            @if (m.armL != null) {
+              <span>Arm L: {{ m.armL }} cm</span>
+            }
+            @if (m.armR != null) {
+              <span>Arm R: {{ m.armR }} cm</span>
+            }
+            @if (m.thighL != null) {
+              <span>Thigh L: {{ m.thighL }} cm</span>
+            }
+            @if (m.thighR != null) {
+              <span>Thigh R: {{ m.thighR }} cm</span>
+            }
           </div>
           @if (m.notes) {
-            <p class="measurements__notes mt-2 mb-0 text-sm text-[var(--mat-sys-on-surface-variant)]">{{ m.notes }}</p>
+            <p class="measurements__notes mt-2 mb-0 text-sm text-[var(--text-muted)]">
+              {{ m.notes }}
+            </p>
           }
         </mat-card-content>
       </mat-card>

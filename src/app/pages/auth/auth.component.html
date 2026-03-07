@@ -2,7 +2,7 @@
   <mat-card class="auth__card w-full max-w-md rounded-xl p-6 shadow-lg">
     <mat-card-header class="auth__header mb-6">
       <mat-card-title class="auth__title text-2xl font-bold">75 Hard</mat-card-title>
-      <mat-card-subtitle class="auth__subtitle text-(--mat-sys-on-surface-variant)">
+      <mat-card-subtitle class="auth__subtitle text-[var(--text-muted)]">
         {{
           isLogin() ? 'Log in to sync your progress' : 'Create an account to sync across devices'
         }}
@@ -12,7 +12,7 @@
       <form class="auth__form flex flex-col gap-4" [formGroup]="loginForm" (ngSubmit)="onSubmit()">
         @if (errorMessage(); as msg) {
           <p
-            class="auth__error m-0 rounded-lg bg-red-100 px-3 py-2 text-sm text-red-800"
+            class="auth__error m-0 rounded-lg bg-red-950/60 px-3 py-2 text-sm text-red-300"
             role="alert"
           >
             {{ msg }}
@@ -39,10 +39,8 @@
         </mat-form-field>
         <div class="auth__actions flex flex-col gap-2">
           <button
-            matButton
-            [matButton]="'filled'"
+            class="btn btn--primary auth__submit w-full"
             type="submit"
-            class="auth__submit"
             [disabled]="loginForm.invalid || loading()"
           >
             @if (loading()) {
@@ -52,7 +50,12 @@
               {{ isLogin() ? 'Log in' : 'Sign up' }}
             }
           </button>
-          <button mat-button type="button" (click)="toggleMode()" [disabled]="loading()">
+          <button
+            class="btn btn--ghost w-full"
+            type="button"
+            (click)="toggleMode()"
+            [disabled]="loading()"
+          >
             {{ isLogin() ? "Don't have an account? Sign up" : 'Already have an account? Log in' }}
           </button>
         </div>
