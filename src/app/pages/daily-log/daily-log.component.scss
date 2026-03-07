@@ -1,4 +1,15 @@
 .daily-log {
+  &__photos-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.5rem;
+    align-items: start;
+  }
+
+  &__photo-slot {
+    min-width: 0;
+  }
+
   &__photo-remove {
     .mat-mdc-button-persistent-ripple::before {
       background: rgba(255, 255, 255, 0.2);

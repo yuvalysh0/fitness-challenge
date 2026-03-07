@@ -7,6 +7,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
+import type { ProgressPhotoType } from '../../models';
 import { ChallengeStoreService } from '../../core/challenge-store.service';
 import { AuthService } from '../../core/auth.service';
 import { SupabaseService, PROGRESS_PHOTOS_BUCKET } from '../../core/supabase.service';
@@ -50,15 +51,21 @@ export class DailyLogComponent {
   });
 
   readonly habits = this.store.habits;
-  readonly photoUploading = signal(false);
+  readonly photoUploadingFront = signal(false);
+  readonly photoUploadingSide = signal(false);
   newFoodDescription = '';
   newFoodTime = new Date().toTimeString().slice(0, 5);
 
-  /** URL for the progress photo: data URL (guest) or Storage public URL (logged in). */
-  getPhotoDisplayUrl(): string | null {
+  /** URL for a progress photo: data URL (guest) or Storage public URL (logged in). */
+  getPhotoDisplayUrl(type: ProgressPhotoType): string | null {
     const l = this.log();
-    if (l.photoDataUrl) return l.photoDataUrl;
-    if (l.photoPath) return this.supabase.getPublicPhotoUrl(l.photoPath);
+    if (type === 'front') {
+      if (l.photoDataUrl) return l.photoDataUrl;
+      if (l.photoPath) return this.supabase.getPublicPhotoUrl(l.photoPath);
+    } else {
+      if (l.photoDataUrlSide) return l.photoDataUrlSide;
+      if (l.photoPathSide) return this.supabase.getPublicPhotoUrl(l.photoPathSide);
+    }
     return null;
   }
 
@@ -76,7 +83,7 @@ export class DailyLogComponent {
     this.store.updateDayLog(this.date(), { notes: notes || undefined });
   }
 
-  async onPhotoChange(event: Event): Promise<void> {
+  async onPhotoChange(type: ProgressPhotoType, event: Event): Promise<void> {
     const input = event.target as HTMLInputElement;
     const file = input.files?.[0];
     if (!file?.type.startsWith('image/')) return;
@@ -84,26 +91,32 @@ export class DailyLogComponent {
 
     const date = this.date();
     const userId = this.auth.user()?.id;
+    const suffix = type === 'front' ? 'front' : 'side';
+    const setUploading =
+      type === 'front' ? this.photoUploadingFront.set : this.photoUploadingSide.set;
 
     if (userId) {
-      this.photoUploading.set(true);
+      setUploading(true);
       const ext = file.name.split('.').pop()?.toLowerCase() || 'jpg';
-      const path = `${userId}/${date}.${ext}`;
+      const path = `${userId}/${date}-${suffix}.${ext}`;
       const { error } = await this.supabase.supabase.storage
         .from(PROGRESS_PHOTOS_BUCKET)
         .upload(path, file, { upsert: true });
-      this.photoUploading.set(false);
+      setUploading(false);
       if (error) return;
-      this.store.updateDayLog(date, {
-        photoDataUrl: undefined,
-        photoPath: path,
-      });
+      if (type === 'front') {
+        this.store.updateDayLog(date, { photoDataUrl: undefined, photoPath: path });
+      } else {
+        this.store.updateDayLog(date, { photoDataUrlSide: undefined, photoPathSide: path });
+      }
     } else {
       const reader = new FileReader();
       reader.onload = () => {
-        this.store.updateDayLog(date, {
-          photoDataUrl: reader.result as string,
-        });
+        if (type === 'front') {
+          this.store.updateDayLog(date, { photoDataUrl: reader.result as string });
+        } else {
+          this.store.updateDayLog(date, { photoDataUrlSide: reader.result as string });
+        }
       };
       reader.readAsDataURL(file);
     }
@@ -129,18 +142,19 @@ export class DailyLogComponent {
     this.store.removeFoodEntry(this.date(), entryId);
   }
 
-  async removePhoto(): Promise<void> {
+  async removePhoto(type: ProgressPhotoType): Promise<void> {
     const date = this.date();
     const l = this.log();
-    const path = l.photoPath;
+    const path = type === 'front' ? l.photoPath : l.photoPathSide;
     const userId = this.auth.user()?.id;
 
     if (userId && path) {
       await this.supabase.supabase.storage.from(PROGRESS_PHOTOS_BUCKET).remove([path]);
     }
-    this.store.updateDayLog(date, {
-      photoDataUrl: undefined,
-      photoPath: undefined,
-    });
+    if (type === 'front') {
+      this.store.updateDayLog(date, { photoDataUrl: undefined, photoPath: undefined });
+    } else {
+      this.store.updateDayLog(date, { photoDataUrlSide: undefined, photoPathSide: undefined });
+    }
   }
 }

@@ -12,12 +12,31 @@
     <div class="progress-photos__grid">
       @for (entry of entries(); track entry.date) {
         <mat-card class="progress-photos__card">
-          <div class="progress-photos__image-wrap">
-            <img
-              [src]="getPhotoUrl(entry)"
-              [alt]="'Day ' + entry.dayNumber + ' progress'"
-              class="progress-photos__image"
-            />
+          <div class="progress-photos__images">
+            @if (getPhotoUrl(entry, 'front')) {
+              <div class="progress-photos__image-slot">
+                <span class="progress-photos__slot-label">Front</span>
+                <div class="progress-photos__image-wrap">
+                  <img
+                    [src]="getPhotoUrl(entry, 'front')"
+                    [alt]="'Day ' + entry.dayNumber + ' front'"
+                    class="progress-photos__image"
+                  />
+                </div>
+              </div>
+            }
+            @if (getPhotoUrl(entry, 'side')) {
+              <div class="progress-photos__image-slot">
+                <span class="progress-photos__slot-label">Side</span>
+                <div class="progress-photos__image-wrap">
+                  <img
+                    [src]="getPhotoUrl(entry, 'side')"
+                    [alt]="'Day ' + entry.dayNumber + ' side'"
+                    class="progress-photos__image"
+                  />
+                </div>
+              </div>
+            }
           </div>
           <mat-card-content class="progress-photos__meta">
             <span class="progress-photos__day">Day {{ entry.dayNumber }} of {{ totalDays }}</span>

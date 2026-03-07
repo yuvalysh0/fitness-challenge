@@ -68,6 +68,7 @@ function buildDayLogs(userId) {
       habit_checks: HABIT_CHECKS,
       food_entries: foodEntries,
       photo_path: null,
+      photo_path_side: null,
       updated_at: new Date().toISOString(),
     });
   }

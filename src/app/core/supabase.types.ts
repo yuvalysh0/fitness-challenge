@@ -18,6 +18,7 @@ export interface DayLogRow {
   habit_checks: Record<string, boolean>;
   food_entries: Array<{ id: string; time: string; description: string; calories?: number }>;
   photo_path: string | null;
+  photo_path_side: string | null;
   created_at: string;
   updated_at: string;
 }

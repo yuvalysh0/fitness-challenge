@@ -1,13 +1,18 @@
 /** Date string in YYYY-MM-DD format */
 export type DateString = string;
 
+export type ProgressPhotoType = 'front' | 'side';
+
 export interface DayLog {
   date: DateString;
   weightKg?: number;
   /** In-memory/base64 preview (guest or before upload). */
   photoDataUrl?: string;
-  /** Storage path when persisted (e.g. userId/date.jpg). */
+  /** Storage path when persisted (e.g. userId/date-front.jpg). */
   photoPath?: string;
+  /** Side progress photo – data URL (guest) or Storage path. */
+  photoDataUrlSide?: string;
+  photoPathSide?: string;
   mood?: string;
   notes?: string;
   foodEntries: FoodEntry[];

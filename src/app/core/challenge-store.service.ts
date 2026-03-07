@@ -67,6 +67,7 @@ function rowToDayLog(row: DayLogRow): DayLog {
     habitChecks: (row.habit_checks as Record<string, boolean>) ?? {},
     foodEntries: (row.food_entries as FoodEntry[]) ?? [],
     photoPath: row.photo_path ?? undefined,
+    photoPathSide: row.photo_path_side ?? undefined,
   };
 }
 
@@ -271,6 +272,7 @@ export class ChallengeStoreService {
       habit_checks: log.habitChecks,
       food_entries: log.foodEntries,
       photo_path: log.photoPath ?? null,
+      photo_path_side: log.photoPathSide ?? null,
       updated_at: new Date().toISOString(),
     }));
     if (dayLogRows.length > 0) {

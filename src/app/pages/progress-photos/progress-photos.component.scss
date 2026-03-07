@@ -21,6 +21,25 @@
     overflow: hidden;
   }
 
+  &__images {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.5rem;
+    padding: 0.5rem 0.5rem 0;
+  }
+
+  &__image-slot {
+    min-width: 0;
+  }
+
+  &__slot-label {
+    display: block;
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: var(--text-muted);
+    margin-bottom: 0.25rem;
+  }
+
   &__image-wrap {
     aspect-ratio: 3 / 4;
     overflow: hidden;

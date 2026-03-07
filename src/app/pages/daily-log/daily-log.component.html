@@ -10,33 +10,84 @@
     <mat-card class="mb-4 rounded-xl shadow-sm">
       <mat-card-header>
         <mat-card-title class="text-base font-semibold text-[var(--text-muted)]"
-          >Progress photo</mat-card-title
+          >Progress photos (front &amp; side)</mat-card-title
         >
       </mat-card-header>
-      <mat-card-content>
-        @if (getPhotoDisplayUrl()) {
-          <div class="daily-log__photo-preview relative max-w-[200px]">
-            <img [src]="getPhotoDisplayUrl()" alt="Day photo" class="block w-full rounded-lg" />
-            <button
-              mat-icon-button
-              type="button"
-              class="daily-log__photo-remove absolute right-2 top-2 !bg-black/60 !text-white"
-              (click)="removePhoto()"
-              aria-label="Remove photo"
+      <mat-card-content class="daily-log__photos-grid">
+        <div class="daily-log__photo-slot">
+          <p class="daily-log__photo-label m-0 mb-2 text-sm font-medium text-[var(--text-muted)]">
+            Front
+          </p>
+          @if (getPhotoDisplayUrl('front')) {
+            <div class="daily-log__photo-preview relative max-w-[200px]">
+              <img
+                [src]="getPhotoDisplayUrl('front')"
+                alt="Front progress"
+                class="block w-full rounded-lg"
+              />
+              <button
+                mat-icon-button
+                type="button"
+                class="daily-log__photo-remove absolute right-2 top-2 !bg-black/60 !text-white"
+                (click)="removePhoto('front')"
+                aria-label="Remove front photo"
+              >
+                <mat-icon>close</mat-icon>
+              </button>
+            </div>
+          } @else if (photoUploadingFront()) {
+            <p class="m-0 text-[var(--text-muted)]">Uploading…</p>
+          } @else {
+            <label
+              class="daily-log__upload-zone flex cursor-pointer items-center justify-center rounded-lg border-2 border-dashed border-[var(--border)] p-6 text-center text-sm text-[var(--text-muted)] transition-colors hover:border-[var(--accent)] hover:bg-[var(--surface)]"
             >
-              <mat-icon>close</mat-icon>
-            </button>
-          </div>
-        } @else if (photoUploading()) {
-          <p class="m-0 text-[var(--text-muted)]">Uploading…</p>
-        } @else {
-          <label
-            class="daily-log__upload-zone flex cursor-pointer items-center justify-center rounded-lg border-2 border-dashed border-[var(--border)] p-8 text-[var(--text-muted)] transition-colors hover:border-[var(--accent)] hover:bg-[var(--surface)]"
-          >
-            <input type="file" accept="image/*" (change)="onPhotoChange($event)" class="hidden" />
-            Full-body progress photo
-          </label>
-        }
+              <input
+                type="file"
+                accept="image/*"
+                (change)="onPhotoChange('front', $event)"
+                class="hidden"
+              />
+              Full-body front
+            </label>
+          }
+        </div>
+        <div class="daily-log__photo-slot">
+          <p class="daily-log__photo-label m-0 mb-2 text-sm font-medium text-[var(--text-muted)]">
+            Side
+          </p>
+          @if (getPhotoDisplayUrl('side')) {
+            <div class="daily-log__photo-preview relative max-w-[200px]">
+              <img
+                [src]="getPhotoDisplayUrl('side')"
+                alt="Side progress"
+                class="block w-full rounded-lg"
+              />
+              <button
+                mat-icon-button
+                type="button"
+                class="daily-log__photo-remove absolute right-2 top-2 !bg-black/60 !text-white"
+                (click)="removePhoto('side')"
+                aria-label="Remove side photo"
+              >
+                <mat-icon>close</mat-icon>
+              </button>
+            </div>
+          } @else if (photoUploadingSide()) {
+            <p class="m-0 text-[var(--text-muted)]">Uploading…</p>
+          } @else {
+            <label
+              class="daily-log__upload-zone flex cursor-pointer items-center justify-center rounded-lg border-2 border-dashed border-[var(--border)] p-6 text-center text-sm text-[var(--text-muted)] transition-colors hover:border-[var(--accent)] hover:bg-[var(--surface)]"
+            >
+              <input
+                type="file"
+                accept="image/*"
+                (change)="onPhotoChange('side', $event)"
+                class="hidden"
+              />
+              Full-body side
+            </label>
+          }
+        </div>
       </mat-card-content>
     </mat-card>
   </section>

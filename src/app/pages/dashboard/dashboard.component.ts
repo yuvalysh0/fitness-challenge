@@ -2,9 +2,11 @@ import { DecimalPipe } from '@angular/common';
 import { Component, inject, computed } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
+import { BaseChartDirective } from 'ng2-charts';
+import type { ChartConfiguration } from 'chart.js';
 import { ChallengeStoreService } from '../../core/challenge-store.service';
 import { SupabaseService } from '../../core/supabase.service';
-import type { DayLog } from '../../models';
+import type { DayLog, ProgressPhotoType } from '../../models';
 import { CHALLENGE_DAYS } from '../../models';
 
 export interface WeightPoint {
@@ -19,6 +21,8 @@ export interface PhotoRefEntry {
   weightKg: number | undefined;
   photoPath: string | undefined;
   photoDataUrl: string | undefined;
+  photoPathSide: string | undefined;
+  photoDataUrlSide: string | undefined;
 }
 
 function dayNumberFromStart(startDate: string, logDate: string): number {
@@ -31,7 +35,7 @@ function dayNumberFromStart(startDate: string, logDate: string): number {
 @Component({
   selector: 'app-dashboard',
   standalone: true,
-  imports: [MatProgressBarModule, RouterLink, DecimalPipe],
+  imports: [MatProgressBarModule, BaseChartDirective, RouterLink, DecimalPipe],
   templateUrl: './dashboard.component.html',
   styleUrl: './dashboard.component.scss',
 })
@@ -70,13 +74,17 @@ export class DashboardComponent {
     const list: PhotoRefEntry[] = [];
     for (const date of Object.keys(logs).sort()) {
       const log = logs[date] as DayLog;
-      if (!log.photoPath && !log.photoDataUrl) continue;
+      const hasAny =
+        !!(log.photoPath || log.photoDataUrl) || !!(log.photoPathSide || log.photoDataUrlSide);
+      if (!hasAny) continue;
       list.push({
         date: log.date,
         dayNumber: dayNumberFromStart(start, log.date),
         weightKg: log.weightKg,
         photoPath: log.photoPath,
         photoDataUrl: log.photoDataUrl,
+        photoPathSide: log.photoPathSide,
+        photoDataUrlSide: log.photoDataUrlSide,
       });
     }
     return list;
@@ -88,40 +96,57 @@ export class DashboardComponent {
     return arr.length > 0 ? arr[arr.length - 1]! : null;
   });
 
-  readonly chartBounds = computed(() => {
+  /** Chart.js bar chart data: labels = dates, dataset = weights */
+  readonly weightChartDataConfig = computed((): ChartConfiguration<'bar'>['data'] => {
     const points = this.weightChartData();
-    if (points.length === 0)
-      return { minDay: 1, maxDay: 75, minWeight: 50, maxWeight: 100, points: [] };
-    const weights = points.map((p) => p.weight);
-    const days = points.map((p) => p.dayNumber);
-    const minW = Math.min(...weights);
-    const maxW = Math.max(...weights);
-    const padding = Math.max((maxW - minW) * 0.1, 2);
+    if (points.length === 0) return { labels: [], datasets: [] };
     return {
-      minDay: Math.min(1, ...days),
-      maxDay: Math.max(75, ...days),
-      minWeight: minW - padding,
-      maxWeight: maxW + padding,
-      points,
+      labels: points.map((p) => this.formatChartDate(p.date)),
+      datasets: [
+        {
+          label: 'Weight (kg)',
+          data: points.map((p) => p.weight),
+          backgroundColor: '#a78bfa',
+        },
+      ],
     };
   });
 
-  getPhotoUrl(entry: PhotoRefEntry): string {
-    if (entry.photoDataUrl) return entry.photoDataUrl;
-    if (entry.photoPath) return this.supabase.getPublicPhotoUrl(entry.photoPath);
+  /** Chart.js bar options: Y from 0, tooltip "X kg" */
+  readonly weightChartOptions: ChartConfiguration<'bar'>['options'] = {
+    responsive: true,
+    maintainAspectRatio: false,
+    scales: {
+      y: {
+        beginAtZero: true,
+        ticks: {
+          callback: (value) => (typeof value === 'number' ? `${value} kg` : value),
+        },
+      },
+    },
+    plugins: {
+      legend: { display: false },
+      tooltip: {
+        callbacks: {
+          label: (ctx) => `${ctx.parsed.y} kg`,
+        },
+      },
+    },
+  };
+
+  getPhotoUrl(entry: PhotoRefEntry, type: ProgressPhotoType): string {
+    if (type === 'front') {
+      if (entry.photoDataUrl) return entry.photoDataUrl;
+      if (entry.photoPath) return this.supabase.getPublicPhotoUrl(entry.photoPath);
+    } else {
+      if (entry.photoDataUrlSide) return entry.photoDataUrlSide;
+      if (entry.photoPathSide) return this.supabase.getPublicPhotoUrl(entry.photoPathSide);
+    }
     return '';
   }
 
-  getChartPoints(): string {
-    const b = this.chartBounds();
-    if (b.points.length === 0) return '';
-    const dayRange = b.maxDay - b.minDay || 1;
-    const weightRange = b.maxWeight - b.minWeight || 1;
-    return b.points
-      .map(
-        (p) =>
-          `${((p.dayNumber - b.minDay) / dayRange) * 300},${120 - ((p.weight - b.minWeight) / weightRange) * 100}`,
-      )
-      .join(' ');
+  formatChartDate(dateStr: string): string {
+    const d = new Date(dateStr + 'Z');
+    return d.toLocaleDateString(undefined, { month: 'short', day: 'numeric' });
   }
 }

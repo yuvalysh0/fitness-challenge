@@ -2,7 +2,7 @@ import { Component, inject, computed } from '@angular/core';
 import { MatCardModule } from '@angular/material/card';
 import { ChallengeStoreService } from '../../core/challenge-store.service';
 import { SupabaseService } from '../../core/supabase.service';
-import type { DayLog } from '../../models';
+import type { DayLog, ProgressPhotoType } from '../../models';
 import { CHALLENGE_DAYS } from '../../models';
 
 export interface ProgressPhotoEntry {
@@ -11,6 +11,8 @@ export interface ProgressPhotoEntry {
   weightKg: number | undefined;
   photoPath: string | undefined;
   photoDataUrl: string | undefined;
+  photoPathSide: string | undefined;
+  photoDataUrlSide: string | undefined;
 }
 
 function dayNumberFromStart(startDate: string, logDate: string): number {
@@ -38,7 +40,8 @@ export class ProgressPhotosComponent {
     const list: ProgressPhotoEntry[] = [];
     for (const date of Object.keys(logs).sort()) {
       const log = logs[date] as DayLog;
-      const hasPhoto = !!(log.photoPath || log.photoDataUrl);
+      const hasPhoto =
+        !!(log.photoPath || log.photoDataUrl) || !!(log.photoPathSide || log.photoDataUrlSide);
       if (!hasPhoto) continue;
       list.push({
         date: log.date,
@@ -46,14 +49,21 @@ export class ProgressPhotosComponent {
         weightKg: log.weightKg,
         photoPath: log.photoPath,
         photoDataUrl: log.photoDataUrl,
+        photoPathSide: log.photoPathSide,
+        photoDataUrlSide: log.photoDataUrlSide,
       });
     }
     return list.reverse();
   });
 
-  getPhotoUrl(entry: ProgressPhotoEntry): string {
-    if (entry.photoDataUrl) return entry.photoDataUrl;
-    if (entry.photoPath) return this.supabase.getPublicPhotoUrl(entry.photoPath);
+  getPhotoUrl(entry: ProgressPhotoEntry, type: ProgressPhotoType): string {
+    if (type === 'front') {
+      if (entry.photoDataUrl) return entry.photoDataUrl;
+      if (entry.photoPath) return this.supabase.getPublicPhotoUrl(entry.photoPath);
+    } else {
+      if (entry.photoDataUrlSide) return entry.photoDataUrlSide;
+      if (entry.photoPathSide) return this.supabase.getPublicPhotoUrl(entry.photoPathSide);
+    }
     return '';
   }
 }
