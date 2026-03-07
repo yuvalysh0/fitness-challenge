@@ -23,6 +23,13 @@ export const routes: Routes = [
           import('./pages/daily-log/daily-log.component').then((m) => m.DailyLogComponent),
       },
       {
+        path: 'progress',
+        loadComponent: () =>
+          import('./pages/progress-photos/progress-photos.component').then(
+            (m) => m.ProgressPhotosComponent,
+          ),
+      },
+      {
         path: 'measurements',
         loadComponent: () =>
           import('./pages/measurements/measurements.component').then(

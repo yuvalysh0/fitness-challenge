@@ -1,0 +1,54 @@
+.progress-photos {
+  &__title {
+    font-size: 1.5rem;
+  }
+
+  &__subtitle {
+    color: var(--mat-sys-on-surface-variant);
+  }
+
+  &__empty {
+    color: var(--mat-sys-on-surface-variant);
+  }
+
+  &__grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 1rem;
+  }
+
+  &__card {
+    overflow: hidden;
+  }
+
+  &__image-wrap {
+    aspect-ratio: 3 / 4;
+    overflow: hidden;
+    background: var(--mat-sys-surface-container-high);
+  }
+
+  &__image {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  &__meta {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.5rem 1rem;
+    padding: 0.75rem 1rem !important;
+  }
+
+  &__day {
+    font-weight: 600;
+    font-size: 0.9375rem;
+  }
+
+  &__weight {
+    font-size: 0.875rem;
+    color: var(--mat-sys-on-surface-variant);
+  }
+}

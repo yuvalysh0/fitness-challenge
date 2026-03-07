@@ -1,0 +1,32 @@
+<div class="progress-photos">
+  <h1 class="progress-photos__title m-0 mb-2 text-2xl font-bold">Progress photos</h1>
+  <p class="progress-photos__subtitle m-0 mb-6 text-sm text-[var(--mat-sys-on-surface-variant)]">
+    Your progression by day with weight. Newest first.
+  </p>
+
+  @if (entries().length === 0) {
+    <p class="progress-photos__empty m-0 text-[var(--mat-sys-on-surface-variant)]">
+      No progress photos yet. Add one from the Daily log.
+    </p>
+  } @else {
+    <div class="progress-photos__grid">
+      @for (entry of entries(); track entry.date) {
+        <mat-card class="progress-photos__card">
+          <div class="progress-photos__image-wrap">
+            <img
+              [src]="getPhotoUrl(entry)"
+              [alt]="'Day ' + entry.dayNumber + ' progress'"
+              class="progress-photos__image"
+            />
+          </div>
+          <mat-card-content class="progress-photos__meta">
+            <span class="progress-photos__day">Day {{ entry.dayNumber }} of {{ totalDays }}</span>
+            @if (entry.weightKg != null) {
+              <span class="progress-photos__weight">{{ entry.weightKg }} kg</span>
+            }
+          </mat-card-content>
+        </mat-card>
+      }
+    </div>
+  }
+</div>

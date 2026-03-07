@@ -25,6 +25,16 @@
     <a
       matButton
       [matButton]="'text'"
+      routerLink="/progress"
+      class="layout__nav-item"
+      [class.layout__nav-item--active]="isActive('/progress')"
+    >
+      <span class="material-icons layout__nav-icon" aria-hidden="true">photo_library</span>
+      Progress
+    </a>
+    <a
+      matButton
+      [matButton]="'text'"
       routerLink="/measurements"
       class="layout__nav-item"
       [class.layout__nav-item--active]="isActive('/measurements')"
