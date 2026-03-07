@@ -80,6 +80,17 @@
                   "with": "src/environments/environment.development.ts"
                 }
               ]
+            },
+            "development-local": {
+              "optimization": false,
+              "extractLicenses": false,
+              "sourceMap": true,
+              "fileReplacements": [
+                {
+                  "replace": "src/environments/environment.ts",
+                  "with": "src/environments/environment.development.local.ts"
+                }
+              ]
             }
           },
           "defaultConfiguration": "production"
@@ -92,6 +103,9 @@
             },
             "development": {
               "buildTarget": "fitness-challenge:build:development"
+            },
+            "development-local": {
+              "buildTarget": "fitness-challenge:build:development-local"
             }
           },
           "defaultConfiguration": "development"
