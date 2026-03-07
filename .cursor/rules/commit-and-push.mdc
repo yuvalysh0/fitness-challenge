@@ -1,0 +1,31 @@
+---
+description: Git commit message format and push rules
+alwaysApply: true
+---
+
+# Commit & Push Rules
+
+## Commit messages: Conventional Commits
+
+Use [Conventional Commits](https://www.conventionalcommits.org/):
+
+- **feat:** new feature
+- **fix:** bug fix
+- **docs:** documentation only
+- **style:** formatting, no code change (e.g. prettier)
+- **refactor:** code change that is not a fix or feature
+- **chore:** tooling, config, deps (e.g. package.json, husky)
+- **test:** adding or updating tests
+
+Format: `type(scope): short description` (scope optional). Keep the subject line under ~72 characters; add a body after a blank line if needed.
+
+**Examples**
+- `feat(dashboard): add 75 Hard tagline`
+- `fix(daily-log): show task labels in checklist`
+- `chore: add husky and commitlint`
+
+## Pushing
+
+- Run `npm run build` before pushing (or rely on CI). Pre-push hook can enforce this.
+- Prefer small, focused commits; push when a logical unit is done.
+- Write the commit message **before** you run `git commit` so the hook can validate it.
