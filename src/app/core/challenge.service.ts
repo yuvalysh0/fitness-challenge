@@ -158,6 +158,14 @@ export class ChallengeService {
   }
 
   /**
+   * Restarts the challenge from today (Day 1) without deleting data: only updates start date.
+   * Keeps all day logs, measurements, progress photos, and habits.
+   */
+  restartChallenge(): void {
+    this.setStartDate(todayString());
+  }
+
+  /**
    * Resets the challenge to Day 1: clears all day logs, measurements, and progress photos;
    * sets start date to today. Keeps habits. Requires confirmation in the UI.
    */

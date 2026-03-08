@@ -194,6 +194,23 @@ export class DashboardComponent implements OnInit {
     return d.toLocaleDateString(undefined, { month: 'short', day: 'numeric' });
   }
 
+  openRestartDialog(): void {
+    const ref = this.dialog.open(ConfirmDialogComponent, {
+      data: {
+        title: "I'm restarting",
+        message:
+          'Set your start date to today (Day 1)? Your logs, progress photos, and measurements will be kept.',
+        confirmText: 'Restart start date',
+        cancelText: 'Cancel',
+        confirmWarn: false,
+      },
+      width: 'min(400px, 95vw)',
+    });
+    ref.afterClosed().subscribe((confirmed) => {
+      if (confirmed) this.store.restartChallenge();
+    });
+  }
+
   openResetDialog(): void {
     const ref = this.dialog.open(ConfirmDialogComponent, {
       data: {
