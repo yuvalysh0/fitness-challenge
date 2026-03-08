@@ -250,22 +250,17 @@ export class ChallengeService {
         }
       });
 
-    sb.from('habits')
-      .delete()
-      .eq('user_id', userId)
-      .then(() => {
-        if (s.habits.length > 0) {
-          const rows = s.habits.map((h) => ({
-            id: h.id,
-            user_id: userId,
-            label: h.label,
-            icon: h.icon ?? null,
-            order: h.order,
-          }));
-          sb.from('habits')
-            .insert(rows)
-            .then(() => {});
-        }
-      });
+    if (s.habits.length > 0) {
+      const rows = s.habits.map((h) => ({
+        id: h.id,
+        user_id: userId,
+        label: h.label,
+        icon: h.icon ?? null,
+        order: h.order,
+      }));
+      sb.from('habits')
+        .upsert(rows, { onConflict: 'user_id,id' })
+        .then(() => {});
+    }
   }
 }

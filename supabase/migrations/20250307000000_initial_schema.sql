@@ -59,21 +59,25 @@ alter table public.day_logs enable row level security;
 alter table public.measurements enable row level security;
 alter table public.habits enable row level security;
 
+drop policy if exists "Users can manage own challenge_settings" on public.challenge_settings;
 create policy "Users can manage own challenge_settings"
   on public.challenge_settings for all
   using (auth.uid() = user_id)
   with check (auth.uid() = user_id);
 
+drop policy if exists "Users can manage own day_logs" on public.day_logs;
 create policy "Users can manage own day_logs"
   on public.day_logs for all
   using (auth.uid() = user_id)
   with check (auth.uid() = user_id);
 
+drop policy if exists "Users can manage own measurements" on public.measurements;
 create policy "Users can manage own measurements"
   on public.measurements for all
   using (auth.uid() = user_id)
   with check (auth.uid() = user_id);
 
+drop policy if exists "Users can manage own habits" on public.habits;
 create policy "Users can manage own habits"
   on public.habits for all
   using (auth.uid() = user_id)
