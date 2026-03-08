@@ -47,4 +47,96 @@
       font-size: 1.75rem;
     }
   }
+
+  &__habits-card {
+    padding: 1rem 1.25rem;
+  }
+
+  &__habits-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.75rem;
+    margin-bottom: 0.75rem;
+  }
+
+  &__habits-count {
+    flex-shrink: 0;
+  }
+
+  &__next-habit {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem 0.75rem;
+    margin-bottom: 0.75rem;
+    background: var(--surface);
+    border-left: 3px solid var(--accent);
+    border-radius: var(--radius-sm);
+  }
+
+  &__next-label {
+    font-size: 0.6875rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--accent);
+  }
+
+  &__next-icon {
+    font-size: 1.125rem;
+    flex-shrink: 0;
+  }
+
+  &__next-text {
+    font-size: 0.9375rem;
+    font-weight: 500;
+    color: var(--text);
+  }
+
+  &__all-done {
+    font-size: 0.9375rem;
+    color: var(--text-muted);
+    margin-bottom: 0.75rem;
+  }
+
+  &__habits-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+  }
+
+  &__habit-row {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem 0;
+    cursor: pointer;
+    border-radius: var(--radius-sm);
+    transition: background-color 0.15s;
+
+    &:hover {
+      background: var(--surface);
+    }
+  }
+
+  &__habit-icon {
+    font-size: 1.125rem;
+    flex-shrink: 0;
+  }
+
+  &__habit-label {
+    font-size: 0.9375rem;
+    color: var(--text);
+  }
+
+  &__habits-link {
+    display: inline-block;
+    margin-top: 0.75rem;
+    text-decoration: none;
+
+    &:hover {
+      text-decoration: underline;
+    }
+  }
 }

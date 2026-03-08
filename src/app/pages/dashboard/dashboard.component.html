@@ -32,6 +32,39 @@
     </div>
   </div>
 
+  <div class="card dashboard__habits-card mb-6">
+    <div class="dashboard__habits-header">
+      <h2 class="dashboard__section-title m-0 text-base font-semibold">Today's tasks</h2>
+      <span class="dashboard__habits-count text-sm text-[var(--text-muted)]">
+        {{ habitsCompletedToday() }}/{{ habits().length }} done
+      </span>
+    </div>
+    @if (nextHabit(); as habit) {
+      <div class="dashboard__next-habit">
+        <span class="dashboard__next-label">Next</span>
+        <span class="dashboard__next-icon" aria-hidden="true">{{ habit.icon ?? '✓' }}</span>
+        <span class="dashboard__next-text">{{ habit.label }}</span>
+      </div>
+    } @else {
+      <p class="dashboard__all-done m-0">All done for today.</p>
+    }
+    <div class="dashboard__habits-list">
+      @for (habit of habits(); track habit.id) {
+        <label class="dashboard__habit-row">
+          <mat-checkbox
+            [checked]="todayLog().habitChecks[habit.id] === true"
+            (change)="toggleHabit(habit.id)"
+          />
+          <span class="dashboard__habit-icon" aria-hidden="true">{{ habit.icon ?? '✓' }}</span>
+          <span class="dashboard__habit-label">{{ habit.label }}</span>
+        </label>
+      }
+    </div>
+    <a routerLink="/daily" class="dashboard__habits-link text-sm font-medium text-[var(--accent)]">
+      Full daily log →
+    </a>
+  </div>
+
   <div class="dashboard__middle grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
     @if (weightChartData().length > 0) {
       <div class="card dashboard__chart-card">

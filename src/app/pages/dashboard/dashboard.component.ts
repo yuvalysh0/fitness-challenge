@@ -2,12 +2,17 @@ import { DecimalPipe } from '@angular/common';
 import { Component, inject, computed } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
+import { MatCheckboxModule } from '@angular/material/checkbox';
 import { BaseChartDirective } from 'ng2-charts';
 import type { ChartConfiguration } from 'chart.js';
 import { ChallengeStoreService } from '../../core/challenge-store.service';
 import type { DayLog } from '../../models';
 import { ProgressReferenceCardComponent } from './progress-reference-card/progress-reference-card.component';
 import { CHALLENGE_DAYS } from '../../models';
+
+function todayString(): string {
+  return new Date().toISOString().slice(0, 10);
+}
 
 export interface WeightPoint {
   date: string;
@@ -37,6 +42,7 @@ function dayNumberFromStart(startDate: string, logDate: string): number {
   standalone: true,
   imports: [
     MatProgressBarModule,
+    MatCheckboxModule,
     BaseChartDirective,
     RouterLink,
     DecimalPipe,
@@ -55,6 +61,30 @@ export class DashboardComponent {
   readonly totalDays = CHALLENGE_DAYS;
   readonly daysCompleted = computed(() => Object.keys(this.store.dayLogs()).length);
   readonly daysRemaining = computed(() => CHALLENGE_DAYS - this.store.currentDay());
+
+  readonly habits = this.store.habits;
+  readonly todayLog = computed(() => {
+    this.store.dayLogs();
+    this.store.habits();
+    return this.store.getOrCreateDayLog(todayString());
+  });
+  readonly habitsCompletedToday = computed(() => {
+    const log = this.todayLog();
+    const h = this.habits();
+    return h.filter((habit) => log.habitChecks[habit.id]).length;
+  });
+
+  /** First unchecked habit for today (by order), or null if all done. */
+  readonly nextHabit = computed(() => {
+    const log = this.todayLog();
+    const h = this.habits();
+    return h.find((habit) => !log.habitChecks[habit.id]) ?? null;
+  });
+
+  toggleHabit(habitId: string): void {
+    const current = this.todayLog().habitChecks[habitId];
+    this.store.setHabitCheck(todayString(), habitId, !current);
+  }
 
   readonly weightChartData = computed(() => {
     const logs = this.store.dayLogs();
