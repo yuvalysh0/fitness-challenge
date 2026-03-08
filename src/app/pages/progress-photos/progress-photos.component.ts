@@ -1,6 +1,7 @@
-import { Component, inject, computed } from '@angular/core';
+import { Component, inject, computed, signal } from '@angular/core';
 import { MatCardModule } from '@angular/material/card';
 import { ChallengeService } from '../../core/challenge.service';
+import { PhotoOverlayComponent } from '../../shared/photo-overlay/photo-overlay.component';
 import { SupabaseService } from '../../core/supabase.service';
 import type { DayLog, ProgressPhotoType } from '../../models';
 import { CHALLENGE_DAYS } from '../../models';
@@ -25,7 +26,7 @@ function dayNumberFromStart(startDate: string, logDate: string): number {
 @Component({
   selector: 'app-progress-photos',
   standalone: true,
-  imports: [MatCardModule],
+  imports: [MatCardModule, PhotoOverlayComponent],
   templateUrl: './progress-photos.component.html',
   styleUrl: './progress-photos.component.scss',
 })
@@ -34,6 +35,7 @@ export class ProgressPhotosComponent {
   private readonly supabase = inject(SupabaseService);
 
   readonly totalDays = CHALLENGE_DAYS;
+  readonly photoOverlayUrl = signal<string | null>(null);
   readonly entries = computed(() => {
     const logs = this.store.dayLogs();
     const startDate = this.store.startDate();
@@ -54,6 +56,14 @@ export class ProgressPhotosComponent {
     }
     return list.reverse();
   });
+
+  openPhotoOverlay(url: string | null): void {
+    this.photoOverlayUrl.set(url ?? null);
+  }
+
+  closePhotoOverlay(): void {
+    this.photoOverlayUrl.set(null);
+  }
 
   getPhotoUrl(entry: ProgressPhotoEntry, type: ProgressPhotoType): string {
     if (type === 'front') {

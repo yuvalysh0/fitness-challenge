@@ -233,28 +233,5 @@
     </mat-card>
   </section>
 
-  @if (photoOverlayUrl(); as url) {
-    <div
-      class="daily-log__overlay"
-      role="dialog"
-      aria-modal="true"
-      aria-label="Enlarged photo"
-      (click)="closePhotoOverlay()"
-    >
-      <img
-        [src]="url"
-        alt="Enlarged"
-        class="daily-log__overlay-img"
-        (click)="$event.stopPropagation()"
-      />
-      <button
-        type="button"
-        class="daily-log__overlay-close"
-        aria-label="Close"
-        (click)="closePhotoOverlay()"
-      >
-        <span class="material-icons" aria-hidden="true">close</span>
-      </button>
-    </div>
-  }
+  <app-photo-overlay [url]="photoOverlayUrl()" (close)="closePhotoOverlay()" />
 </div>

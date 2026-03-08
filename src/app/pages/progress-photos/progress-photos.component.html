@@ -13,24 +13,30 @@
       @for (entry of entries(); track entry.date) {
         <mat-card class="progress-photos__card">
           <div class="progress-photos__images">
-            @if (getPhotoUrl(entry, 'front')) {
+            @if (getPhotoUrl(entry, 'front'); as frontUrl) {
               <div class="progress-photos__image-slot">
                 <span class="progress-photos__slot-label">Front</span>
-                <div class="progress-photos__image-wrap">
+                <div
+                  class="progress-photos__image-wrap progress-photos__image-wrap--clickable"
+                  (click)="openPhotoOverlay(frontUrl)"
+                >
                   <img
-                    [src]="getPhotoUrl(entry, 'front')"
+                    [src]="frontUrl"
                     [alt]="'Day ' + entry.dayNumber + ' front'"
                     class="progress-photos__image"
                   />
                 </div>
               </div>
             }
-            @if (getPhotoUrl(entry, 'side')) {
+            @if (getPhotoUrl(entry, 'side'); as sideUrl) {
               <div class="progress-photos__image-slot">
                 <span class="progress-photos__slot-label">Side</span>
-                <div class="progress-photos__image-wrap">
+                <div
+                  class="progress-photos__image-wrap progress-photos__image-wrap--clickable"
+                  (click)="openPhotoOverlay(sideUrl)"
+                >
                   <img
-                    [src]="getPhotoUrl(entry, 'side')"
+                    [src]="sideUrl"
                     [alt]="'Day ' + entry.dayNumber + ' side'"
                     class="progress-photos__image"
                   />
@@ -48,4 +54,6 @@
       }
     </div>
   }
+
+  <app-photo-overlay [url]="photoOverlayUrl()" (close)="closePhotoOverlay()" />
 </div>

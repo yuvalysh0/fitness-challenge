@@ -1,5 +1,5 @@
 import { DecimalPipe } from '@angular/common';
-import { Component, inject, computed, OnInit } from '@angular/core';
+import { Component, inject, computed, signal, OnInit } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { MatCheckboxModule } from '@angular/material/checkbox';
@@ -9,6 +9,7 @@ import { ChallengeService } from '../../core/challenge.service';
 import { QuoteService } from '../../core/quote.service';
 import type { DayLog } from '../../models';
 import { ProgressReferenceCardComponent } from './progress-reference-card/progress-reference-card.component';
+import { PhotoOverlayComponent } from '../../shared/photo-overlay/photo-overlay.component';
 import { CHALLENGE_DAYS } from '../../models';
 import { todayString } from '../../core/challenge.utils';
 export interface WeightPoint {
@@ -44,6 +45,7 @@ function dayNumberFromStart(startDate: string, logDate: string): number {
     RouterLink,
     DecimalPipe,
     ProgressReferenceCardComponent,
+    PhotoOverlayComponent,
   ],
   templateUrl: './dashboard.component.html',
   styleUrl: './dashboard.component.scss',
@@ -86,6 +88,14 @@ export class DashboardComponent implements OnInit {
   toggleHabit(habitId: string): void {
     const current = this.todayLog().habitChecks[habitId];
     this.store.setHabitCheck(todayString(), habitId, !current);
+  }
+
+  readonly photoOverlayUrl = signal<string | null>(null);
+  openPhotoOverlay(url: string): void {
+    this.photoOverlayUrl.set(url);
+  }
+  closePhotoOverlay(): void {
+    this.photoOverlayUrl.set(null);
   }
 
   readonly weightChartData = computed(() => {

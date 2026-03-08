@@ -44,6 +44,18 @@
     aspect-ratio: 3 / 4;
     overflow: hidden;
     background: var(--mat-sys-surface-container-high);
+
+    &--clickable {
+      cursor: pointer;
+
+      .progress-photos__image {
+        transition: opacity 0.15s;
+      }
+
+      &:hover .progress-photos__image {
+        opacity: 0.9;
+      }
+    }
   }
 
   &__image {

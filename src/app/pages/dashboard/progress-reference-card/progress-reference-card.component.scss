@@ -38,14 +38,16 @@
     min-width: 0;
   }
 
-  &__link {
+  &__card-wrap {
     display: block;
-    text-decoration: none;
-    color: inherit;
+  }
+
+  &__img--clickable {
+    cursor: pointer;
     transition: opacity 0.15s;
 
     &:hover {
-      opacity: 0.92;
+      opacity: 0.9;
     }
   }
 

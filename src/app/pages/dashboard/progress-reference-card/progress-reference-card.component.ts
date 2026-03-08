@@ -1,4 +1,4 @@
-import { Component, input, inject } from '@angular/core';
+import { Component, input, output, inject } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { SupabaseService } from '../../../core/supabase.service';
 import type { ProgressPhotoType } from '../../../models';
@@ -26,6 +26,9 @@ export class ProgressReferenceCardComponent {
   readonly firstEntry = input<ProgressRefEntry | null>(null);
   readonly latestEntry = input<ProgressRefEntry | null>(null);
   readonly totalDays = input.required<number>();
+
+  /** Emits the image URL when a photo is clicked (for overlay). */
+  readonly photoClick = output<string>();
 
   getPhotoUrl(entry: ProgressRefEntry, type: ProgressPhotoType): string {
     if (type === 'front') {

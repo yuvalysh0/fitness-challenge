@@ -1,0 +1,19 @@
+@if (url()) {
+  <div
+    class="photo-overlay"
+    role="dialog"
+    aria-modal="true"
+    aria-label="Enlarged photo"
+    (click)="onBackdropClick()"
+  >
+    <img
+      [src]="url()"
+      alt="Enlarged"
+      class="photo-overlay__img"
+      (click)="$event.stopPropagation()"
+    />
+    <button type="button" class="photo-overlay__close" aria-label="Close" (click)="close.emit()">
+      <span class="material-icons" aria-hidden="true">close</span>
+    </button>
+  </div>
+}

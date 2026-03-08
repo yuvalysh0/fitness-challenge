@@ -6,17 +6,18 @@
     <!-- Day 1 -->
     <div class="progress-ref__column">
       @if (firstEntry(); as entry) {
-        <a
-          [routerLink]="['/daily']"
-          [queryParams]="{ date: entry.date }"
-          class="progress-ref__link"
-        >
+        <div class="progress-ref__card-wrap">
           <div class="progress-ref__card">
             <span class="progress-ref__badge">Day 1</span>
             <div class="progress-ref__photos">
               <div class="progress-ref__slot">
                 @if (getPhotoUrl(entry, 'front'); as src) {
-                  <img [src]="src" alt="Day 1 front" class="progress-ref__img" />
+                  <img
+                    [src]="src"
+                    alt="Day 1 front"
+                    class="progress-ref__img progress-ref__img--clickable"
+                    (click)="photoClick.emit(src)"
+                  />
                 } @else {
                   <div class="progress-ref__empty">
                     <span class="material-icons progress-ref__empty-icon" aria-hidden="true"
@@ -28,7 +29,12 @@
               </div>
               <div class="progress-ref__slot">
                 @if (getPhotoUrl(entry, 'side'); as src) {
-                  <img [src]="src" alt="Day 1 side" class="progress-ref__img" />
+                  <img
+                    [src]="src"
+                    alt="Day 1 side"
+                    class="progress-ref__img progress-ref__img--clickable"
+                    (click)="photoClick.emit(src)"
+                  />
                 } @else {
                   <div class="progress-ref__empty">
                     <span class="material-icons progress-ref__empty-icon" aria-hidden="true"
@@ -43,7 +49,7 @@
               <p class="progress-ref__weight">{{ entry.weightKg }} kg</p>
             }
           </div>
-        </a>
+        </div>
       } @else {
         <div class="progress-ref__card progress-ref__card--empty">
           <span class="progress-ref__badge">Day 1</span>
@@ -61,11 +67,7 @@
     <!-- Latest -->
     <div class="progress-ref__column">
       @if (latestEntry(); as entry) {
-        <a
-          [routerLink]="['/daily']"
-          [queryParams]="{ date: entry.date }"
-          class="progress-ref__link"
-        >
+        <div class="progress-ref__card-wrap">
           <div class="progress-ref__card">
             <span class="progress-ref__badge">Latest · Day {{ entry.dayNumber }}</span>
             <div class="progress-ref__photos">
@@ -74,7 +76,8 @@
                   <img
                     [src]="src"
                     [alt]="'Day ' + entry.dayNumber + ' front'"
-                    class="progress-ref__img"
+                    class="progress-ref__img progress-ref__img--clickable"
+                    (click)="photoClick.emit(src)"
                   />
                 } @else {
                   <div class="progress-ref__empty">
@@ -90,7 +93,8 @@
                   <img
                     [src]="src"
                     [alt]="'Day ' + entry.dayNumber + ' side'"
-                    class="progress-ref__img"
+                    class="progress-ref__img progress-ref__img--clickable"
+                    (click)="photoClick.emit(src)"
                   />
                 } @else {
                   <div class="progress-ref__empty">
@@ -106,7 +110,7 @@
               <p class="progress-ref__weight">{{ entry.weightKg }} kg</p>
             }
           </div>
-        </a>
+        </div>
       } @else {
         <div class="progress-ref__card progress-ref__card--empty">
           <span class="progress-ref__badge">Latest</span>

@@ -12,6 +12,8 @@ import { ChallengeService } from '../../core/challenge.service';
 import { AuthService } from '../../core/auth.service';
 import { SupabaseService, PROGRESS_PHOTOS_BUCKET } from '../../core/supabase.service';
 import { todayString } from '../../core/challenge.utils';
+import { PhotoOverlayComponent } from '../../shared/photo-overlay/photo-overlay.component';
+
 @Component({
   selector: 'app-daily-log',
   standalone: true,
@@ -23,6 +25,7 @@ import { todayString } from '../../core/challenge.utils';
     MatInputModule,
     MatButtonModule,
     MatIconModule,
+    PhotoOverlayComponent,
   ],
   templateUrl: './daily-log.component.html',
   styleUrl: './daily-log.component.scss',
