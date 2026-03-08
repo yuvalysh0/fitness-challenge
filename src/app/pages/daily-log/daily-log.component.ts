@@ -11,11 +11,7 @@ import type { ProgressPhotoType } from '../../models';
 import { ChallengeService } from '../../core/challenge.service';
 import { AuthService } from '../../core/auth.service';
 import { SupabaseService, PROGRESS_PHOTOS_BUCKET } from '../../core/supabase.service';
-
-function todayString(): string {
-  return new Date().toISOString().slice(0, 10);
-}
-
+import { todayString } from '../../core/challenge.utils';
 @Component({
   selector: 'app-daily-log',
   standalone: true,

@@ -10,11 +10,7 @@ import { QuoteService } from '../../core/quote.service';
 import type { DayLog } from '../../models';
 import { ProgressReferenceCardComponent } from './progress-reference-card/progress-reference-card.component';
 import { CHALLENGE_DAYS } from '../../models';
-
-function todayString(): string {
-  return new Date().toISOString().slice(0, 10);
-}
-
+import { todayString } from '../../core/challenge.utils';
 export interface WeightPoint {
   date: string;
   dayNumber: number;

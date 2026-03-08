@@ -6,12 +6,8 @@ import { MatInputModule } from '@angular/material/input';
 import { form, FormField } from '@angular/forms/signals';
 import { ChallengeService } from '../../core/challenge.service';
 import { MeasurementSet } from '../../models';
+import { todayString } from '../../core/challenge.utils';
 
-function todayString(): string {
-  return new Date().toISOString().slice(0, 10);
-}
-
-/** Form model for a new measurement (id is generated on save). All fields required for form() field tree. */
 interface MeasurementFormModel {
   date: string;
   chest: number;
