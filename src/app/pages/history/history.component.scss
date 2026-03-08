@@ -1,0 +1,63 @@
+.history {
+  &__title {
+    font-size: 1.5rem;
+  }
+
+  &__subtitle {
+    font-size: 0.875rem;
+  }
+
+  &__empty {
+    max-width: 24rem;
+    margin-inline: auto;
+  }
+
+  &__list {
+    max-width: 36rem;
+  }
+
+  &__row {
+    color: inherit;
+    border: 1px solid var(--border);
+    cursor: pointer;
+
+    &:hover {
+      background: var(--surface);
+      border-color: var(--text-muted);
+    }
+  }
+
+  &__row-top {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.25rem 1rem;
+  }
+
+  &__date {
+    font-weight: 500;
+  }
+
+  &__day {
+    font-size: 0.875rem;
+  }
+
+  &__tasks {
+    font-size: 0.875rem;
+
+    &--done {
+      color: var(--accent);
+      font-weight: 500;
+    }
+
+    &--partial {
+      color: var(--text-muted);
+    }
+  }
+
+  &__row-meta {
+    margin-top: 0.5rem;
+    font-size: 0.875rem;
+    color: var(--text-muted);
+  }
+}

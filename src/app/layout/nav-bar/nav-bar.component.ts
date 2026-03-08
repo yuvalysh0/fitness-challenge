@@ -11,6 +11,7 @@ export interface NavItem {
 const NAV_ITEMS: NavItem[] = [
   { path: '/', label: 'Dashboard', icon: 'dashboard' },
   { path: '/daily', label: 'Today', icon: 'today' },
+  { path: '/history', label: 'History', icon: 'calendar_today' },
   { path: '/progress', label: 'Progress', icon: 'photo_library' },
   { path: '/measurements', label: 'Measurements', icon: 'straighten' },
   { path: '/habits', label: 'Tasks', icon: 'check_circle' },

@@ -1,0 +1,47 @@
+<div class="history">
+  <h1 class="history__title m-0 mb-2 text-2xl font-bold">History</h1>
+  <p class="history__subtitle m-0 mb-6 text-sm text-[var(--text-muted)]">
+    Past days with completion status. Tap a row to open that day's log.
+  </p>
+
+  @if (entries().length === 0) {
+    <div class="history__empty card p-6 text-center">
+      <p class="m-0 text-[var(--text-muted)]">No days logged yet.</p>
+      <a routerLink="/daily" class="btn btn--primary mt-4">Log today</a>
+    </div>
+  } @else {
+    <ul class="history__list list-none m-0 p-0 flex flex-col gap-2">
+      @for (entry of entries(); track entry.date) {
+        <li>
+          <a
+            [routerLink]="['/daily']"
+            [queryParams]="{ date: entry.date }"
+            class="history__row card block no-underline rounded-xl p-4 transition-colors"
+          >
+            <div class="history__row-top flex flex-wrap items-center gap-x-4 gap-y-1">
+              <span class="history__date font-medium text-[var(--text)]">{{
+                formatDate(entry.date)
+              }}</span>
+              <span class="history__day text-sm text-[var(--text-muted)]">
+                Day {{ entry.dayNumber }}
+              </span>
+              <span
+                class="history__tasks text-sm"
+                [class.history__tasks--done]="entry.completed"
+                [class.history__tasks--partial]="!entry.completed && entry.tasksDone > 0"
+              >
+                {{ entry.tasksDone }}/{{ entry.tasksTotal }} tasks
+              </span>
+            </div>
+            <div
+              class="history__row-meta flex flex-wrap items-center gap-x-4 gap-y-1 mt-2 text-sm text-[var(--text-muted)]"
+            >
+              <span>Weight: {{ entry.weightKg != null ? entry.weightKg + ' kg' : '—' }}</span>
+              <span>Mood: {{ moodPreview(entry.mood) }}</span>
+            </div>
+          </a>
+        </li>
+      }
+    </ul>
+  }
+</div>

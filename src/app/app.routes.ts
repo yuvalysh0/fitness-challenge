@@ -42,6 +42,11 @@ export const routes: Routes = [
           import('./pages/habits/habits.component').then((m) => m.HabitsComponent),
       },
       {
+        path: 'history',
+        loadComponent: () =>
+          import('./pages/history/history.component').then((m) => m.HistoryComponent),
+      },
+      {
         path: 'settings',
         loadComponent: () =>
           import('./pages/settings/settings.component').then((m) => m.SettingsComponent),
