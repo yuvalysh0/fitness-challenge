@@ -32,7 +32,9 @@ export class AuthComponent {
   readonly loginForm = this.fb.nonNullable.group({
     email: ['', [Validators.required, Validators.email]],
     password: ['', [Validators.required, Validators.minLength(6)]],
+    fullName: [''],
   });
+  readonly avatarFile = signal<File | null>(null);
 
   constructor() {
     effect(() => {
@@ -45,17 +47,27 @@ export class AuthComponent {
   toggleMode(): void {
     this.isLogin.update((v) => !v);
     this.errorMessage.set(null);
-    this.loginForm.reset();
+    this.avatarFile.set(null);
+    this.loginForm.reset({ email: '', password: '', fullName: '' });
+  }
+
+  onAvatarChange(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    const file = input.files?.[0];
+    this.avatarFile.set(file && file.type.startsWith('image/') ? file : null);
   }
 
   async onSubmit(): Promise<void> {
     this.errorMessage.set(null);
     if (this.loginForm.invalid) return;
     this.loading.set(true);
-    const { email, password } = this.loginForm.getRawValue();
+    const { email, password, fullName } = this.loginForm.getRawValue();
     const { error } = this.isLogin()
       ? await this.auth.signIn(email, password)
-      : await this.auth.signUp(email, password);
+      : await this.auth.signUp(email, password, {
+          fullName: fullName?.trim() || undefined,
+          avatarFile: this.avatarFile() ?? undefined,
+        });
     this.loading.set(false);
     if (error) {
       this.errorMessage.set(error.message ?? 'Something went wrong');

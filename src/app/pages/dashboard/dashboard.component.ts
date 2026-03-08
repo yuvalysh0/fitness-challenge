@@ -6,6 +6,7 @@ import { MatCheckboxModule } from '@angular/material/checkbox';
 import { BaseChartDirective } from 'ng2-charts';
 import type { ChartConfiguration } from 'chart.js';
 import { ChallengeService } from '../../core/challenge.service';
+import { AuthService } from '../../core/auth.service';
 import { QuoteService } from '../../core/quote.service';
 import type { DayLog } from '../../models';
 import { ProgressReferenceCardComponent } from './progress-reference-card/progress-reference-card.component';
@@ -52,6 +53,7 @@ function dayNumberFromStart(startDate: string, logDate: string): number {
 })
 export class DashboardComponent implements OnInit {
   private readonly store = inject(ChallengeService);
+  readonly auth = inject(AuthService);
   readonly quoteService = inject(QuoteService);
 
   ngOnInit(): void {

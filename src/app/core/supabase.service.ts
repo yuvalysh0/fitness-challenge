@@ -3,6 +3,7 @@ import { createClient, SupabaseClient } from '@supabase/supabase-js';
 import { environment } from '../../environments/environment';
 
 export const PROGRESS_PHOTOS_BUCKET = 'progress-photos';
+export const AVATARS_BUCKET = 'avatars';
 
 @Injectable({ providedIn: 'root' })
 export class SupabaseService {
@@ -18,6 +19,12 @@ export class SupabaseService {
   /** Public URL for a progress photo path (bucket is public). */
   getPublicPhotoUrl(path: string): string {
     const { data } = this.client.storage.from(PROGRESS_PHOTOS_BUCKET).getPublicUrl(path);
+    return data.publicUrl;
+  }
+
+  /** Public URL for an avatar path (avatars bucket is public). */
+  getPublicAvatarUrl(path: string): string {
+    const { data } = this.client.storage.from(AVATARS_BUCKET).getPublicUrl(path);
     return data.publicUrl;
   }
 }

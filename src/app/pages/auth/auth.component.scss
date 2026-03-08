@@ -1,4 +1,34 @@
 .auth {
+  &__avatar-field {
+    margin-bottom: 0.25rem;
+  }
+  &__avatar-label {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.5rem;
+    cursor: pointer;
+    font-size: 0.875rem;
+    color: var(--text-muted);
+  }
+  &__avatar-input {
+    position: absolute;
+    width: 0.1px;
+    height: 0.1px;
+    opacity: 0;
+    overflow: hidden;
+    z-index: -1;
+  }
+  &__avatar-text {
+    text-decoration: underline;
+    &:hover {
+      color: var(--accent);
+    }
+  }
+  &__avatar-filename {
+    font-size: 0.8125rem;
+    color: var(--text);
+  }
   &__spinner {
     display: inline-block;
     margin-right: 8px;

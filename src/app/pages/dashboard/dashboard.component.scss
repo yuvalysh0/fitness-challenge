@@ -1,4 +1,45 @@
 .dashboard {
+  &__greeting {
+    padding: 1rem 1.25rem;
+  }
+
+  &__greeting-inner {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+  }
+
+  &__greeting-text {
+    min-width: 0;
+  }
+
+  &__greeting-line {
+    font-size: 1rem;
+    font-weight: 500;
+    color: var(--text);
+  }
+
+  &__avatar {
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+    object-fit: cover;
+    flex-shrink: 0;
+
+    &--placeholder {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: var(--surface);
+      border: 1px solid var(--border);
+    }
+  }
+
+  &__avatar-icon {
+    font-size: 1.75rem;
+    color: var(--text-muted);
+  }
+
   &__quote-card {
     padding: 1rem 1.25rem;
   }

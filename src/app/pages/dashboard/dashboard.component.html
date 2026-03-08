@@ -6,6 +6,26 @@
     </p>
   </header>
 
+  <section class="dashboard__greeting card mb-6">
+    @let profile = auth.profile();
+    <div class="dashboard__greeting-inner">
+      @if (auth.avatarUrl(); as avatarUrl) {
+        <img [src]="avatarUrl" alt="" class="dashboard__avatar" />
+      } @else {
+        <div class="dashboard__avatar dashboard__avatar--placeholder" aria-hidden="true">
+          <span class="material-icons dashboard__avatar-icon">person</span>
+        </div>
+      }
+      <div class="dashboard__greeting-text">
+        <p class="dashboard__greeting-line m-0">
+          Hello,
+          {{ profile?.full_name?.trim() || (auth.user()?.email ?? '').split('@')[0] || 'there' }},
+          how are you today?
+        </p>
+      </div>
+    </div>
+  </section>
+
   @if (quoteService.quoteOfTheDay() || quoteService.quoteLoading() || quoteService.quoteError()) {
     <div class="card dashboard__quote-card mb-6">
       <h2

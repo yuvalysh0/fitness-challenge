@@ -18,6 +18,31 @@
             {{ msg }}
           </p>
         }
+        @if (!isLogin()) {
+          <mat-form-field appearance="outline" class="w-full">
+            <mat-label>Name</mat-label>
+            <input
+              matInput
+              type="text"
+              formControlName="fullName"
+              placeholder="How we'll greet you"
+            />
+          </mat-form-field>
+          <div class="auth__avatar-field">
+            <label class="auth__avatar-label">
+              <span class="auth__avatar-text">Profile photo (optional)</span>
+              <input
+                type="file"
+                accept="image/*"
+                class="auth__avatar-input"
+                (change)="onAvatarChange($event)"
+              />
+              @if (avatarFile(); as file) {
+                <span class="auth__avatar-filename">{{ file.name }}</span>
+              }
+            </label>
+          </div>
+        }
         <mat-form-field appearance="outline" class="w-full">
           <mat-label>Email</mat-label>
           <input matInput type="email" formControlName="email" placeholder="you@example.com" />
