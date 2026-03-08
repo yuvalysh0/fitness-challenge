@@ -8,7 +8,7 @@ import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import type { ProgressPhotoType } from '../../models';
-import { ChallengeStoreService } from '../../core/challenge-store.service';
+import { ChallengeService } from '../../core/challenge.service';
 import { AuthService } from '../../core/auth.service';
 import { SupabaseService, PROGRESS_PHOTOS_BUCKET } from '../../core/supabase.service';
 
@@ -32,7 +32,7 @@ function todayString(): string {
   styleUrl: './daily-log.component.scss',
 })
 export class DailyLogComponent {
-  private readonly store = inject(ChallengeStoreService);
+  private readonly store = inject(ChallengeService);
   private readonly auth = inject(AuthService);
   private readonly supabase = inject(SupabaseService);
   private readonly route = inject(ActivatedRoute);

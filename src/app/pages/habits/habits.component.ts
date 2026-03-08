@@ -5,7 +5,7 @@ import { MatCardModule } from '@angular/material/card';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatMenuModule } from '@angular/material/menu';
-import { ChallengeStoreService } from '../../core/challenge-store.service';
+import { ChallengeService } from '../../core/challenge.service';
 import { HabitDefinition } from '../../models';
 
 /** Emojis offered in the icon picker (fitness/habits + common). */
@@ -57,7 +57,7 @@ const EMOJI_OPTIONS = [
   styleUrl: './habits.component.scss',
 })
 export class HabitsComponent {
-  private readonly store = inject(ChallengeStoreService);
+  private readonly store = inject(ChallengeService);
 
   readonly emojiOptions = EMOJI_OPTIONS;
   readonly habits = this.store.habits;

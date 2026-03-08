@@ -1,33 +1,19 @@
-import { Injectable, signal, computed, effect } from '@angular/core';
-import {
+import { Injectable, inject, effect } from '@angular/core';
+import type {
   ChallengeState,
   DayLog,
   MeasurementSet,
   HabitDefinition,
   FoodEntry,
   DateString,
-  CHALLENGE_DAYS,
 } from '../models';
 import type { DayLogRow, MeasurementRow, HabitRow } from './supabase.types';
+import { ChallengeStore } from './challenge.store';
 import { AuthService } from './auth.service';
 import { SupabaseService } from './supabase.service';
+import { todayString, defaultHabits, getDefaultState } from './challenge.utils';
 
 const STORAGE_KEY = '75-hard-challenge';
-
-function todayString(): DateString {
-  return new Date().toISOString().slice(0, 10);
-}
-
-/** 75 Hard: 5 daily non-negotiable tasks. Fail one = restart from Day 1. */
-function defaultHabits(): HabitDefinition[] {
-  return [
-    { id: 'diet', label: 'Diet: no alcohol, no cheat meals', icon: '🥗', order: 0 },
-    { id: 'water', label: '1 gallon (3.8 L) water', icon: '💧', order: 1 },
-    { id: 'workout1', label: 'Workout 1 (45 min)', icon: '💪', order: 2 },
-    { id: 'workout2', label: 'Workout 2 outdoor (45 min)', icon: '🌤️', order: 3 },
-    { id: 'read', label: 'Read 10 pages (non-fiction)', icon: '📖', order: 4 },
-  ];
-}
 
 function loadStateFromStorage(): ChallengeState {
   try {
@@ -42,12 +28,7 @@ function loadStateFromStorage(): ChallengeState {
   } catch {
     // ignore
   }
-  return {
-    startDate: todayString(),
-    dayLogs: {},
-    measurements: [],
-    habits: defaultHabits(),
-  };
+  return getDefaultState();
 }
 
 function saveStateToStorage(state: ChallengeState): void {
@@ -95,111 +76,75 @@ function rowToHabit(row: HabitRow): HabitDefinition {
   };
 }
 
+/**
+ * Challenge I/O and persistence. Delegates state to ChallengeStore;
+ * loads from / saves to Supabase when authenticated, localStorage when guest.
+ */
 @Injectable({ providedIn: 'root' })
-export class ChallengeStoreService {
-  private readonly state = signal<ChallengeState>(loadStateFromStorage());
+export class ChallengeService {
+  private readonly store = inject(ChallengeStore);
+  private readonly auth = inject(AuthService);
+  private readonly supabase = inject(SupabaseService);
 
-  readonly startDate = computed(() => this.state().startDate);
-  readonly dayLogs = computed(() => this.state().dayLogs);
-  readonly measurements = computed(() => this.state().measurements);
-  readonly habits = computed(() => this.state().habits);
-
-  readonly currentDay = computed(() => {
-    const start = new Date(this.state().startDate).getTime();
-    const now = Date.now();
-    const day = Math.floor((now - start) / (24 * 60 * 60 * 1000)) + 1;
-    return Math.max(1, Math.min(day, CHALLENGE_DAYS));
-  });
-
-  readonly progressPercent = computed(() => (this.currentDay() / CHALLENGE_DAYS) * 100);
-
-  constructor(
-    private readonly auth: AuthService,
-    private readonly supabase: SupabaseService,
-  ) {
+  constructor() {
     effect(() => {
       if (this.auth.isAuthenticated()) {
         this.loadFromSupabase();
       } else {
-        this.state.set(loadStateFromStorage());
+        this.store.setState(loadStateFromStorage());
       }
     });
   }
 
-  getDayLog(date: DateString): DayLog | undefined {
-    return this.state().dayLogs[date];
+  // Read API (passthrough to store)
+  readonly startDate = this.store.startDate;
+  readonly dayLogs = this.store.dayLogs;
+  readonly measurements = this.store.measurements;
+  readonly habits = this.store.habits;
+  readonly currentDay = this.store.currentDay;
+  readonly progressPercent = this.store.progressPercent;
+
+  getDayLog(date: DateString) {
+    return this.store.getDayLog(date);
   }
 
-  getOrCreateDayLog(date: DateString): DayLog {
-    const existing = this.state().dayLogs[date];
-    if (existing) return existing;
-    const habits = this.state().habits;
-    const habitChecks: Record<string, boolean> = {};
-    for (const h of habits) {
-      habitChecks[h.id] = false;
-    }
-    return {
-      date,
-      foodEntries: [],
-      habitChecks,
-    };
+  getOrCreateDayLog(date: DateString) {
+    return this.store.getOrCreateDayLog(date);
   }
 
+  // Write API (store + persist)
   setStartDate(date: DateString): void {
-    this.state.update((s) => ({ ...s, startDate: date }));
+    this.store.setStartDate(date);
     this.persist();
   }
 
   updateDayLog(date: DateString, patch: Partial<DayLog>): void {
-    this.state.update((s) => {
-      const existing = s.dayLogs[date] ?? this.getOrCreateDayLog(date);
-      const updated: DayLog = {
-        ...existing,
-        ...patch,
-        date,
-        habitChecks: { ...existing.habitChecks, ...(patch.habitChecks ?? {}) },
-      };
-      const dayLogs = { ...s.dayLogs, [date]: updated };
-      return { ...s, dayLogs };
-    });
+    this.store.updateDayLog(date, patch);
     this.persist();
   }
 
   addFoodEntry(date: DateString, entry: Omit<FoodEntry, 'id'>): void {
-    const log = this.getOrCreateDayLog(date);
-    const newEntry = {
-      ...entry,
-      id: crypto.randomUUID(),
-    };
-    const foodEntries = [...log.foodEntries, newEntry];
-    this.updateDayLog(date, { foodEntries });
+    this.store.addFoodEntry(date, entry);
+    this.persist();
   }
 
   removeFoodEntry(date: DateString, entryId: string): void {
-    const log = this.getOrCreateDayLog(date);
-    const foodEntries = log.foodEntries.filter((e) => e.id !== entryId);
-    this.updateDayLog(date, { foodEntries });
+    this.store.removeFoodEntry(date, entryId);
+    this.persist();
   }
 
   setHabitCheck(date: DateString, habitId: string, checked: boolean): void {
-    const log = this.getOrCreateDayLog(date);
-    this.updateDayLog(date, {
-      habitChecks: { ...log.habitChecks, [habitId]: checked },
-    });
+    this.store.setHabitCheck(date, habitId, checked);
+    this.persist();
   }
 
   addMeasurement(measurement: MeasurementSet): void {
-    this.state.update((s) => ({
-      ...s,
-      measurements: [...s.measurements, measurement].sort(
-        (a, b) => new Date(b.date).getTime() - new Date(a.date).getTime(),
-      ),
-    }));
+    this.store.addMeasurement(measurement);
     this.persist();
   }
 
   updateHabits(habits: HabitDefinition[]): void {
-    this.state.update((s) => ({ ...s, habits }));
+    this.store.updateHabits(habits);
     this.persist();
   }
 
@@ -207,7 +152,7 @@ export class ChallengeStoreService {
     if (this.auth.isAuthenticated()) {
       this.saveToSupabase();
     } else {
-      saveStateToStorage(this.state());
+      saveStateToStorage(this.store.getState());
     }
   }
 
@@ -236,7 +181,7 @@ export class ChallengeStoreService {
     const rawHabits = (habitsRes.data as HabitRow[] | null) ?? [];
     const habits = rawHabits.length > 0 ? rawHabits.map(rowToHabit) : defaultHabits();
 
-    this.state.set({
+    this.store.setState({
       startDate,
       dayLogs,
       measurements,
@@ -253,7 +198,7 @@ export class ChallengeStoreService {
     const userId = this.auth.user()?.id;
     if (!userId) return;
 
-    const s = this.state();
+    const s = this.store.getState();
     const sb = this.supabase.supabase;
 
     sb.from('challenge_settings')

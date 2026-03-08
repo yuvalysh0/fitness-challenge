@@ -5,7 +5,7 @@ import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { BaseChartDirective } from 'ng2-charts';
 import type { ChartConfiguration } from 'chart.js';
-import { ChallengeStoreService } from '../../core/challenge-store.service';
+import { ChallengeService } from '../../core/challenge.service';
 import type { DayLog } from '../../models';
 import { ProgressReferenceCardComponent } from './progress-reference-card/progress-reference-card.component';
 import { CHALLENGE_DAYS } from '../../models';
@@ -52,7 +52,7 @@ function dayNumberFromStart(startDate: string, logDate: string): number {
   styleUrl: './dashboard.component.scss',
 })
 export class DashboardComponent {
-  private readonly store = inject(ChallengeStoreService);
+  private readonly store = inject(ChallengeService);
 
   readonly currentDay = this.store.currentDay;
   readonly progressPercent = this.store.progressPercent;

@@ -1,6 +1,6 @@
 import { Component, inject, computed } from '@angular/core';
 import { MatCardModule } from '@angular/material/card';
-import { ChallengeStoreService } from '../../core/challenge-store.service';
+import { ChallengeService } from '../../core/challenge.service';
 import { SupabaseService } from '../../core/supabase.service';
 import type { DayLog, ProgressPhotoType } from '../../models';
 import { CHALLENGE_DAYS } from '../../models';
@@ -30,7 +30,7 @@ function dayNumberFromStart(startDate: string, logDate: string): number {
   styleUrl: './progress-photos.component.scss',
 })
 export class ProgressPhotosComponent {
-  private readonly store = inject(ChallengeStoreService);
+  private readonly store = inject(ChallengeService);
   private readonly supabase = inject(SupabaseService);
 
   readonly totalDays = CHALLENGE_DAYS;

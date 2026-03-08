@@ -4,7 +4,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
-import { ChallengeStoreService } from '../../core/challenge-store.service';
+import { ChallengeService } from '../../core/challenge.service';
 import { MeasurementSet } from '../../models';
 
 function todayString(): string {
@@ -19,7 +19,7 @@ function todayString(): string {
   styleUrl: './measurements.component.scss',
 })
 export class MeasurementsComponent {
-  private readonly store = inject(ChallengeStoreService);
+  private readonly store = inject(ChallengeService);
 
   readonly measurements = this.store.measurements;
 
