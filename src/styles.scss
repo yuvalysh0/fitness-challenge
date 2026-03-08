@@ -36,6 +36,9 @@ html {
   --text-muted: #e9a4c4;
   --accent: #f472b6;
   --accent-hover: #fb7185;
+  --error: #db2777;
+  --error-hover: #be185d;
+  --text-on-error: #ffffff;
   --text-on-accent: #1a1216;
   --radius: 16px;
   --radius-sm: 12px;
@@ -114,6 +117,15 @@ button {
     &:hover {
       background: var(--surface);
       border-color: var(--text-muted);
+    }
+  }
+
+  &--error {
+    background: var(--error);
+    color: var(--text-on-error);
+
+    &:hover {
+      background: var(--error-hover);
     }
   }
 
