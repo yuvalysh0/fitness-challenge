@@ -105,6 +105,13 @@ export class ChallengeStore {
     }));
   }
 
+  removeMeasurement(id: string): void {
+    this.state.update((s) => ({
+      ...s,
+      measurements: s.measurements.filter((m) => m.id !== id),
+    }));
+  }
+
   updateHabits(habits: HabitDefinition[]): void {
     this.state.update((s) => ({ ...s, habits }));
   }

@@ -17,92 +17,40 @@
         >
           <mat-form-field appearance="outline" class="w-full">
             <mat-label>Date</mat-label>
-            <input
-              matInput
-              type="date"
-              [ngModel]="formDate()"
-              (ngModelChange)="formDate.set($event)"
-            />
+            <input matInput type="date" [formField]="measurementForm.date" />
           </mat-form-field>
           <mat-form-field appearance="outline" class="w-full">
             <mat-label>Chest (cm)</mat-label>
-            <input
-              matInput
-              type="number"
-              step="0.1"
-              [ngModel]="formChest()"
-              (ngModelChange)="formChest.set($event)"
-            />
+            <input matInput type="number" step="0.1" [formField]="measurementForm.chest" />
           </mat-form-field>
           <mat-form-field appearance="outline" class="w-full">
             <mat-label>Waist (cm)</mat-label>
-            <input
-              matInput
-              type="number"
-              step="0.1"
-              [ngModel]="formWaist()"
-              (ngModelChange)="formWaist.set($event)"
-            />
+            <input matInput type="number" step="0.1" [formField]="measurementForm.waist" />
           </mat-form-field>
           <mat-form-field appearance="outline" class="w-full">
             <mat-label>Hips (cm)</mat-label>
-            <input
-              matInput
-              type="number"
-              step="0.1"
-              [ngModel]="formHips()"
-              (ngModelChange)="formHips.set($event)"
-            />
+            <input matInput type="number" step="0.1" [formField]="measurementForm.hips" />
           </mat-form-field>
           <mat-form-field appearance="outline" class="w-full">
             <mat-label>Arm L (cm)</mat-label>
-            <input
-              matInput
-              type="number"
-              step="0.1"
-              [ngModel]="formArmL()"
-              (ngModelChange)="formArmL.set($event)"
-            />
+            <input matInput type="number" step="0.1" [formField]="measurementForm.armL" />
           </mat-form-field>
           <mat-form-field appearance="outline" class="w-full">
             <mat-label>Arm R (cm)</mat-label>
-            <input
-              matInput
-              type="number"
-              step="0.1"
-              [ngModel]="formArmR()"
-              (ngModelChange)="formArmR.set($event)"
-            />
+            <input matInput type="number" step="0.1" [formField]="measurementForm.armR" />
           </mat-form-field>
           <mat-form-field appearance="outline" class="w-full">
             <mat-label>Thigh L (cm)</mat-label>
-            <input
-              matInput
-              type="number"
-              step="0.1"
-              [ngModel]="formThighL()"
-              (ngModelChange)="formThighL.set($event)"
-            />
+            <input matInput type="number" step="0.1" [formField]="measurementForm.thighL" />
           </mat-form-field>
           <mat-form-field appearance="outline" class="w-full">
             <mat-label>Thigh R (cm)</mat-label>
-            <input
-              matInput
-              type="number"
-              step="0.1"
-              [ngModel]="formThighR()"
-              (ngModelChange)="formThighR.set($event)"
-            />
+            <input matInput type="number" step="0.1" [formField]="measurementForm.thighR" />
           </mat-form-field>
         </div>
         <mat-form-field appearance="outline" class="mb-4 block w-full">
           <mat-label>Notes</mat-label>
-          <textarea
-            matInput
-            [ngModel]="formNotes()"
-            (ngModelChange)="formNotes.set($event)"
-            rows="2"
-          ></textarea>
+          <textarea matInput [formField]="measurementForm.notes" rows="2"></textarea>
         </mat-form-field>
         <div class="measurements__form-actions flex gap-2 mt-4">
           <button class="btn btn--secondary" type="button" (click)="closeForm()">Cancel</button>
@@ -115,8 +63,17 @@
   <div class="measurements__list flex flex-col gap-4">
     @for (m of measurements(); track m.id) {
       <mat-card class="measurements__measurement-card rounded-xl p-5 shadow-sm">
-        <mat-card-header>
+        <mat-card-header class="measurements__card-header">
           <mat-card-title class="text-base font-semibold">{{ m.date }}</mat-card-title>
+          <button
+            mat-icon-button
+            type="button"
+            class="measurements__delete-btn"
+            (click)="deleteMeasurement(m.id)"
+            aria-label="Delete measurement"
+          >
+            <span class="material-icons" aria-hidden="true">delete</span>
+          </button>
         </mat-card-header>
         <mat-card-content>
           <div class="measurements__measurement-body flex flex-wrap gap-3 text-sm">

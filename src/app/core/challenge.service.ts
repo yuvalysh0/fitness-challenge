@@ -53,9 +53,10 @@ function rowToDayLog(row: DayLogRow): DayLog {
 }
 
 function rowToMeasurement(row: MeasurementRow): MeasurementSet {
+  const date = String(row.date).slice(0, 10);
   return {
     id: row.id,
-    date: row.date,
+    date,
     chest: row.chest ?? undefined,
     waist: row.waist ?? undefined,
     hips: row.hips ?? undefined,
@@ -88,9 +89,11 @@ export class ChallengeService {
 
   constructor() {
     effect(() => {
-      if (this.auth.isAuthenticated()) {
+      const user = this.auth.user();
+      const isAuth = this.auth.isAuthenticated();
+      if (isAuth && user?.id) {
         this.loadFromSupabase();
-      } else {
+      } else if (!isAuth) {
         this.store.setState(loadStateFromStorage());
       }
     });
@@ -143,6 +146,11 @@ export class ChallengeService {
     this.persist();
   }
 
+  removeMeasurement(id: string): void {
+    this.store.removeMeasurement(id);
+    this.persist();
+  }
+
   updateHabits(habits: HabitDefinition[]): void {
     this.store.updateHabits(habits);
     this.persist();
@@ -169,6 +177,10 @@ export class ChallengeService {
       sb.from('habits').select('*').eq('user_id', userId).order('order', { ascending: true }),
     ]);
 
+    if (measurementsRes.error) {
+      console.warn('Failed to load measurements from Supabase:', measurementsRes.error);
+    }
+
     const startDate = (settingsRes.data?.start_date as string) ?? todayString();
     const dayLogs: Record<DateString, DayLog> = {};
     if (dayLogsRes.data?.length) {
@@ -177,7 +189,9 @@ export class ChallengeService {
       }
     }
     const measurements =
-      (measurementsRes.data as MeasurementRow[] | null)?.map(rowToMeasurement) ?? [];
+      !measurementsRes.error && measurementsRes.data != null
+        ? (measurementsRes.data as MeasurementRow[]).map(rowToMeasurement)
+        : [];
     const rawHabits = (habitsRes.data as HabitRow[] | null) ?? [];
     const habits = rawHabits.length > 0 ? rawHabits.map(rowToHabit) : defaultHabits();
 
