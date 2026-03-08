@@ -49,6 +49,7 @@ export class DailyLogComponent {
   readonly habits = this.store.habits;
   readonly photoUploadingFront = signal(false);
   readonly photoUploadingSide = signal(false);
+  readonly photoOverlayUrl = signal<string | null>(null);
   newFoodDescription = '';
   newFoodTime = new Date().toTimeString().slice(0, 5);
 
@@ -136,6 +137,14 @@ export class DailyLogComponent {
 
   removeFood(entryId: string): void {
     this.store.removeFoodEntry(this.date(), entryId);
+  }
+
+  openPhotoOverlay(url: string | null): void {
+    this.photoOverlayUrl.set(url ?? null);
+  }
+
+  closePhotoOverlay(): void {
+    this.photoOverlayUrl.set(null);
   }
 
   async removePhoto(type: ProgressPhotoType): Promise<void> {

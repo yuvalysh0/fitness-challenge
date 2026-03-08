@@ -18,12 +18,13 @@
           <p class="daily-log__photo-label m-0 mb-2 text-sm font-medium text-[var(--text-muted)]">
             Front
           </p>
-          @if (getPhotoDisplayUrl('front')) {
+          @if (getPhotoDisplayUrl('front'); as frontUrl) {
             <div class="daily-log__photo-preview relative max-w-[200px]">
               <img
-                [src]="getPhotoDisplayUrl('front')"
+                [src]="frontUrl"
                 alt="Front progress"
-                class="block w-full rounded-lg"
+                class="daily-log__photo-thumb block w-full cursor-pointer rounded-lg"
+                (click)="openPhotoOverlay(frontUrl)"
               />
               <button
                 mat-icon-button
@@ -55,12 +56,13 @@
           <p class="daily-log__photo-label m-0 mb-2 text-sm font-medium text-[var(--text-muted)]">
             Side
           </p>
-          @if (getPhotoDisplayUrl('side')) {
+          @if (getPhotoDisplayUrl('side'); as sideUrl) {
             <div class="daily-log__photo-preview relative max-w-[200px]">
               <img
-                [src]="getPhotoDisplayUrl('side')"
+                [src]="sideUrl"
                 alt="Side progress"
-                class="block w-full rounded-lg"
+                class="daily-log__photo-thumb block w-full cursor-pointer rounded-lg"
+                (click)="openPhotoOverlay(sideUrl)"
               />
               <button
                 mat-icon-button
@@ -230,4 +232,29 @@
       </mat-card-content>
     </mat-card>
   </section>
+
+  @if (photoOverlayUrl(); as url) {
+    <div
+      class="daily-log__overlay"
+      role="dialog"
+      aria-modal="true"
+      aria-label="Enlarged photo"
+      (click)="closePhotoOverlay()"
+    >
+      <img
+        [src]="url"
+        alt="Enlarged"
+        class="daily-log__overlay-img"
+        (click)="$event.stopPropagation()"
+      />
+      <button
+        type="button"
+        class="daily-log__overlay-close"
+        aria-label="Close"
+        (click)="closePhotoOverlay()"
+      >
+        <span class="material-icons" aria-hidden="true">close</span>
+      </button>
+    </div>
+  }
 </div>
