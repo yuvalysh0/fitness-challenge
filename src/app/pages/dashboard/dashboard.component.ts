@@ -1,8 +1,10 @@
 import { DecimalPipe } from '@angular/common';
 import { Component, inject, computed, signal, OnInit } from '@angular/core';
 import { RouterLink } from '@angular/router';
+import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { MatCheckboxModule } from '@angular/material/checkbox';
+import { MatButtonModule } from '@angular/material/button';
 import { BaseChartDirective } from 'ng2-charts';
 import type { ChartConfiguration } from 'chart.js';
 import { ChallengeService } from '../../core/challenge.service';
@@ -11,6 +13,7 @@ import { QuoteService } from '../../core/quote.service';
 import type { DayLog } from '../../models';
 import { ProgressReferenceCardComponent } from './progress-reference-card/progress-reference-card.component';
 import { PhotoOverlayComponent } from '../../shared/photo-overlay/photo-overlay.component';
+import { ConfirmDialogComponent } from '../../shared/confirm-dialog/confirm-dialog.component';
 import { CHALLENGE_DAYS } from '../../models';
 import { todayString } from '../../core/challenge.utils';
 export interface WeightPoint {
@@ -40,8 +43,10 @@ function dayNumberFromStart(startDate: string, logDate: string): number {
   selector: 'app-dashboard',
   standalone: true,
   imports: [
+    MatDialogModule,
     MatProgressBarModule,
     MatCheckboxModule,
+    MatButtonModule,
     BaseChartDirective,
     RouterLink,
     DecimalPipe,
@@ -53,6 +58,7 @@ function dayNumberFromStart(startDate: string, logDate: string): number {
 })
 export class DashboardComponent implements OnInit {
   private readonly store = inject(ChallengeService);
+  private readonly dialog = inject(MatDialog);
   readonly auth = inject(AuthService);
   readonly quoteService = inject(QuoteService);
 
@@ -155,7 +161,7 @@ export class DashboardComponent implements OnInit {
         {
           label: 'Weight (kg)',
           data: points.map((p) => p.weight),
-          backgroundColor: '#a78bfa',
+          backgroundColor: '#db2777',
         },
       ],
     };
@@ -167,7 +173,7 @@ export class DashboardComponent implements OnInit {
     maintainAspectRatio: false,
     scales: {
       y: {
-        beginAtZero: true,
+        beginAtZero: false,
         ticks: {
           callback: (value) => (typeof value === 'number' ? `${value} kg` : value),
         },
@@ -186,5 +192,22 @@ export class DashboardComponent implements OnInit {
   formatChartDate(dateStr: string): string {
     const d = new Date(dateStr + 'Z');
     return d.toLocaleDateString(undefined, { month: 'short', day: 'numeric' });
+  }
+
+  openResetDialog(): void {
+    const ref = this.dialog.open(ConfirmDialogComponent, {
+      data: {
+        title: 'Reset challenge',
+        message:
+          'Are you sure? This will delete all your daily logs, progress photos, and measurements, and restart the challenge from Day 1. This cannot be undone.',
+        confirmText: 'Reset',
+        cancelText: 'Cancel',
+        confirmWarn: true,
+      },
+      width: 'min(400px, 95vw)',
+    });
+    ref.afterClosed().subscribe((confirmed) => {
+      if (confirmed) this.store.resetChallenge();
+    });
   }
 }

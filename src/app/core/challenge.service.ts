@@ -11,6 +11,7 @@ import type { DayLogRow, MeasurementRow, HabitRow } from './supabase.types';
 import { ChallengeStore } from './challenge.store';
 import { AuthService } from './auth.service';
 import { SupabaseService } from './supabase.service';
+import { PROGRESS_PHOTOS_BUCKET } from './supabase.service';
 import { todayString, defaultHabits, getDefaultState } from './challenge.utils';
 
 const STORAGE_KEY = '75-hard-challenge';
@@ -154,6 +155,45 @@ export class ChallengeService {
   updateHabits(habits: HabitDefinition[]): void {
     this.store.updateHabits(habits);
     this.persist();
+  }
+
+  /**
+   * Resets the challenge to Day 1: clears all day logs, measurements, and progress photos;
+   * sets start date to today. Keeps habits. Requires confirmation in the UI.
+   */
+  async resetChallenge(): Promise<void> {
+    const userId = this.auth.user()?.id;
+    const today = todayString();
+    const currentHabits = this.store.getState().habits;
+
+    if (this.auth.isAuthenticated() && userId) {
+      const sb = this.supabase.supabase;
+      await sb
+        .from('challenge_settings')
+        .upsert(
+          { user_id: userId, start_date: today, updated_at: new Date().toISOString() },
+          { onConflict: 'user_id' },
+        );
+      await sb.from('day_logs').delete().eq('user_id', userId);
+      await sb.from('measurements').delete().eq('user_id', userId);
+      const { data: files } = await sb.storage.from(PROGRESS_PHOTOS_BUCKET).list(userId);
+      if (files?.length) {
+        const paths = files.map((f) => `${userId}/${f.name}`);
+        await sb.storage.from(PROGRESS_PHOTOS_BUCKET).remove(paths);
+      }
+    }
+
+    this.store.setState({
+      startDate: today,
+      dayLogs: {},
+      measurements: [],
+      habits: currentHabits.length > 0 ? currentHabits : defaultHabits(),
+    });
+    if (this.auth.isAuthenticated()) {
+      this.saveToSupabase();
+    } else {
+      saveStateToStorage(this.store.getState());
+    }
   }
 
   private persist(): void {

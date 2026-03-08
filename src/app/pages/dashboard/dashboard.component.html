@@ -136,6 +136,9 @@
     <a class="btn btn--primary" routerLink="/daily">Log today</a>
     <a class="btn btn--secondary" routerLink="/measurements">Measurements</a>
     <a class="btn btn--secondary" routerLink="/habits">Edit tasks</a>
+    <button type="button" class="btn btn--error dashboard__reset-btn" (click)="openResetDialog()">
+      Reset challenge
+    </button>
   </div>
 
   <app-photo-overlay [url]="photoOverlayUrl()" (close)="closePhotoOverlay()" />
