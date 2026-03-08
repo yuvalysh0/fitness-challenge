@@ -40,8 +40,7 @@ export class ProgressPhotosComponent {
     const list: ProgressPhotoEntry[] = [];
     for (const date of Object.keys(logs).sort()) {
       const log = logs[date] as DayLog;
-      const hasPhoto =
-        !!(log.photoPath || log.photoDataUrl) || !!(log.photoPathSide || log.photoDataUrlSide);
+      const hasPhoto = !!(log.photoPath || log.photoDataUrl);
       if (!hasPhoto) continue;
       list.push({
         date: log.date,
