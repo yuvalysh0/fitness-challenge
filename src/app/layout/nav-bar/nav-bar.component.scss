@@ -80,7 +80,7 @@ $z-drawer: 50;
   position: fixed;
   inset: 0;
   z-index: $z-backdrop;
-  background: rgba(0, 0, 0, 0.5);
+  background: var(--overlay-backdrop);
   animation: nav-bar-fade-in 0.2s ease-out;
 
   @media (min-width: 768px) {

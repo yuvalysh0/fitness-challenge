@@ -45,6 +45,43 @@ html {
   --shadow: 0 1px 3px rgba(0, 0, 0, 0.35);
   --shadow-lg: 0 4px 20px rgba(0, 0, 0, 0.4);
   --font: 'Outfit', system-ui, -apple-system, sans-serif;
+  --message-success-bg: rgba(34, 197, 94, 0.15);
+  --message-success-text: #86efac;
+  --message-error-bg: rgba(239, 68, 68, 0.15);
+  --message-error-text: #fca5a5;
+  --overlay-backdrop: rgba(0, 0, 0, 0.5);
+  --overlay-bg: rgba(0, 0, 0, 0.85);
+  --overlay-btn-bg: rgba(255, 255, 255, 0.15);
+  --overlay-btn-bg-hover: rgba(255, 255, 255, 0.25);
+  --overlay-btn-color: #ffffff;
+  --button-ripple: rgba(255, 255, 255, 0.2);
+}
+
+[data-theme='light'] {
+  --bg: #fff5f8;
+  --surface: #ffe8f0;
+  --card-bg: #ffffff;
+  --border: #fbcfe8;
+  --text: #4a044e;
+  --text-muted: #9d174d;
+  --accent: #db2777;
+  --accent-hover: #be185d;
+  --error: #be123c;
+  --error-hover: #9f1239;
+  --text-on-error: #ffffff;
+  --text-on-accent: #ffffff;
+  --message-success-bg: rgba(34, 197, 94, 0.15);
+  --message-success-text: #15803d;
+  --message-error-bg: rgba(239, 68, 68, 0.15);
+  --message-error-text: #b91c1c;
+  --overlay-backdrop: rgba(0, 0, 0, 0.5);
+  --overlay-bg: rgba(0, 0, 0, 0.85);
+  --overlay-btn-bg: rgba(255, 255, 255, 0.15);
+  --overlay-btn-bg-hover: rgba(255, 255, 255, 0.25);
+  --overlay-btn-color: #ffffff;
+  --button-ripple: rgba(0, 0, 0, 0.08);
+  --shadow: 0 1px 3px rgba(219, 39, 119, 0.12);
+  --shadow-lg: 0 4px 20px rgba(219, 39, 119, 0.15);
 }
 
 *,
@@ -62,6 +99,10 @@ body {
   line-height: 1.5;
   color: var(--text);
   background: var(--bg);
+}
+
+[data-theme='light'] body {
+  color-scheme: light;
 }
 
 input,

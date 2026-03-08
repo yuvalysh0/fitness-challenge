@@ -6,7 +6,7 @@
   align-items: center;
   justify-content: center;
   padding: 2rem;
-  background: rgba(0, 0, 0, 0.85);
+  background: var(--overlay-bg);
   cursor: pointer;
   animation: photo-overlay-in 0.2s ease-out;
 }
@@ -31,13 +31,13 @@
   padding: 0;
   border: none;
   border-radius: var(--radius-sm);
-  background: rgba(255, 255, 255, 0.15);
-  color: #fff;
+  background: var(--overlay-btn-bg);
+  color: var(--overlay-btn-color);
   cursor: pointer;
   transition: background-color 0.15s;
 
   &:hover {
-    background: rgba(255, 255, 255, 0.25);
+    background: var(--overlay-btn-bg-hover);
   }
 
   .material-icons {

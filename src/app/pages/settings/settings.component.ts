@@ -5,7 +5,14 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
 import { AuthService } from '../../core/auth.service';
+import { ThemeService, type ThemePreference } from '../../core/theme.service';
 import { PhotoOverlayComponent } from '../../shared/photo-overlay/photo-overlay.component';
+
+const THEME_OPTIONS: { value: ThemePreference; label: string }[] = [
+  { value: 'dark', label: 'Dark' },
+  { value: 'light', label: 'Light' },
+  { value: 'system', label: 'System' },
+];
 
 @Component({
   selector: 'app-settings',
@@ -23,6 +30,8 @@ import { PhotoOverlayComponent } from '../../shared/photo-overlay/photo-overlay.
 })
 export class SettingsComponent {
   private readonly auth = inject(AuthService);
+  readonly themeService = inject(ThemeService);
+  readonly themeOptions = THEME_OPTIONS;
 
   readonly fullName = signal('');
   readonly avatarFile = signal<File | null>(null);
@@ -56,6 +65,10 @@ export class SettingsComponent {
     const file = input.files?.[0];
     this.avatarFile.set(file && file.type.startsWith('image/') ? file : null);
     this.message.set(null);
+  }
+
+  setTheme(value: ThemePreference): void {
+    this.themeService.setTheme(value);
   }
 
   async save(): Promise<void> {

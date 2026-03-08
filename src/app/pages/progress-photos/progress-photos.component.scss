@@ -4,11 +4,11 @@
   }
 
   &__subtitle {
-    color: var(--mat-sys-on-surface-variant);
+    color: var(--text-muted);
   }
 
   &__empty {
-    color: var(--mat-sys-on-surface-variant);
+    color: var(--text-muted);
   }
 
   &__grid {
@@ -43,7 +43,7 @@
   &__image-wrap {
     aspect-ratio: 3 / 4;
     overflow: hidden;
-    background: var(--mat-sys-surface-container-high);
+    background: var(--surface);
 
     &--clickable {
       cursor: pointer;
@@ -80,6 +80,6 @@
 
   &__weight {
     font-size: 0.875rem;
-    color: var(--mat-sys-on-surface-variant);
+    color: var(--text-muted);
   }
 }
