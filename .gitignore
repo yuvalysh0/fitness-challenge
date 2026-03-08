@@ -47,3 +47,6 @@ src/environments/environment.development.local.ts
 src/environments/environment.local.ts
 .env
 .env.local
+
+# Supabase CLI local state (project ref, versions, etc.)
+supabase/.temp/
