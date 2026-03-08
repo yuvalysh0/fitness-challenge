@@ -7,40 +7,41 @@ html {
     (
       color: (
         theme-type: dark,
-        primary: mat.$violet-palette,
-        tertiary: mat.$violet-palette,
+        primary: mat.$rose-palette,
+        tertiary: mat.$rose-palette,
       ),
       typography: null,
       density: 0,
     )
   );
   // Flatten Material components to match custom UI
-  --mat-button-text-container-shape: 10px;
-  --mat-button-filled-container-shape: 10px;
-  --mat-button-outlined-container-shape: 10px;
-  --mat-button-tonal-container-shape: 10px;
-  --mat-icon-button-container-shape: 10px;
+  --mat-button-text-container-shape: 16px;
+  --mat-button-filled-container-shape: 14px;
+  --mat-button-outlined-container-shape: 16px;
+  --mat-button-tonal-container-shape: 16px;
+  --mat-icon-button-container-shape: 16px;
   --mat-card-elevated-container-elevation: none;
   --mat-card-elevated-container-color: var(--card-bg);
   --mat-card-filled-container-color: var(--card-bg);
   --mat-card-outlined-container-color: var(--card-bg);
 }
 
-// —— Design system (modern, non-Material) ——
+// —— Design system (dark, modern, girly & vibrant) ——
 :root {
-  --bg: #0c0f14;
-  --surface: #141922;
-  --card-bg: #1a1f2e;
-  --border: #2a3142;
-  --text: #f1f3f6;
-  --text-muted: #8b95a8;
-  --accent: #a78bfa;
-  --accent-hover: #c4b5fd;
-  --radius: 12px;
-  --radius-sm: 8px;
-  --shadow: 0 1px 3px rgba(0, 0, 0, 0.25);
-  --shadow-lg: 0 4px 20px rgba(0, 0, 0, 0.35);
-  --font: 'Inter', system-ui, -apple-system, sans-serif;
+  --bg: #0f0a0c;
+  --surface: #1a1216;
+  --card-bg: #24191e;
+  --border: #3d2a33;
+  --text: #fce7f3;
+  --text-muted: #e9a4c4;
+  --accent: #f472b6;
+  --accent-hover: #fb7185;
+  --text-on-accent: #1a1216;
+  --radius: 16px;
+  --radius-sm: 12px;
+  --shadow: 0 1px 3px rgba(0, 0, 0, 0.35);
+  --shadow-lg: 0 4px 20px rgba(0, 0, 0, 0.4);
+  --font: 'Outfit', system-ui, -apple-system, sans-serif;
 }
 
 *,
@@ -98,7 +99,7 @@ button {
 
   &--primary {
     background: var(--accent);
-    color: #0c0f14;
+    color: var(--text-on-accent);
 
     &:hover {
       background: var(--accent-hover);
@@ -147,9 +148,8 @@ button {
   }
 
   &--active {
-    color: var(--text);
+    color: var(--text-on-accent);
     background: var(--accent);
-    color: #0c0f14;
 
     &:hover {
       background: var(--accent-hover);

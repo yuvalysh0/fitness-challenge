@@ -133,9 +133,8 @@ $z-drawer: 50;
   }
 
   &--active {
-    color: var(--text);
+    color: var(--text-on-accent);
     background: var(--accent);
-    color: #0c0f14;
 
     &:hover {
       background: var(--accent-hover);
