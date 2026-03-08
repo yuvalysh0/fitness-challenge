@@ -1,4 +1,32 @@
 .dashboard {
+  &__quote-card {
+    padding: 1rem 1.25rem;
+  }
+
+  &__quote-title {
+    font-size: 0.6875rem;
+    letter-spacing: 0.05em;
+  }
+
+  &__quote-block {
+    border-left: 3px solid var(--accent);
+    padding-left: 0.75rem;
+  }
+
+  &__quote-text {
+    font-size: 0.9375rem;
+    line-height: 1.5;
+  }
+
+  &__quote-author {
+    display: block;
+  }
+
+  &__quote-loading,
+  &__quote-error {
+    font-style: italic;
+  }
+
   &__progress-bar::ng-deep .mdc-linear-progress__bar-inner {
     border-radius: 9999px;
   }

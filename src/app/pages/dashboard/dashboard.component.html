@@ -6,6 +6,28 @@
     </p>
   </header>
 
+  @if (quoteService.quoteOfTheDay() || quoteService.quoteLoading() || quoteService.quoteError()) {
+    <div class="card dashboard__quote-card mb-6">
+      <h2
+        class="dashboard__quote-title m-0 mb-2 text-sm font-semibold uppercase tracking-wide text-[var(--text-muted)]"
+      >
+        Quote of the day
+      </h2>
+      @if (quoteService.quoteLoading()) {
+        <p class="dashboard__quote-loading m-0 text-sm text-[var(--text-muted)]">Loading…</p>
+      } @else if (quoteService.quoteError(); as err) {
+        <p class="dashboard__quote-error m-0 text-sm text-[var(--text-muted)]">{{ err }}</p>
+      } @else if (quoteService.quoteOfTheDay(); as q) {
+        <blockquote class="dashboard__quote-block m-0">
+          <p class="dashboard__quote-text m-0 mb-2 text-[var(--text)]">"{{ q.quote }}"</p>
+          <cite class="dashboard__quote-author not-italic text-sm text-[var(--text-muted)]"
+            >— {{ q.author }}{{ q.work ? ', ' + q.work : '' }}</cite
+          >
+        </blockquote>
+      }
+    </div>
+  }
+
   <div class="card dashboard__progress-card mb-6">
     <mat-progress-bar
       mode="determinate"

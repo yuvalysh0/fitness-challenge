@@ -7,7 +7,7 @@
 1. Create a project at [supabase.com](https://supabase.com).
 2. In **Project Settings → API**, copy the **Project URL** and **anon public** key.
 3. **Do not put real keys in the committed env files.** Use local files (gitignored):
-   - **Angular app:** Copy `src/environments/environment.example.ts` to `src/environments/environment.development.local.ts`, fill in `supabaseUrl` and `supabaseAnonKey`, then run: `ng serve -c development-local`
+   - **Angular app:** Copy `src/environments/environment.example.ts` to `src/environments/environment.development.local.ts`, fill in `supabaseUrl` and `supabaseAnonKey` (and optionally `apiNinjasKey` for the dashboard quote of the day from [API Ninjas](https://api-ninjas.com/api/quotes)), then run: `ng serve -c development-local`
    - **Seed script / CLI:** Copy `.env.example` to `.env` in the project root and set `SUPABASE_URL` and `SUPABASE_SERVICE_ROLE_KEY` (and optionally `MOCK_USER_EMAIL` / `MOCK_USER_PASSWORD`). Then `npm run seed:mock` will read from `.env`.
 4. In the Supabase **SQL Editor**, run the migrations in `supabase/migrations/` to create tables and RLS.
 5. (Optional) In **Storage**, create a bucket `progress-photos` for daily progress photos; add RLS so users can only access their own folder.

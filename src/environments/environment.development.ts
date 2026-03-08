@@ -3,4 +3,5 @@ export const environment = {
   production: false,
   supabaseUrl: '',
   supabaseAnonKey: '',
+  apiNinjasKey: '',
 } as const;

@@ -1,11 +1,12 @@
 import { DecimalPipe } from '@angular/common';
-import { Component, inject, computed } from '@angular/core';
+import { Component, inject, computed, OnInit } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { BaseChartDirective } from 'ng2-charts';
 import type { ChartConfiguration } from 'chart.js';
 import { ChallengeService } from '../../core/challenge.service';
+import { QuoteService } from '../../core/quote.service';
 import type { DayLog } from '../../models';
 import { ProgressReferenceCardComponent } from './progress-reference-card/progress-reference-card.component';
 import { CHALLENGE_DAYS } from '../../models';
@@ -51,8 +52,13 @@ function dayNumberFromStart(startDate: string, logDate: string): number {
   templateUrl: './dashboard.component.html',
   styleUrl: './dashboard.component.scss',
 })
-export class DashboardComponent {
+export class DashboardComponent implements OnInit {
   private readonly store = inject(ChallengeService);
+  readonly quoteService = inject(QuoteService);
+
+  ngOnInit(): void {
+    this.quoteService.fetchQuoteOfTheDay();
+  }
 
   readonly currentDay = this.store.currentDay;
   readonly progressPercent = this.store.progressPercent;
