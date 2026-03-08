@@ -1,0 +1,56 @@
+<div class="nav-bar">
+  <!-- Hamburger: mobile only -->
+  <button
+    type="button"
+    class="nav-bar__hamburger"
+    aria-label="Open menu"
+    aria-expanded="menuOpen()"
+    (click)="toggleMenu()"
+  >
+    <span class="material-icons" aria-hidden="true">{{ menuOpen() ? 'close' : 'menu' }}</span>
+  </button>
+
+  <!-- Desktop nav links -->
+  <nav class="nav-bar__links" aria-label="Main">
+    @for (item of items; track item.path) {
+      <a [routerLink]="item.path" class="nav-link" [class.nav-link--active]="isActive(item.path)">
+        <span class="material-icons nav-bar__icon" aria-hidden="true">{{ item.icon }}</span>
+        {{ item.label }}
+      </a>
+    }
+  </nav>
+
+  <span class="nav-bar__spacer"></span>
+
+  <!-- Sign out: desktop only (mobile is in overlay) -->
+  <button type="button" class="nav-bar__sign-out btn btn--ghost" (click)="signOut()">
+    <span class="material-icons nav-bar__icon" aria-hidden="true">logout</span>
+    Sign out
+  </button>
+</div>
+
+<!-- Mobile overlay menu -->
+@if (menuOpen()) {
+  <div class="nav-bar__backdrop" role="presentation" (click)="closeMenu()"></div>
+  <div class="nav-bar__drawer" role="dialog" aria-label="Menu">
+    <nav class="nav-bar__drawer-nav">
+      @for (item of items; track item.path) {
+        <a
+          [routerLink]="item.path"
+          class="nav-bar__drawer-link"
+          [class.nav-bar__drawer-link--active]="isActive(item.path)"
+          (click)="closeMenu()"
+        >
+          <span class="material-icons nav-bar__drawer-icon" aria-hidden="true">{{
+            item.icon
+          }}</span>
+          {{ item.label }}
+        </a>
+      }
+    </nav>
+    <button type="button" class="nav-bar__drawer-sign-out btn btn--ghost" (click)="signOut()">
+      <span class="material-icons nav-bar__drawer-icon" aria-hidden="true">logout</span>
+      Sign out
+    </button>
+  </div>
+}
