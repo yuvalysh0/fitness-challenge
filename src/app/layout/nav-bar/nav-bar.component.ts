@@ -14,6 +14,7 @@ const NAV_ITEMS: NavItem[] = [
   { path: '/progress', label: 'Progress', icon: 'photo_library' },
   { path: '/measurements', label: 'Measurements', icon: 'straighten' },
   { path: '/habits', label: 'Tasks', icon: 'check_circle' },
+  { path: '/settings', label: 'Settings', icon: 'settings' },
 ];
 
 @Component({

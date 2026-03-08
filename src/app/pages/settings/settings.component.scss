@@ -1,0 +1,111 @@
+.settings {
+  &__title {
+    font-size: 1.5rem;
+  }
+
+  &__subtitle {
+    font-size: 0.875rem;
+  }
+
+  &__message {
+    &--success {
+      background: rgba(34, 197, 94, 0.15);
+      color: #86efac;
+    }
+
+    &--error {
+      background: rgba(239, 68, 68, 0.15);
+      color: #fca5a5;
+    }
+  }
+
+  &__avatar-section {
+    margin-bottom: 1.5rem;
+  }
+
+  &__avatar-label {
+    display: block;
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: var(--text-muted);
+    margin-bottom: 0.5rem;
+  }
+
+  &__avatar-row {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    flex-wrap: wrap;
+  }
+
+  &__avatar-preview,
+  &__avatar-placeholder {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    object-fit: cover;
+    flex-shrink: 0;
+  }
+
+  &__avatar-preview--clickable {
+    cursor: pointer;
+    transition: opacity 0.15s;
+
+    &:hover {
+      opacity: 0.9;
+    }
+  }
+
+  &__avatar-placeholder {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--surface);
+    border: 1px solid var(--border);
+  }
+
+  &__avatar-icon {
+    font-size: 2.5rem;
+    color: var(--text-muted);
+  }
+
+  &__avatar-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+  }
+
+  &__file-label {
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: var(--accent);
+    cursor: pointer;
+    text-decoration: underline;
+
+    &:hover {
+      color: var(--accent-hover);
+    }
+  }
+
+  &__file-input {
+    position: absolute;
+    width: 0.1px;
+    height: 0.1px;
+    opacity: 0;
+    overflow: hidden;
+    z-index: -1;
+  }
+
+  &__file-name {
+    font-size: 0.8125rem;
+    color: var(--text-muted);
+  }
+
+  &__name-field {
+    margin-bottom: 1rem;
+  }
+
+  &__actions {
+    margin-top: 1rem;
+  }
+}

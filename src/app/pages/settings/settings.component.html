@@ -1,0 +1,77 @@
+<div class="settings">
+  <h1 class="settings__title m-0 mb-2 text-2xl font-bold">Settings</h1>
+  <p class="settings__subtitle m-0 mb-6 text-sm text-[var(--text-muted)]">
+    Update your display name and profile photo.
+  </p>
+
+  <mat-card class="settings__card rounded-xl p-5 shadow-sm">
+    <mat-card-header>
+      <mat-card-title class="text-base font-semibold text-[var(--text-muted)]"
+        >Profile</mat-card-title
+      >
+    </mat-card-header>
+    <mat-card-content>
+      @if (message(); as msg) {
+        <p
+          class="settings__message m-0 mb-4 mt-2 rounded-lg px-3 py-2 text-sm"
+          [class.settings__message--success]="msg.type === 'success'"
+          [class.settings__message--error]="msg.type === 'error'"
+          role="alert"
+        >
+          {{ msg.text }}
+        </p>
+      }
+
+      <div class="settings__avatar-section mb-6">
+        <label class="settings__avatar-label">Profile photo</label>
+        <div class="settings__avatar-row">
+          @if (avatarUrl(); as url) {
+            <img
+              [src]="url"
+              alt="Profile photo"
+              class="settings__avatar-preview settings__avatar-preview--clickable"
+              (click)="openPhotoOverlay(url)"
+            />
+          } @else {
+            <div class="settings__avatar-placeholder">
+              <span class="material-icons settings__avatar-icon" aria-hidden="true">person</span>
+            </div>
+          }
+          <div class="settings__avatar-actions">
+            <label class="settings__file-label">
+              <input
+                type="file"
+                accept="image/*"
+                class="settings__file-input"
+                (change)="onAvatarChange($event)"
+              />
+              {{ avatarFile() ? 'Change photo' : 'Upload photo' }}
+            </label>
+            @if (avatarFile(); as file) {
+              <span class="settings__file-name">{{ file.name }}</span>
+            }
+          </div>
+        </div>
+      </div>
+
+      <mat-form-field appearance="outline" class="settings__name-field block w-full">
+        <mat-label>Display name</mat-label>
+        <input
+          matInput
+          type="text"
+          [ngModel]="fullName()"
+          (ngModelChange)="fullName.set($event)"
+          placeholder="How we greet you on the dashboard"
+        />
+      </mat-form-field>
+
+      <div class="settings__actions">
+        <button class="btn btn--primary" type="button" [disabled]="loading()" (click)="save()">
+          {{ loading() ? 'Saving…' : 'Save' }}
+        </button>
+      </div>
+    </mat-card-content>
+  </mat-card>
+
+  <app-photo-overlay [url]="photoOverlayUrl()" (close)="closePhotoOverlay()" />
+</div>

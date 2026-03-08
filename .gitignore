@@ -50,3 +50,6 @@ src/environments/environment.local.ts
 
 # Supabase CLI local state (project ref, versions, etc.)
 supabase/.temp/
+
+# Local planning (roadmap)
+docs/ROADMAP.md

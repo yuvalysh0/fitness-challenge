@@ -100,6 +100,46 @@ export class AuthService {
     this.session.set(null);
   }
 
+  /**
+   * Updates the current user's profile (display name and/or avatar).
+   * Call after signup or from a settings page.
+   */
+  async updateProfile(options: {
+    fullName?: string;
+    avatarFile?: File;
+  }): Promise<{ error: Error | null }> {
+    const userId = this.user()?.id;
+    if (!userId) return { error: new Error('Not authenticated') };
+
+    const sb = this.supabase.supabase;
+    if (options.avatarFile != null) {
+      const ext = options.avatarFile.name.split('.').pop()?.toLowerCase() || 'jpg';
+      const path = `${userId}/avatar.${ext}`;
+      const { error: uploadError } = await sb.storage
+        .from(AVATARS_BUCKET)
+        .upload(path, options.avatarFile, {
+          upsert: true,
+        });
+      if (uploadError) return { error: uploadError };
+      await sb
+        .from('profiles')
+        .update({ avatar_path: path, updated_at: new Date().toISOString() })
+        .eq('id', userId);
+    }
+    if (options.fullName !== undefined) {
+      const { error: updateError } = await sb
+        .from('profiles')
+        .update({
+          full_name: options.fullName.trim(),
+          updated_at: new Date().toISOString(),
+        })
+        .eq('id', userId);
+      if (updateError) return { error: updateError };
+    }
+    await this.loadProfile(userId);
+    return { error: null };
+  }
+
   /** Display name for greeting: profile name, or email prefix, or fallback. */
   displayName(): string {
     const p = this.profileState();
