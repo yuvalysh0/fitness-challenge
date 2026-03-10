@@ -10,6 +10,11 @@
     <span class="material-icons" aria-hidden="true">{{ menuOpen() ? 'close' : 'menu' }}</span>
   </button>
 
+  <a routerLink="/" class="nav-bar__brand">
+    <span class="material-icons nav-bar__brand-icon" aria-hidden="true">fitness_center</span>
+    <span class="nav-bar__brand-text">Fitness Challenge</span>
+  </a>
+
   <!-- Desktop nav links -->
   <nav class="nav-bar__links" aria-label="Main">
     @for (item of items; track item.label) {

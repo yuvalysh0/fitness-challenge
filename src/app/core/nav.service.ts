@@ -15,7 +15,6 @@ export interface NavItem {
 }
 
 const NAV_ITEMS: NavItem[] = [
-  { path: '/', label: 'Dashboard', icon: 'dashboard' },
   { path: '/daily', label: 'Today', icon: 'today' },
   {
     label: 'Progress',
