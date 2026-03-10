@@ -1,0 +1,143 @@
+<div class="onboarding flex min-h-screen items-center justify-center p-4">
+  <mat-card class="onboarding__card w-full max-w-lg rounded-xl p-6 shadow-lg">
+    <mat-card-header class="onboarding__header mb-6">
+      <mat-card-title class="onboarding__title text-2xl font-bold"
+        >Set up your program</mat-card-title
+      >
+      <mat-card-subtitle class="onboarding__subtitle text-[var(--text-muted)]">
+        @switch (step()) {
+          @case (1) {
+            Tell us a bit about you (for your TDEE and goals)
+          }
+          @case (2) {
+            When do you want to finish?
+          }
+        }
+      </mat-card-subtitle>
+    </mat-card-header>
+    <mat-card-content>
+      @if (errorMessage(); as msg) {
+        <p
+          class="onboarding__error m-0 mb-4 rounded-lg bg-red-950/60 px-3 py-2 text-sm text-red-300"
+          role="alert"
+        >
+          {{ msg }}
+        </p>
+      }
+
+      @if (step() === 1) {
+        <form class="onboarding__form flex flex-col gap-4" [formGroup]="tdeeForm">
+          <mat-form-field appearance="outline" class="w-full">
+            <mat-label>Date of birth</mat-label>
+            <input matInput [matDatepicker]="picker" formControlName="birthDate" />
+            <mat-datepicker-toggle matIconSuffix [for]="picker" />
+            <mat-datepicker #picker />
+            @if (tdeeForm.get('birthDate')?.invalid && tdeeForm.get('birthDate')?.touched) {
+              <mat-error>Required</mat-error>
+            }
+          </mat-form-field>
+          <mat-form-field appearance="outline" class="w-full">
+            <mat-label>Sex</mat-label>
+            <mat-select formControlName="sex">
+              <mat-option value="male">Male</mat-option>
+              <mat-option value="female">Female</mat-option>
+              <mat-option value="other">Other</mat-option>
+            </mat-select>
+          </mat-form-field>
+          <mat-form-field appearance="outline" class="w-full">
+            <mat-label>Height (cm)</mat-label>
+            <input matInput type="number" formControlName="heightCm" placeholder="170" />
+            @if (tdeeForm.get('heightCm')?.invalid && tdeeForm.get('heightCm')?.touched) {
+              <mat-error>Between 100 and 250</mat-error>
+            }
+          </mat-form-field>
+          <mat-form-field appearance="outline" class="w-full">
+            <mat-label>Current weight (kg)</mat-label>
+            <input matInput type="number" formControlName="weightKg" placeholder="70" />
+            @if (tdeeForm.get('weightKg')?.invalid && tdeeForm.get('weightKg')?.touched) {
+              <mat-error>Between 30 and 300</mat-error>
+            }
+          </mat-form-field>
+          <mat-form-field appearance="outline" class="w-full">
+            <mat-label>Activity level</mat-label>
+            <mat-select formControlName="activityLevel">
+              @for (opt of activityOptions; track opt.value) {
+                <mat-option [value]="opt.value">{{ opt.label }}</mat-option>
+              }
+            </mat-select>
+          </mat-form-field>
+          <mat-form-field appearance="outline" class="w-full">
+            <mat-label>Goal weight (kg, optional)</mat-label>
+            <input matInput type="number" formControlName="goalWeightKg" placeholder="e.g. 65" />
+          </mat-form-field>
+          @if (tdeeResult(); as result) {
+            <p class="onboarding__tdee-hint m-0 text-sm text-[var(--text-muted)]">
+              Your estimated TDEE:
+              <strong class="text-[var(--accent)]">{{ result }} kcal/day</strong>
+            </p>
+          }
+        </form>
+      }
+
+      @if (step() === 2) {
+        <form class="onboarding__form flex flex-col gap-4" [formGroup]="programForm">
+          <mat-form-field appearance="outline" class="w-full">
+            <mat-label>Program end date</mat-label>
+            <input
+              matInput
+              [matDatepicker]="endPicker"
+              formControlName="programEndDate"
+              [min]="minEndDate"
+            />
+            <mat-datepicker-toggle matIconSuffix [for]="endPicker" />
+            <mat-datepicker #endPicker />
+            <mat-hint>e.g. vacation date or when you want to hit your goal</mat-hint>
+            @if (
+              programForm.get('programEndDate')?.invalid &&
+              programForm.get('programEndDate')?.touched
+            ) {
+              <mat-error>Pick an end date</mat-error>
+            }
+          </mat-form-field>
+          @if (programDays(); as days) {
+            <p class="onboarding__days-hint m-0 text-sm text-[var(--text-muted)]">
+              Your program will be <strong class="text-[var(--accent)]">{{ days }} days</strong>.
+            </p>
+          }
+        </form>
+      }
+
+      <div class="onboarding__actions flex flex-wrap gap-2 mt-6">
+        @if (step() === 2) {
+          <button type="button" class="btn btn--ghost" (click)="prevStep()" [disabled]="loading()">
+            Back
+          </button>
+        }
+        @if (step() === 1) {
+          <button
+            type="button"
+            class="btn btn--primary"
+            (click)="nextStep()"
+            [disabled]="tdeeForm.invalid"
+          >
+            Next
+          </button>
+        } @else {
+          <button
+            type="button"
+            class="btn btn--primary"
+            (click)="submit()"
+            [disabled]="programForm.invalid || loading()"
+          >
+            @if (loading()) {
+              <mat-spinner diameter="24" class="inline-block" />
+              <span class="ml-2">Starting…</span>
+            } @else {
+              Start my program
+            }
+          </button>
+        }
+      </div>
+    </mat-card-content>
+  </mat-card>
+</div>

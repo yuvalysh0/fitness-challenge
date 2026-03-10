@@ -48,10 +48,12 @@ export interface HabitDefinition {
 
 export interface ChallengeState {
   startDate: DateString;
+  /** If set, program runs until this date; otherwise use default (e.g. 75 days from start). */
+  endDate: DateString | null;
   dayLogs: Record<DateString, DayLog>;
   measurements: MeasurementSet[];
   habits: HabitDefinition[];
 }
 
-/** 75 Hard: 75-day mental toughness program (Andy Frisella). Miss a day = restart from Day 1. */
-export const CHALLENGE_DAYS = 75;
+/** Default program length when no custom end_date is set (e.g. 75 Hard). */
+export const DEFAULT_CHALLENGE_DAYS = 75;

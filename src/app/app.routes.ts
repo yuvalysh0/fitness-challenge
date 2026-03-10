@@ -8,6 +8,12 @@ export const routes: Routes = [
     loadComponent: () => import('./pages/auth/auth.component').then((m) => m.AuthComponent),
   },
   {
+    path: 'onboarding',
+    loadComponent: () =>
+      import('./pages/onboarding/onboarding.component').then((m) => m.OnboardingComponent),
+    canActivate: [authGuard],
+  },
+  {
     path: '',
     component: LayoutComponent,
     canActivate: [authGuard],

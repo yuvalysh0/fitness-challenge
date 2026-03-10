@@ -6,27 +6,35 @@ import {
   HabitDefinition,
   FoodEntry,
   DateString,
-  CHALLENGE_DAYS,
+  DEFAULT_CHALLENGE_DAYS,
 } from '../models';
-import { getDefaultState } from './challenge.utils';
+import { getDefaultState, daysBetween } from './challenge.utils';
 
 @Injectable({ providedIn: 'root' })
 export class ChallengeStore {
   private readonly state = signal<ChallengeState>(getDefaultState());
 
   readonly startDate = computed(() => this.state().startDate);
+  readonly endDate = computed(() => this.state().endDate);
   readonly dayLogs = computed(() => this.state().dayLogs);
   readonly measurements = computed(() => this.state().measurements);
   readonly habits = computed(() => this.state().habits);
+
+  readonly totalDays = computed(() => {
+    const s = this.state();
+    if (s.endDate) return daysBetween(s.startDate, s.endDate);
+    return DEFAULT_CHALLENGE_DAYS;
+  });
 
   readonly currentDay = computed(() => {
     const start = new Date(this.state().startDate).getTime();
     const now = Date.now();
     const day = Math.floor((now - start) / (24 * 60 * 60 * 1000)) + 1;
-    return Math.max(1, Math.min(day, CHALLENGE_DAYS));
+    const total = this.totalDays();
+    return Math.max(1, Math.min(day, total));
   });
 
-  readonly progressPercent = computed(() => (this.currentDay() / CHALLENGE_DAYS) * 100);
+  readonly progressPercent = computed(() => (this.currentDay() / this.totalDays()) * 100);
 
   getState(): ChallengeState {
     return this.state();
@@ -57,6 +65,14 @@ export class ChallengeStore {
 
   setStartDate(date: DateString): void {
     this.state.update((s) => ({ ...s, startDate: date }));
+  }
+
+  setEndDate(date: DateString | null): void {
+    this.state.update((s) => ({ ...s, endDate: date }));
+  }
+
+  setStartAndEndDate(start: DateString, end: DateString | null): void {
+    this.state.update((s) => ({ ...s, startDate: start, endDate: end }));
   }
 
   updateDayLog(date: DateString, patch: Partial<DayLog>): void {

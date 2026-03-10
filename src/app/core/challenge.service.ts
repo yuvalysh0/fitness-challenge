@@ -20,9 +20,15 @@ function loadStateFromStorage(): ChallengeState {
   try {
     const raw = localStorage.getItem(STORAGE_KEY);
     if (raw) {
-      const parsed = JSON.parse(raw) as ChallengeState;
+      const parsed = JSON.parse(raw) as Partial<ChallengeState>;
+      const defaults = getDefaultState();
       return {
+        ...defaults,
         ...parsed,
+        startDate: parsed.startDate ?? defaults.startDate,
+        endDate: parsed.endDate ?? defaults.endDate,
+        dayLogs: parsed.dayLogs ?? defaults.dayLogs,
+        measurements: parsed.measurements ?? defaults.measurements,
         habits: parsed.habits?.length ? parsed.habits : defaultHabits(),
       };
     }
@@ -102,6 +108,8 @@ export class ChallengeService {
 
   // Read API (passthrough to store)
   readonly startDate = this.store.startDate;
+  readonly endDate = this.store.endDate;
+  readonly totalDays = this.store.totalDays;
   readonly dayLogs = this.store.dayLogs;
   readonly measurements = this.store.measurements;
   readonly habits = this.store.habits;
@@ -119,6 +127,11 @@ export class ChallengeService {
   // Write API (store + persist)
   setStartDate(date: DateString): void {
     this.store.setStartDate(date);
+    this.persist();
+  }
+
+  setStartAndEndDate(start: DateString, end: DateString | null): void {
+    this.store.setStartAndEndDate(start, end);
     this.persist();
   }
 
@@ -176,12 +189,15 @@ export class ChallengeService {
 
     if (this.auth.isAuthenticated() && userId) {
       const sb = this.supabase.supabase;
-      await sb
-        .from('challenge_settings')
-        .upsert(
-          { user_id: userId, start_date: today, updated_at: new Date().toISOString() },
-          { onConflict: 'user_id' },
-        );
+      await sb.from('challenge_settings').upsert(
+        {
+          user_id: userId,
+          start_date: today,
+          end_date: this.store.endDate(),
+          updated_at: new Date().toISOString(),
+        },
+        { onConflict: 'user_id' },
+      );
       await sb.from('day_logs').delete().eq('user_id', userId);
       await sb.from('measurements').delete().eq('user_id', userId);
       const { data: files } = await sb.storage.from(PROGRESS_PHOTOS_BUCKET).list(userId);
@@ -193,6 +209,7 @@ export class ChallengeService {
 
     this.store.setState({
       startDate: today,
+      endDate: null,
       dayLogs: {},
       measurements: [],
       habits: currentHabits.length > 0 ? currentHabits : defaultHabits(),
@@ -219,7 +236,11 @@ export class ChallengeService {
     const sb = this.supabase.supabase;
 
     const [settingsRes, dayLogsRes, measurementsRes, habitsRes] = await Promise.all([
-      sb.from('challenge_settings').select('start_date').eq('user_id', userId).maybeSingle(),
+      sb
+        .from('challenge_settings')
+        .select('start_date, end_date')
+        .eq('user_id', userId)
+        .maybeSingle(),
       sb.from('day_logs').select('*').eq('user_id', userId),
       sb.from('measurements').select('*').eq('user_id', userId).order('date', { ascending: false }),
       sb.from('habits').select('*').eq('user_id', userId).order('order', { ascending: true }),
@@ -230,6 +251,7 @@ export class ChallengeService {
     }
 
     const startDate = (settingsRes.data?.start_date as string) ?? todayString();
+    const endDate = (settingsRes.data?.end_date as string | null) ?? null;
     const dayLogs: Record<DateString, DayLog> = {};
     if (dayLogsRes.data?.length) {
       for (const row of dayLogsRes.data as DayLogRow[]) {
@@ -245,6 +267,7 @@ export class ChallengeService {
 
     this.store.setState({
       startDate,
+      endDate,
       dayLogs,
       measurements,
       habits,
@@ -265,7 +288,12 @@ export class ChallengeService {
 
     sb.from('challenge_settings')
       .upsert(
-        { user_id: userId, start_date: s.startDate, updated_at: new Date().toISOString() },
+        {
+          user_id: userId,
+          start_date: s.startDate,
+          end_date: s.endDate,
+          updated_at: new Date().toISOString(),
+        } as { user_id: string; start_date: string; end_date: string | null; updated_at: string },
         { onConflict: 'user_id' },
       )
       .then(() => {});

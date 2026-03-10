@@ -1,7 +1,7 @@
-/** Development. Copy to environment.development.local.ts with real values (that file is gitignored). */
+import { envConfig } from './environment.config';
+
+/** Development. Uses same Supabase config as production (see environment.config.ts). */
 export const environment = {
+  ...envConfig,
   production: false,
-  supabaseUrl: '',
-  supabaseAnonKey: '',
-  apiNinjasKey: '',
 } as const;

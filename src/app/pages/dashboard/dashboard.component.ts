@@ -14,8 +14,8 @@ import type { DayLog } from '../../models';
 import { ProgressReferenceCardComponent } from './progress-reference-card/progress-reference-card.component';
 import { PhotoOverlayComponent } from '../../shared/photo-overlay/photo-overlay.component';
 import { ConfirmDialogComponent } from '../../shared/confirm-dialog/confirm-dialog.component';
-import { CHALLENGE_DAYS } from '../../models';
 import { todayString } from '../../core/challenge.utils';
+
 export interface WeightPoint {
   date: string;
   dayNumber: number;
@@ -32,11 +32,11 @@ export interface PhotoRefEntry {
   photoDataUrlSide: string | undefined;
 }
 
-function dayNumberFromStart(startDate: string, logDate: string): number {
+function dayNumberFromStart(startDate: string, logDate: string, totalDays: number): number {
   const start = new Date(startDate).getTime();
   const log = new Date(logDate).getTime();
   const day = Math.floor((log - start) / (24 * 60 * 60 * 1000)) + 1;
-  return Math.max(1, Math.min(day, CHALLENGE_DAYS));
+  return Math.max(1, Math.min(day, totalDays));
 }
 
 @Component({
@@ -70,9 +70,9 @@ export class DashboardComponent implements OnInit {
   readonly progressPercent = this.store.progressPercent;
   readonly startDate = this.store.startDate;
   readonly dayLogs = this.store.dayLogs;
-  readonly totalDays = CHALLENGE_DAYS;
+  readonly totalDays = this.store.totalDays;
   readonly daysCompleted = computed(() => Object.keys(this.store.dayLogs()).length);
-  readonly daysRemaining = computed(() => CHALLENGE_DAYS - this.store.currentDay());
+  readonly daysRemaining = computed(() => this.store.totalDays() - this.store.currentDay());
 
   readonly habits = this.store.habits;
   readonly todayLog = computed(() => {
@@ -109,6 +109,7 @@ export class DashboardComponent implements OnInit {
   readonly weightChartData = computed(() => {
     const logs = this.store.dayLogs();
     const start = this.store.startDate();
+    const total = this.store.totalDays();
     const points: WeightPoint[] = [];
     for (const date of Object.keys(logs).sort()) {
       const log = logs[date] as DayLog;
@@ -116,7 +117,7 @@ export class DashboardComponent implements OnInit {
       if (w == null) continue;
       points.push({
         date: log.date,
-        dayNumber: dayNumberFromStart(start, log.date),
+        dayNumber: dayNumberFromStart(start, log.date, total),
         weight: w,
       });
     }
@@ -126,6 +127,7 @@ export class DashboardComponent implements OnInit {
   readonly photoRefEntries = computed(() => {
     const logs = this.store.dayLogs();
     const start = this.store.startDate();
+    const total = this.store.totalDays();
     const list: PhotoRefEntry[] = [];
     for (const date of Object.keys(logs).sort()) {
       const log = logs[date] as DayLog;
@@ -134,7 +136,7 @@ export class DashboardComponent implements OnInit {
       if (!hasAny) continue;
       list.push({
         date: log.date,
-        dayNumber: dayNumberFromStart(start, log.date),
+        dayNumber: dayNumberFromStart(start, log.date, total),
         weightKg: log.weightKg,
         photoPath: log.photoPath,
         photoDataUrl: log.photoDataUrl,

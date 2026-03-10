@@ -1,13 +1,13 @@
 import { Component, inject, computed } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { ChallengeService } from '../../core/challenge.service';
-import { CHALLENGE_DAYS, type DayLog } from '../../models';
+import type { DayLog } from '../../models';
 
-function dayNumberFromStart(startDate: string, logDate: string): number {
+function dayNumberFromStart(startDate: string, logDate: string, totalDays: number): number {
   const start = new Date(startDate).getTime();
   const log = new Date(logDate).getTime();
   const day = Math.floor((log - start) / (24 * 60 * 60 * 1000)) + 1;
-  return Math.max(1, Math.min(day, CHALLENGE_DAYS));
+  return Math.max(1, Math.min(day, totalDays));
 }
 
 export interface HistoryEntry {
@@ -37,6 +37,7 @@ export class HistoryComponent {
   readonly entries = computed(() => {
     const logs = this.store.dayLogs();
     const start = this.store.startDate();
+    const totalDays = this.store.totalDays();
     const habitList = this.store.habits();
     const total = habitList.length;
     const list: HistoryEntry[] = [];
@@ -46,7 +47,7 @@ export class HistoryComponent {
       const done = habitList.filter((h) => checks[h.id]).length;
       list.push({
         date,
-        dayNumber: dayNumberFromStart(start, date),
+        dayNumber: dayNumberFromStart(start, date, totalDays),
         tasksDone: done,
         tasksTotal: total,
         completed: total > 0 && done === total,

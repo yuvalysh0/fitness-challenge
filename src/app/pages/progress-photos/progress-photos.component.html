@@ -45,7 +45,7 @@
             }
           </div>
           <mat-card-content class="progress-photos__meta">
-            <span class="progress-photos__day">Day {{ entry.dayNumber }} of {{ totalDays }}</span>
+            <span class="progress-photos__day">Day {{ entry.dayNumber }} of {{ totalDays() }}</span>
             @if (entry.weightKg != null) {
               <span class="progress-photos__weight">{{ entry.weightKg }} kg</span>
             }

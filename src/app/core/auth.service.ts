@@ -1,10 +1,28 @@
 import { Injectable, signal, computed, effect, inject } from '@angular/core';
 import { Session } from '@supabase/supabase-js';
 import { SupabaseService, AVATARS_BUCKET } from './supabase.service';
+import type { ActivityLevel } from './supabase.types';
 
 export interface UserProfile {
   full_name: string | null;
   avatar_path: string | null;
+  birth_date: string | null;
+  sex: 'male' | 'female' | 'other' | null;
+  height_cm: number | null;
+  weight_kg: number | null;
+  activity_level: ActivityLevel | null;
+  goal_weight_kg: number | null;
+  onboarding_completed_at: string | null;
+}
+
+export interface OnboardingData {
+  birthDate: string;
+  sex: 'male' | 'female' | 'other';
+  heightCm: number;
+  weightKg: number;
+  activityLevel: ActivityLevel;
+  goalWeightKg?: number;
+  programEndDate: string;
 }
 
 @Injectable({ providedIn: 'root' })
@@ -21,6 +39,7 @@ export class AuthService {
   readonly user = computed(() => this.session()?.user ?? null);
   readonly isAuthenticated = computed(() => !!this.session()?.user);
   readonly profile = this.profileState.asReadonly();
+  readonly hasCompletedOnboarding = computed(() => !!this.profileState()?.onboarding_completed_at);
 
   constructor() {
     this.supabase.supabase.auth.onAuthStateChange((_event, session) => {
@@ -39,17 +58,27 @@ export class AuthService {
   private async loadProfile(userId: string): Promise<void> {
     const { data, error } = await this.supabase.supabase
       .from('profiles')
-      .select('full_name, avatar_path')
+      .select(
+        'full_name, avatar_path, birth_date, sex, height_cm, weight_kg, activity_level, goal_weight_kg, onboarding_completed_at',
+      )
       .eq('id', userId)
       .maybeSingle();
     if (error || !data) {
-      this.profileState.set({ full_name: null, avatar_path: null });
+      this.profileState.set(emptyProfile());
       return;
     }
+    const row = data as Record<string, unknown>;
     if (this.user()?.id === userId) {
       this.profileState.set({
-        full_name: (data as { full_name: string | null }).full_name ?? null,
-        avatar_path: (data as { avatar_path: string | null }).avatar_path ?? null,
+        full_name: (row['full_name'] as string | null) ?? null,
+        avatar_path: (row['avatar_path'] as string | null) ?? null,
+        birth_date: (row['birth_date'] as string | null) ?? null,
+        sex: (row['sex'] as UserProfile['sex']) ?? null,
+        height_cm: (row['height_cm'] as number | null) ?? null,
+        weight_kg: (row['weight_kg'] as number | null) ?? null,
+        activity_level: (row['activity_level'] as ActivityLevel | null) ?? null,
+        goal_weight_kg: (row['goal_weight_kg'] as number | null) ?? null,
+        onboarding_completed_at: (row['onboarding_completed_at'] as string | null) ?? null,
       });
     }
   }
@@ -155,4 +184,46 @@ export class AuthService {
     if (!p?.avatar_path) return null;
     return this.supabase.getPublicAvatarUrl(p.avatar_path);
   }
+
+  /**
+   * Saves onboarding data (TDEE + goal + program end date) and marks onboarding complete.
+   * Call after the user finishes the onboarding wizard. Does not set challenge start/end;
+   * the onboarding component should call ChallengeService.setStartAndEndDate after this.
+   */
+  async completeOnboarding(data: OnboardingData): Promise<{ error: Error | null }> {
+    const userId = this.user()?.id;
+    if (!userId) return { error: new Error('Not authenticated') };
+
+    const { error } = await this.supabase.supabase
+      .from('profiles')
+      .update({
+        birth_date: data.birthDate,
+        sex: data.sex,
+        height_cm: data.heightCm,
+        weight_kg: data.weightKg,
+        activity_level: data.activityLevel,
+        goal_weight_kg: data.goalWeightKg ?? null,
+        onboarding_completed_at: new Date().toISOString(),
+        updated_at: new Date().toISOString(),
+      })
+      .eq('id', userId);
+
+    if (error) return { error };
+    await this.loadProfile(userId);
+    return { error: null };
+  }
+}
+
+function emptyProfile(): UserProfile {
+  return {
+    full_name: null,
+    avatar_path: null,
+    birth_date: null,
+    sex: null,
+    height_cm: null,
+    weight_kg: null,
+    activity_level: null,
+    goal_weight_kg: null,
+    onboarding_completed_at: null,
+  };
 }

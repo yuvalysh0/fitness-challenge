@@ -4,8 +4,22 @@ export interface ChallengeSettingsRow {
   id: string;
   user_id: string;
   start_date: string;
+  end_date: string | null;
   created_at: string;
   updated_at: string;
+}
+
+/** Activity level for TDEE (Mifflin-St Jeor multipliers). */
+export type ActivityLevel = 'sedentary' | 'light' | 'moderate' | 'active' | 'very_active';
+
+export interface ProfileOnboardingRow {
+  birth_date: string | null;
+  sex: 'male' | 'female' | 'other' | null;
+  height_cm: number | null;
+  weight_kg: number | null;
+  activity_level: ActivityLevel | null;
+  goal_weight_kg: number | null;
+  onboarding_completed_at: string | null;
 }
 
 export interface DayLogRow {

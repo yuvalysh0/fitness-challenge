@@ -4,8 +4,6 @@ import { ChallengeService } from '../../core/challenge.service';
 import { PhotoOverlayComponent } from '../../shared/photo-overlay/photo-overlay.component';
 import { SupabaseService } from '../../core/supabase.service';
 import type { DayLog, ProgressPhotoType } from '../../models';
-import { CHALLENGE_DAYS } from '../../models';
-
 export interface ProgressPhotoEntry {
   date: string;
   dayNumber: number;
@@ -16,11 +14,11 @@ export interface ProgressPhotoEntry {
   photoDataUrlSide: string | undefined;
 }
 
-function dayNumberFromStart(startDate: string, logDate: string): number {
+function dayNumberFromStart(startDate: string, logDate: string, totalDays: number): number {
   const start = new Date(startDate).getTime();
   const log = new Date(logDate).getTime();
   const day = Math.floor((log - start) / (24 * 60 * 60 * 1000)) + 1;
-  return Math.max(1, Math.min(day, CHALLENGE_DAYS));
+  return Math.max(1, Math.min(day, totalDays));
 }
 
 @Component({
@@ -34,11 +32,12 @@ export class ProgressPhotosComponent {
   private readonly store = inject(ChallengeService);
   private readonly supabase = inject(SupabaseService);
 
-  readonly totalDays = CHALLENGE_DAYS;
+  readonly totalDays = this.store.totalDays;
   readonly photoOverlayUrl = signal<string | null>(null);
   readonly entries = computed(() => {
     const logs = this.store.dayLogs();
     const startDate = this.store.startDate();
+    const total = this.store.totalDays();
     const list: ProgressPhotoEntry[] = [];
     for (const date of Object.keys(logs).sort()) {
       const log = logs[date] as DayLog;
@@ -46,7 +45,7 @@ export class ProgressPhotosComponent {
       if (!hasPhoto) continue;
       list.push({
         date: log.date,
-        dayNumber: dayNumberFromStart(startDate, log.date),
+        dayNumber: dayNumberFromStart(startDate, log.date, total),
         weightKg: log.weightKg,
         photoPath: log.photoPath,
         photoDataUrl: log.photoDataUrl,

@@ -17,8 +17,16 @@ export function defaultHabits(): HabitDefinition[] {
 export function getDefaultState(): ChallengeState {
   return {
     startDate: todayString(),
+    endDate: null,
     dayLogs: {},
     measurements: [],
     habits: defaultHabits(),
   };
+}
+
+/** Number of days between start and end (inclusive). */
+export function daysBetween(start: DateString, end: DateString): number {
+  const a = new Date(start);
+  const b = new Date(end);
+  return Math.max(1, Math.floor((b.getTime() - a.getTime()) / (24 * 60 * 60 * 1000)) + 1);
 }
