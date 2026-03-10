@@ -74,6 +74,13 @@ export class DashboardComponent implements OnInit {
   readonly daysCompleted = computed(() => Object.keys(this.store.dayLogs()).length);
   readonly daysRemaining = computed(() => this.store.totalDays() - this.store.currentDay());
 
+  private readonly programTitleSuffixes = ['Program', 'Challenge', 'Grind', 'Push'] as const;
+  readonly programTitle = computed(() => {
+    const days = this.store.totalDays();
+    const suffix = this.programTitleSuffixes[days % this.programTitleSuffixes.length];
+    return `${days}-Day ${suffix}`;
+  });
+
   readonly habits = this.store.habits;
   readonly todayLog = computed(() => {
     this.store.dayLogs();

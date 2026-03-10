@@ -1,4 +1,4 @@
-import { Component, inject, signal, effect } from '@angular/core';
+import { Component, inject, signal, OnInit, effect } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MatCardModule } from '@angular/material/card';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -28,7 +28,7 @@ const THEME_OPTIONS: { value: ThemePreference; label: string }[] = [
   templateUrl: './settings.component.html',
   styleUrl: './settings.component.scss',
 })
-export class SettingsComponent {
+export class SettingsComponent implements OnInit {
   private readonly auth = inject(AuthService);
   readonly themeService = inject(ThemeService);
   readonly themeOptions = THEME_OPTIONS;
@@ -41,11 +41,9 @@ export class SettingsComponent {
 
   readonly profile = this.auth.profile;
 
-  constructor() {
-    effect(() => {
-      const p = this.auth.profile();
-      if (p?.full_name != null) this.fullName.set(p.full_name);
-    });
+  ngOnInit(): void {
+    const p = this.auth.profile();
+    if (p?.full_name != null) this.fullName.set(p.full_name);
   }
 
   avatarUrl(): string | null {
