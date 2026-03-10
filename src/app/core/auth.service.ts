@@ -30,8 +30,11 @@ export class AuthService {
   private readonly supabase = inject(SupabaseService);
   private readonly session = signal<Session | null>(null);
   private readonly sessionReady = Promise.resolve().then(() =>
-    this.supabase.supabase.auth.getSession().then(({ data: { session } }) => {
+    this.supabase.supabase.auth.getSession().then(async ({ data: { session } }) => {
       this.session.set(session);
+      if (session?.user?.id) {
+        await this.loadProfile(session.user.id);
+      }
     }),
   );
   private readonly profileState = signal<UserProfile | null>(null);
