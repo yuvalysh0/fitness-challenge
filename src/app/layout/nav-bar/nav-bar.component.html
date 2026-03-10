@@ -12,11 +12,49 @@
 
   <!-- Desktop nav links -->
   <nav class="nav-bar__links" aria-label="Main">
-    @for (item of items; track item.path) {
-      <a [routerLink]="item.path" class="nav-link" [class.nav-link--active]="isActive(item.path)">
-        <span class="material-icons nav-bar__icon" aria-hidden="true">{{ item.icon }}</span>
-        {{ item.label }}
-      </a>
+    @for (item of items; track item.label) {
+      @if (isLink(item)) {
+        <a [routerLink]="item.path" class="nav-link" [class.nav-link--active]="isActive(item.path)">
+          <span class="material-icons nav-bar__icon" aria-hidden="true">{{ item.icon }}</span>
+          {{ item.label }}
+        </a>
+      } @else if (item.children?.length) {
+        <div
+          class="nav-bar__group"
+          (mouseenter)="openGroup.set(item.label)"
+          (mouseleave)="openGroup.set(null)"
+        >
+          <button
+            type="button"
+            class="nav-link nav-bar__group-trigger"
+            [class.nav-link--active]="isGroupActive(item)"
+            [attr.aria-expanded]="isGroupOpen(item)"
+            (click)="toggleGroup(item)"
+          >
+            <span class="material-icons nav-bar__icon" aria-hidden="true">{{ item.icon }}</span>
+            {{ item.label }}
+            <span class="material-icons nav-bar__chevron" aria-hidden="true">expand_more</span>
+          </button>
+          @if (isGroupOpen(item)) {
+            <div class="nav-bar__dropdown" role="menu">
+              @for (child of item.children; track child.path) {
+                <a
+                  [routerLink]="child.path"
+                  class="nav-bar__dropdown-link"
+                  [class.nav-bar__dropdown-link--active]="isActive(child.path)"
+                  role="menuitem"
+                  (click)="openGroup.set(null)"
+                >
+                  <span class="material-icons nav-bar__icon" aria-hidden="true">{{
+                    child.icon
+                  }}</span>
+                  {{ child.label }}
+                </a>
+              }
+            </div>
+          }
+        </div>
+      }
     }
   </nav>
 
@@ -34,18 +72,42 @@
   <div class="nav-bar__backdrop" role="presentation" (click)="closeMenu()"></div>
   <div class="nav-bar__drawer" role="dialog" aria-label="Menu">
     <nav class="nav-bar__drawer-nav">
-      @for (item of items; track item.path) {
-        <a
-          [routerLink]="item.path"
-          class="nav-bar__drawer-link"
-          [class.nav-bar__drawer-link--active]="isActive(item.path)"
-          (click)="closeMenu()"
-        >
-          <span class="material-icons nav-bar__drawer-icon" aria-hidden="true">{{
-            item.icon
-          }}</span>
-          {{ item.label }}
-        </a>
+      @for (item of items; track item.label) {
+        @if (isLink(item)) {
+          <a
+            [routerLink]="item.path"
+            class="nav-bar__drawer-link"
+            [class.nav-bar__drawer-link--active]="isActive(item.path)"
+            (click)="closeMenu()"
+          >
+            <span class="material-icons nav-bar__drawer-icon" aria-hidden="true">{{
+              item.icon
+            }}</span>
+            {{ item.label }}
+          </a>
+        } @else if (item.children?.length) {
+          <div class="nav-bar__drawer-group">
+            <span class="nav-bar__drawer-group-label">
+              <span class="material-icons nav-bar__drawer-icon" aria-hidden="true">{{
+                item.icon
+              }}</span>
+              {{ item.label }}
+            </span>
+            @for (child of item.children; track child.path) {
+              <a
+                [routerLink]="child.path"
+                class="nav-bar__drawer-link nav-bar__drawer-link--child"
+                [class.nav-bar__drawer-link--active]="isActive(child.path)"
+                (click)="closeMenu()"
+              >
+                <span class="material-icons nav-bar__drawer-icon" aria-hidden="true">{{
+                  child.icon
+                }}</span>
+                {{ child.label }}
+              </a>
+            }
+          </div>
+        }
       }
     </nav>
     <button type="button" class="nav-bar__drawer-sign-out btn btn--ghost" (click)="signOut()">

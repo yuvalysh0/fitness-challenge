@@ -1,22 +1,7 @@
 import { Component, inject, signal } from '@angular/core';
 import { Router, RouterLink } from '@angular/router';
 import { AuthService } from '../../core/auth.service';
-
-export interface NavItem {
-  path: string;
-  label: string;
-  icon: string;
-}
-
-const NAV_ITEMS: NavItem[] = [
-  { path: '/', label: 'Dashboard', icon: 'dashboard' },
-  { path: '/daily', label: 'Today', icon: 'today' },
-  { path: '/history', label: 'History', icon: 'calendar_today' },
-  { path: '/progress', label: 'Progress', icon: 'photo_library' },
-  { path: '/measurements', label: 'Measurements', icon: 'straighten' },
-  { path: '/habits', label: 'Tasks', icon: 'check_circle' },
-  { path: '/settings', label: 'Settings', icon: 'settings' },
-];
+import { NavService, type NavItem } from '../../core/nav.service';
 
 @Component({
   selector: 'app-nav-bar',
@@ -28,14 +13,30 @@ const NAV_ITEMS: NavItem[] = [
 export class NavBarComponent {
   private readonly router = inject(Router);
   private readonly auth = inject(AuthService);
+  readonly nav = inject(NavService);
 
-  readonly items = NAV_ITEMS;
+  readonly items = this.nav.items;
   readonly menuOpen = signal(false);
+  readonly openGroup = signal<string | null>(null);
 
   isActive(path: string): boolean {
-    const url = this.router.url;
-    if (path === '/') return url === '/' || url === '';
-    return url.startsWith(path);
+    return this.nav.isActive(path);
+  }
+
+  isGroupActive(item: NavItem): boolean {
+    return this.nav.isGroupActive(item);
+  }
+
+  isGroupOpen(item: NavItem): boolean {
+    return this.openGroup() === item.label;
+  }
+
+  toggleGroup(item: NavItem): void {
+    this.openGroup.update((current) => (current === item.label ? null : item.label));
+  }
+
+  isLink(item: NavItem): item is NavItem & { path: string } {
+    return this.nav.isLink(item);
   }
 
   toggleMenu(): void {

@@ -53,6 +53,97 @@ $z-drawer: 50;
     flex-wrap: wrap;
     align-items: center;
     gap: 0.25rem;
+    position: relative;
+  }
+}
+
+.nav-bar__group {
+  position: relative;
+}
+
+.nav-bar__group-trigger {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 0.75rem;
+  font-size: 0.9375rem;
+  font-weight: 500;
+  color: var(--text-muted);
+  text-decoration: none;
+  border-radius: var(--radius-sm);
+  transition:
+    background-color 0.15s,
+    color 0.15s;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  font: inherit;
+
+  &:hover {
+    color: var(--text);
+    background: var(--surface);
+  }
+
+  &.nav-link--active {
+    color: var(--text-on-accent);
+    background: var(--accent);
+
+    &:hover {
+      background: var(--accent-hover);
+    }
+  }
+}
+
+.nav-bar__chevron {
+  font-size: 1.125rem;
+  opacity: 0.8;
+  transition: transform 0.2s;
+
+  .nav-bar__group-trigger[aria-expanded='true'] & {
+    transform: rotate(180deg);
+  }
+}
+
+.nav-bar__dropdown {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  margin-top: 0.25rem;
+  min-width: 10rem;
+  padding: 0.25rem;
+  background: var(--card-bg);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  box-shadow: var(--shadow-lg);
+  z-index: 60;
+}
+
+.nav-bar__dropdown-link {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 0.75rem;
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--text-muted);
+  text-decoration: none;
+  border-radius: var(--radius-sm);
+  transition:
+    background-color 0.15s,
+    color 0.15s;
+
+  &:hover {
+    color: var(--text);
+    background: var(--surface);
+  }
+
+  &--active {
+    color: var(--text-on-accent);
+    background: var(--accent);
+
+    &:hover {
+      background: var(--accent-hover);
+    }
   }
 }
 
@@ -111,6 +202,28 @@ $z-drawer: 50;
   display: flex;
   flex-direction: column;
   gap: 0.25rem;
+}
+
+.nav-bar__drawer-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.125rem;
+}
+
+.nav-bar__drawer-group-label {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.5rem 1rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--text-muted);
+}
+
+.nav-bar__drawer-link--child {
+  padding-left: 2.5rem;
 }
 
 .nav-bar__drawer-link {
