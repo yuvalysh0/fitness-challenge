@@ -188,6 +188,7 @@ export class ChallengeService {
     const currentHabits = this.store.getState().habits;
 
     if (this.auth.isAuthenticated() && userId) {
+      await this.auth.resetOnboarding();
       const sb = this.supabase.supabase;
       await sb.from(DbTable.ChallengeSettings).upsert(
         {

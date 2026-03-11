@@ -6,6 +6,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { AuthService } from '../../core/auth.service';
+import { AppRoute } from '../../core/enums';
 
 @Component({
   selector: 'app-auth',
@@ -39,7 +40,7 @@ export class AuthComponent {
   constructor() {
     effect(() => {
       if (this.auth.isAuthenticated()) {
-        this.router.navigate(['/']);
+        this.router.navigate([AppRoute.Home]);
       }
     });
   }
@@ -73,6 +74,6 @@ export class AuthComponent {
       this.errorMessage.set(error.message ?? 'Something went wrong');
       return;
     }
-    this.router.navigate(['/']);
+    this.router.navigate([AppRoute.Home]);
   }
 }

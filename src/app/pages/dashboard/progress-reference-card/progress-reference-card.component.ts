@@ -1,6 +1,7 @@
 import { Component, input, output, inject } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { SupabaseService } from '../../../core/supabase.service';
+import { AppRoute } from '../../../core/enums';
 import type { ProgressPhotoType } from '../../../models';
 
 export interface ProgressRefEntry {
@@ -21,6 +22,7 @@ export interface ProgressRefEntry {
   styleUrl: './progress-reference-card.component.scss',
 })
 export class ProgressReferenceCardComponent {
+  protected readonly AppRoute = AppRoute;
   private readonly supabase = inject(SupabaseService);
 
   readonly firstEntry = input<ProgressRefEntry | null>(null);

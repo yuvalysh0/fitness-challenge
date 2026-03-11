@@ -58,7 +58,7 @@
               >photo_camera</span
             >
             <p class="progress-ref__empty-state-text">No day 1 photo yet</p>
-            <a routerLink="/daily" class="progress-ref__empty-state-cta">Log day 1</a>
+            <a [routerLink]="AppRoute.Daily" class="progress-ref__empty-state-cta">Log day 1</a>
           </div>
         </div>
       }
@@ -119,7 +119,7 @@
               >photo_camera</span
             >
             <p class="progress-ref__empty-state-text">No photo yet</p>
-            <a routerLink="/daily" class="progress-ref__empty-state-cta">Log today</a>
+            <a [routerLink]="AppRoute.Daily" class="progress-ref__empty-state-cta">Log today</a>
           </div>
         </div>
       }

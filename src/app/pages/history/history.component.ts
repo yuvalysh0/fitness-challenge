@@ -1,6 +1,7 @@
 import { Component, inject, computed } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { ChallengeService } from '../../core/challenge.service';
+import { AppRoute } from '../../core/enums';
 import type { DayLog } from '../../models';
 
 function dayNumberFromStart(startDate: string, logDate: string, totalDays: number): number {
@@ -28,6 +29,7 @@ export interface HistoryEntry {
   styleUrl: './history.component.scss',
 })
 export class HistoryComponent {
+  protected readonly AppRoute = AppRoute;
   private readonly store = inject(ChallengeService);
 
   readonly startDate = this.store.startDate;

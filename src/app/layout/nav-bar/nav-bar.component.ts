@@ -2,6 +2,7 @@ import { Component, inject, signal } from '@angular/core';
 import { Router, RouterLink } from '@angular/router';
 import { AuthService } from '../../core/auth.service';
 import { NavService, type NavItem } from '../../core/nav.service';
+import { AppRoute } from '../../core/enums';
 
 @Component({
   selector: 'app-nav-bar',
@@ -11,6 +12,7 @@ import { NavService, type NavItem } from '../../core/nav.service';
   styleUrl: './nav-bar.component.scss',
 })
 export class NavBarComponent {
+  protected readonly AppRoute = AppRoute;
   private readonly router = inject(Router);
   private readonly auth = inject(AuthService);
   readonly nav = inject(NavService);
@@ -50,6 +52,6 @@ export class NavBarComponent {
   async signOut(): Promise<void> {
     this.closeMenu();
     await this.auth.signOut();
-    this.router.navigate(['/login']);
+    this.router.navigate([AppRoute.Login]);
   }
 }

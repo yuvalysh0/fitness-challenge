@@ -224,6 +224,22 @@ export class AuthService {
     await this.loadProfile(userId);
     return { error: null };
   }
+
+  /**
+   * Clears onboarding status so the user is redirected to the onboarding wizard
+   * on next navigation. Call when resetting the challenge.
+   */
+  async resetOnboarding(): Promise<void> {
+    const userId = this.user()?.id;
+    if (!userId) return;
+
+    await this.supabase.supabase
+      .from(DbTable.Profiles)
+      .update({ onboarding_completed_at: null, updated_at: new Date().toISOString() })
+      .eq('id', userId);
+
+    await this.loadProfile(userId);
+  }
 }
 
 function emptyProfile(): UserProfile {

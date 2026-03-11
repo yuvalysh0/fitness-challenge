@@ -1,5 +1,6 @@
 import { Injectable, inject } from '@angular/core';
 import { Router } from '@angular/router';
+import { AppRoute } from './enums';
 
 export interface NavLink {
   path: string;
@@ -15,18 +16,18 @@ export interface NavItem {
 }
 
 const NAV_ITEMS: NavItem[] = [
-  { path: '/daily', label: 'Today', icon: 'today' },
+  { path: AppRoute.Daily, label: 'Today', icon: 'today' },
   {
     label: 'Progress',
     icon: 'trending_up',
     children: [
-      { path: '/progress', label: 'Photos', icon: 'photo_library' },
-      { path: '/measurements', label: 'Measurements', icon: 'straighten' },
-      { path: '/history', label: 'History', icon: 'calendar_today' },
+      { path: AppRoute.Progress, label: 'Photos', icon: 'photo_library' },
+      { path: AppRoute.Measurements, label: 'Measurements', icon: 'straighten' },
+      { path: AppRoute.History, label: 'History', icon: 'calendar_today' },
     ],
   },
-  { path: '/habits', label: 'Tasks', icon: 'check_circle' },
-  { path: '/settings', label: 'Settings', icon: 'settings' },
+  { path: AppRoute.Habits, label: 'Tasks', icon: 'check_circle' },
+  { path: AppRoute.Settings, label: 'Settings', icon: 'settings' },
 ];
 
 @Injectable({ providedIn: 'root' })
@@ -37,7 +38,7 @@ export class NavService {
 
   isActive(path: string): boolean {
     const url = this.router.url;
-    if (path === '/') return url === '/' || url === '';
+    if (path === AppRoute.Home) return url === AppRoute.Home || url === '';
     return url.startsWith(path);
   }
 

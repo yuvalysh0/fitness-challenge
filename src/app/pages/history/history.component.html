@@ -7,7 +7,7 @@
   @if (entries().length === 0) {
     <div class="history__empty card p-6 text-center">
       <p class="m-0 text-[var(--text-muted)]">No days logged yet.</p>
-      <a routerLink="/daily" class="btn btn--primary mt-4">Log today</a>
+      <a [routerLink]="AppRoute.Daily" class="btn btn--primary mt-4">Log today</a>
     </div>
   } @else {
     <ul class="history__list list-none m-0 p-0 flex flex-col gap-2">

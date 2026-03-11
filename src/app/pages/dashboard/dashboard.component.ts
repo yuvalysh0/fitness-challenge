@@ -1,6 +1,6 @@
 import { DecimalPipe } from '@angular/common';
 import { Component, inject, computed, signal, OnInit } from '@angular/core';
-import { RouterLink } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { MatCheckboxModule } from '@angular/material/checkbox';
@@ -15,6 +15,7 @@ import { ProgressReferenceCardComponent } from './progress-reference-card/progre
 import { PhotoOverlayComponent } from '../../shared/photo-overlay/photo-overlay.component';
 import { ConfirmDialogComponent } from '../../shared/confirm-dialog/confirm-dialog.component';
 import { todayString } from '../../core/challenge.utils';
+import { AppRoute } from '../../core/enums';
 
 export interface WeightPoint {
   date: string;
@@ -57,7 +58,9 @@ function dayNumberFromStart(startDate: string, logDate: string, totalDays: numbe
   styleUrl: './dashboard.component.scss',
 })
 export class DashboardComponent implements OnInit {
+  protected readonly AppRoute = AppRoute;
   private readonly store = inject(ChallengeService);
+  private readonly router = inject(Router);
   private readonly dialog = inject(MatDialog);
   readonly auth = inject(AuthService);
   readonly quoteService = inject(QuoteService);
@@ -232,8 +235,10 @@ export class DashboardComponent implements OnInit {
       },
       width: 'min(400px, 95vw)',
     });
-    ref.afterClosed().subscribe((confirmed) => {
-      if (confirmed) this.store.resetChallenge();
+    ref.afterClosed().subscribe(async (confirmed) => {
+      if (!confirmed) return;
+      await this.store.resetChallenge();
+      this.router.navigate([AppRoute.Onboarding]);
     });
   }
 }

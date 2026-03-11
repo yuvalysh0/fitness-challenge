@@ -12,7 +12,7 @@ import { AuthService, type OnboardingData } from '../../core/auth.service';
 import { ChallengeService } from '../../core/challenge.service';
 import { todayString } from '../../core/challenge.utils';
 import { tdee, ageFromBirthDate } from '../../core/tdee.utils';
-import { ActivityLevel, Sex } from '../../core/enums';
+import { ActivityLevel, Sex, AppRoute } from '../../core/enums';
 
 const ACTIVITY_OPTIONS: { value: ActivityLevel; label: string }[] = [
   { value: ActivityLevel.Sedentary, label: 'Sedentary (little or no exercise)' },
@@ -134,6 +134,6 @@ export class OnboardingComponent {
 
     this.challenge.setStartAndEndDate(todayString(), programEndDate);
     this.loading.set(false);
-    this.router.navigate(['/']);
+    this.router.navigate([AppRoute.Home]);
   }
 }

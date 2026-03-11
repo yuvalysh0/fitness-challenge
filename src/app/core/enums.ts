@@ -38,3 +38,21 @@ export const DbTable = {
 } as const;
 
 export type DbTableName = (typeof DbTable)[keyof typeof DbTable];
+
+/**
+ * Application route paths as constants. Use instead of raw strings
+ * in navigate(), createUrlTree(), and routerLink bindings.
+ */
+export const AppRoute = {
+  Home: '/',
+  Login: '/login',
+  Onboarding: '/onboarding',
+  Daily: '/daily',
+  Progress: '/progress',
+  Measurements: '/measurements',
+  Habits: '/habits',
+  History: '/history',
+  Settings: '/settings',
+} as const;
+
+export type AppRoutePath = (typeof AppRoute)[keyof typeof AppRoute];
