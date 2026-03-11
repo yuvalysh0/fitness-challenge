@@ -139,35 +139,42 @@ export class AuthService {
   async updateProfile(options: {
     fullName?: string;
     avatarFile?: File;
+    birthDate?: string;
+    goalWeightKg?: number | null;
   }): Promise<{ error: Error | null }> {
     const userId = this.user()?.id;
     if (!userId) return { error: new Error('Not authenticated') };
 
     const sb = this.supabase.supabase;
+
     if (options.avatarFile != null) {
       const ext = options.avatarFile.name.split('.').pop()?.toLowerCase() || 'jpg';
       const path = `${userId}/avatar.${ext}`;
       const { error: uploadError } = await sb.storage
         .from(AVATARS_BUCKET)
-        .upload(path, options.avatarFile, {
-          upsert: true,
-        });
+        .upload(path, options.avatarFile, { upsert: true });
       if (uploadError) return { error: uploadError };
       await sb
         .from('profiles')
         .update({ avatar_path: path, updated_at: new Date().toISOString() })
         .eq('id', userId);
     }
-    if (options.fullName !== undefined) {
+
+    const profileUpdates: Record<string, unknown> = {
+      updated_at: new Date().toISOString(),
+    };
+    if (options.fullName !== undefined) profileUpdates['full_name'] = options.fullName.trim();
+    if (options.birthDate !== undefined) profileUpdates['birth_date'] = options.birthDate || null;
+    if (options.goalWeightKg !== undefined) profileUpdates['goal_weight_kg'] = options.goalWeightKg;
+
+    if (Object.keys(profileUpdates).length > 1) {
       const { error: updateError } = await sb
         .from('profiles')
-        .update({
-          full_name: options.fullName.trim(),
-          updated_at: new Date().toISOString(),
-        })
+        .update(profileUpdates)
         .eq('id', userId);
       if (updateError) return { error: updateError };
     }
+
     await this.loadProfile(userId);
     return { error: null };
   }

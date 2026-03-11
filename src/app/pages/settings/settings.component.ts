@@ -1,12 +1,31 @@
-import { Component, inject, signal, OnInit, effect } from '@angular/core';
-import { FormsModule } from '@angular/forms';
+import { Component, inject, signal, OnInit } from '@angular/core';
+import { form, FormField } from '@angular/forms/signals';
 import { MatCardModule } from '@angular/material/card';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
 import { AuthService } from '../../core/auth.service';
+import { ChallengeService } from '../../core/challenge.service';
 import { ThemeService, type ThemePreference } from '../../core/theme.service';
 import { PhotoOverlayComponent } from '../../shared/photo-overlay/photo-overlay.component';
+
+interface SettingsFormModel {
+  readonly fullName: string;
+  readonly birthDate: string;
+  readonly goalWeightKg: number;
+  readonly challengeEndDate: string;
+  readonly startingWeightKg: number;
+}
+
+function emptyFormModel(): SettingsFormModel {
+  return {
+    fullName: '',
+    birthDate: '',
+    goalWeightKg: 0,
+    challengeEndDate: '',
+    startingWeightKg: 0,
+  };
+}
 
 const THEME_OPTIONS: { value: ThemePreference; label: string }[] = [
   { value: 'dark', label: 'Dark' },
@@ -18,7 +37,7 @@ const THEME_OPTIONS: { value: ThemePreference; label: string }[] = [
   selector: 'app-settings',
   standalone: true,
   imports: [
-    FormsModule,
+    FormField,
     MatCardModule,
     MatFormFieldModule,
     MatInputModule,
@@ -30,20 +49,32 @@ const THEME_OPTIONS: { value: ThemePreference; label: string }[] = [
 })
 export class SettingsComponent implements OnInit {
   private readonly auth = inject(AuthService);
+  private readonly challenge = inject(ChallengeService);
   readonly themeService = inject(ThemeService);
   readonly themeOptions = THEME_OPTIONS;
 
-  readonly fullName = signal('');
+  readonly settingsModel = signal<SettingsFormModel>(emptyFormModel());
+  readonly settingsForm = form(this.settingsModel);
+
   readonly avatarFile = signal<File | null>(null);
   readonly loading = signal(false);
   readonly message = signal<{ type: 'success' | 'error'; text: string } | null>(null);
   readonly photoOverlayUrl = signal<string | null>(null);
 
   readonly profile = this.auth.profile;
+  readonly startDate = this.challenge.startDate;
 
   ngOnInit(): void {
     const p = this.auth.profile();
-    if (p?.full_name != null) this.fullName.set(p.full_name);
+    const startKg = this.challenge.getDayLog(this.challenge.startDate())?.weightKg ?? 0;
+
+    this.settingsModel.set({
+      fullName: p?.full_name ?? '',
+      birthDate: p?.birth_date ?? '',
+      goalWeightKg: p?.goal_weight_kg ?? 0,
+      challengeEndDate: this.challenge.endDate() ?? '',
+      startingWeightKg: startKg,
+    });
   }
 
   avatarUrl(): string | null {
@@ -65,6 +96,11 @@ export class SettingsComponent implements OnInit {
     this.message.set(null);
   }
 
+  onDateChange(field: 'birthDate' | 'challengeEndDate', event: Event): void {
+    const value = (event.target as HTMLInputElement).value;
+    this.settingsModel.update((m) => ({ ...m, [field]: value }));
+  }
+
   setTheme(value: ThemePreference): void {
     this.themeService.setTheme(value);
   }
@@ -72,18 +108,31 @@ export class SettingsComponent implements OnInit {
   async save(): Promise<void> {
     this.message.set(null);
     this.loading.set(true);
-    const name = this.fullName().trim();
-    const file = this.avatarFile();
+
+    const { fullName, birthDate, goalWeightKg, challengeEndDate, startingWeightKg } =
+      this.settingsModel();
+
     const { error } = await this.auth.updateProfile({
-      fullName: name || undefined,
-      avatarFile: file ?? undefined,
+      fullName: fullName.trim() || undefined,
+      avatarFile: this.avatarFile() ?? undefined,
+      birthDate: birthDate || undefined,
+      goalWeightKg: goalWeightKg > 0 ? goalWeightKg : null,
     });
-    this.loading.set(false);
+
     if (error) {
-      this.message.set({ type: 'error', text: error.message ?? 'Failed to update profile' });
+      this.loading.set(false);
+      this.message.set({ type: 'error', text: error.message ?? 'Failed to save settings' });
       return;
     }
-    this.message.set({ type: 'success', text: 'Profile updated' });
+
+    this.challenge.setStartAndEndDate(this.challenge.startDate(), challengeEndDate || null);
+
+    if (startingWeightKg > 0) {
+      this.challenge.updateDayLog(this.challenge.startDate(), { weightKg: startingWeightKg });
+    }
+
     this.avatarFile.set(null);
+    this.loading.set(false);
+    this.message.set({ type: 'success', text: 'Settings saved' });
   }
 }
