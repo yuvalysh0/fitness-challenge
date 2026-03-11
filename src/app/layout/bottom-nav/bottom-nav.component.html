@@ -1,13 +1,58 @@
 <nav class="bottom-nav" aria-label="Main navigation">
-  @for (item of items; track item.path) {
+  <!-- Left items -->
+  <a
+    [routerLink]="AppRoute.Home"
+    class="bottom-nav__item"
+    [class.bottom-nav__item--active]="isActive(AppRoute.Home)"
+    aria-label="Home"
+  >
+    <span class="material-icons bottom-nav__icon" aria-hidden="true">home</span>
+    <span class="bottom-nav__dot" aria-hidden="true"></span>
+  </a>
+  <a
+    [routerLink]="AppRoute.Habits"
+    class="bottom-nav__item"
+    [class.bottom-nav__item--active]="isActive(AppRoute.Habits)"
+    aria-label="Tasks"
+  >
+    <span class="material-icons bottom-nav__icon" aria-hidden="true">check_circle</span>
+    <span class="bottom-nav__dot" aria-hidden="true"></span>
+  </a>
+
+  <!-- Center FAB -->
+  <div class="bottom-nav__fab-slot">
     <a
-      [routerLink]="item.path"
-      class="bottom-nav__item"
-      [class.bottom-nav__item--active]="isActive(item.path)"
-      [attr.aria-current]="isActive(item.path) ? 'page' : null"
+      [routerLink]="AppRoute.Daily"
+      class="bottom-nav__fab"
+      [class.bottom-nav__fab--active]="isActive(AppRoute.Daily)"
+      aria-label="Today's log"
     >
-      <span class="material-icons bottom-nav__icon" aria-hidden="true">{{ item.icon }}</span>
-      <span class="bottom-nav__label">{{ item.label }}</span>
+      <span class="material-icons bottom-nav__fab-icon" aria-hidden="true">add</span>
     </a>
-  }
+    <span
+      class="bottom-nav__dot bottom-nav__dot--fab"
+      aria-hidden="true"
+      [class.bottom-nav__dot--visible]="isActive(AppRoute.Daily)"
+    ></span>
+  </div>
+
+  <!-- Right items -->
+  <a
+    [routerLink]="AppRoute.Progress"
+    class="bottom-nav__item"
+    [class.bottom-nav__item--active]="isActive(AppRoute.Progress)"
+    aria-label="Progress"
+  >
+    <span class="material-icons bottom-nav__icon" aria-hidden="true">trending_up</span>
+    <span class="bottom-nav__dot" aria-hidden="true"></span>
+  </a>
+  <a
+    [routerLink]="AppRoute.Settings"
+    class="bottom-nav__item"
+    [class.bottom-nav__item--active]="isActive(AppRoute.Settings)"
+    aria-label="Settings"
+  >
+    <span class="material-icons bottom-nav__icon" aria-hidden="true">settings</span>
+    <span class="bottom-nav__dot" aria-hidden="true"></span>
+  </a>
 </nav>
