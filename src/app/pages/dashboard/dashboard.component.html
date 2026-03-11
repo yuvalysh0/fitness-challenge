@@ -61,6 +61,51 @@
     </p>
   </div>
 
+  @if (nutritionPlan(); as plan) {
+    <div class="card dashboard__nutrition-card mb-6">
+      <h2 class="dashboard__section-title m-0 mb-4 text-base font-semibold">
+        Daily nutrition plan
+      </h2>
+
+      <div class="dashboard__nutrition-top">
+        <div class="dashboard__nutrition-calories flex-1">
+          <span class="dashboard__nutrition-calories-value">{{ plan.calories }}</span>
+          <span class="dashboard__nutrition-calories-unit">kcal / day</span>
+          @if (plan.isDeficit) {
+            <span class="dashboard__nutrition-deficit-badge">−400 kcal deficit</span>
+          }
+        </div>
+
+        <div class="dashboard__nutrition-macros">
+          <div class="dashboard__nutrition-macro dashboard__nutrition-macro--protein">
+            <span class="dashboard__nutrition-macro-val">{{ plan.proteinG }}g</span>
+            <span class="dashboard__nutrition-macro-label">Protein</span>
+          </div>
+          <div class="dashboard__nutrition-macro dashboard__nutrition-macro--carbs">
+            <span class="dashboard__nutrition-macro-val">{{ plan.carbsG }}g</span>
+            <span class="dashboard__nutrition-macro-label">Carbs</span>
+          </div>
+          <div class="dashboard__nutrition-macro dashboard__nutrition-macro--fat">
+            <span class="dashboard__nutrition-macro-val">{{ plan.fatG }}g</span>
+            <span class="dashboard__nutrition-macro-label">Fat</span>
+          </div>
+        </div>
+      </div>
+
+      @if (plan.isDeficit) {
+        <div class="dashboard__nutrition-projected">
+          <span class="dashboard__nutrition-projected-label">Projected weight after program</span>
+          <span class="dashboard__nutrition-projected-value">
+            {{ plan.projectedWeightKg | number: '1.1-1' }} kg
+            <span class="dashboard__nutrition-projected-delta">
+              −{{ auth.profile()!.weight_kg! - plan.projectedWeightKg | number: '1.1-1' }} kg
+            </span>
+          </span>
+        </div>
+      }
+    </div>
+  }
+
   <div class="dashboard__stats flex gap-8 md:gap-12 mb-8">
     <div class="dashboard__stat flex flex-col">
       <span class="dashboard__stat-value text-2xl font-semibold text-[var(--accent)]">{{

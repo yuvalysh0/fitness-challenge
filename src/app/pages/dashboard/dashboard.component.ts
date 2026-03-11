@@ -15,7 +15,9 @@ import { ProgressReferenceCardComponent } from './progress-reference-card/progre
 import { PhotoOverlayComponent } from '../../shared/photo-overlay/photo-overlay.component';
 import { ConfirmDialogComponent } from '../../shared/confirm-dialog/confirm-dialog.component';
 import { todayString } from '../../core/challenge.utils';
-import { AppRoute } from '../../core/enums';
+import { AppRoute, ActivityLevel, Sex } from '../../core/enums';
+import { tdee, macroBreakdown, projectedWeight, ageFromBirthDate } from '../../core/tdee.utils';
+import type { MacroBreakdown } from '../../core/tdee.utils';
 
 export interface WeightPoint {
   date: string;
@@ -76,6 +78,30 @@ export class DashboardComponent implements OnInit {
   readonly totalDays = this.store.totalDays;
   readonly daysCompleted = computed(() => Object.keys(this.store.dayLogs()).length);
   readonly daysRemaining = computed(() => this.store.totalDays() - this.store.currentDay());
+
+  readonly nutritionPlan = computed(
+    (): (MacroBreakdown & { tdeeKcal: number; projectedWeightKg: number }) | null => {
+      const p = this.auth.profile();
+      if (!p?.weight_kg || !p?.height_cm || !p?.birth_date || !p?.activity_level) return null;
+      const age = ageFromBirthDate(p.birth_date);
+      if (age < 10 || age > 120) return null;
+      const tdeeKcal = tdee(
+        p.weight_kg,
+        p.height_cm,
+        age,
+        (p.sex as Sex) ?? Sex.Male,
+        p.activity_level as ActivityLevel,
+      );
+      const macros = macroBreakdown(tdeeKcal, p.goal_weight_kg, p.weight_kg);
+      const projected = projectedWeight(
+        p.weight_kg,
+        tdeeKcal,
+        macros.calories,
+        this.store.totalDays(),
+      );
+      return { ...macros, tdeeKcal, projectedWeightKg: projected };
+    },
+  );
 
   private readonly programTitleSuffixes = ['Program', 'Challenge', 'Grind', 'Push'] as const;
   readonly programTitle = computed(() => {
