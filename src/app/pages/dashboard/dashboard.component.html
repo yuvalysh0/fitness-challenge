@@ -182,15 +182,29 @@
     />
   </div>
 
-  <div class="dashboard__actions grid grid-cols-1 md:grid-cols-4 gap-3">
-    <a class="btn btn--primary" [routerLink]="AppRoute.Daily">Log today</a>
-    <a class="btn btn--secondary" [routerLink]="AppRoute.Measurements">Measurements</a>
-    <button type="button" class="btn btn--secondary" (click)="openRestartDialog()">
-      I'm restarting
-    </button>
-    <button type="button" class="btn btn--error dashboard__reset-btn" (click)="openResetDialog()">
-      Reset challenge
-    </button>
+  <div class="dashboard__actions flex flex-col gap-3">
+    <!-- Quick links row -->
+    <div class="grid grid-cols-2 gap-3">
+      <a class="btn btn--primary" [routerLink]="AppRoute.Daily">Log today</a>
+      <a class="btn btn--secondary" [routerLink]="AppRoute.Measurements">Measurements</a>
+    </div>
+
+    <!-- Reset / restart — full width -->
+    <div class="card flex flex-col gap-2">
+      <h2 class="card__title m-0 text-base font-semibold">Restart challenge</h2>
+      <div class="grid grid-cols-2 gap-2">
+        <button type="button" class="btn btn--secondary" (click)="openRestartDialog()">
+          I'm restarting
+        </button>
+        <button
+          type="button"
+          class="btn btn--error dashboard__reset-btn"
+          (click)="openResetDialog()"
+        >
+          Reset challenge
+        </button>
+      </div>
+    </div>
   </div>
 
   <app-photo-overlay [url]="photoOverlayUrl()" (close)="closePhotoOverlay()" />

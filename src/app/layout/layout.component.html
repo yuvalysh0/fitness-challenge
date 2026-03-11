@@ -1,8 +1,11 @@
 <div class="layout">
-  <!-- Top nav: desktop only -->
-  <header class="layout__header">
+  <!-- Mobile header: logo + page title + avatar (mobile only) -->
+  <app-header />
+
+  <!-- Desktop floating nav (desktop only) -->
+  <div class="layout__header">
     <app-nav-bar />
-  </header>
+  </div>
 
   <!-- Scrollable content -->
   <main class="layout__main">
@@ -11,6 +14,6 @@
     </div>
   </main>
 
-  <!-- Bottom tab bar: mobile only -->
+  <!-- Bottom tab bar (mobile only) -->
   <app-bottom-nav />
 </div>

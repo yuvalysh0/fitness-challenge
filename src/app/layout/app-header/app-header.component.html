@@ -1,0 +1,20 @@
+<header class="app-header">
+  <!-- Logo -->
+  <a [routerLink]="AppRoute.Home" class="app-header__brand" aria-label="Go to home">
+    <span class="material-icons app-header__logo-icon" aria-hidden="true">fitness_center</span>
+  </a>
+
+  <!-- Page title -->
+  <h1 class="app-header__title">{{ pageTitle() }}</h1>
+
+  <!-- Right: avatar or placeholder -->
+  <a [routerLink]="AppRoute.Settings" class="app-header__avatar-btn" aria-label="Settings">
+    @if (auth.avatarUrl(); as url) {
+      <img [src]="url" alt="Profile" class="app-header__avatar" />
+    } @else {
+      <div class="app-header__avatar-placeholder">
+        <span class="material-icons" aria-hidden="true">person</span>
+      </div>
+    }
+  </a>
+</header>
