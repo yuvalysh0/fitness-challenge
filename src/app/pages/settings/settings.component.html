@@ -153,5 +153,11 @@
     </mat-card-content>
   </mat-card>
 
+  <!-- Sign out — mobile only (desktop uses the nav bar sign out) -->
+  <button type="button" class="settings__signout btn btn--ghost md:hidden" (click)="signOut()">
+    <span class="material-icons" aria-hidden="true">logout</span>
+    Sign out
+  </button>
+
   <app-photo-overlay [url]="photoOverlayUrl()" (close)="closePhotoOverlay()" />
 </div>

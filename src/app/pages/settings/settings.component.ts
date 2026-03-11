@@ -1,4 +1,5 @@
 import { Component, inject, signal, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
 import { form, FormField } from '@angular/forms/signals';
 import { MatCardModule } from '@angular/material/card';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -50,6 +51,7 @@ const THEME_OPTIONS: { value: Theme; label: string }[] = [
 export class SettingsComponent implements OnInit {
   private readonly auth = inject(AuthService);
   private readonly challenge = inject(ChallengeService);
+  private readonly router = inject(Router);
   readonly themeService = inject(ThemeService);
   readonly themeOptions = THEME_OPTIONS;
 
@@ -103,6 +105,11 @@ export class SettingsComponent implements OnInit {
 
   setTheme(value: Theme): void {
     this.themeService.setTheme(value);
+  }
+
+  async signOut(): Promise<void> {
+    await this.auth.signOut();
+    this.router.navigate(['/login']);
   }
 
   async save(): Promise<void> {
