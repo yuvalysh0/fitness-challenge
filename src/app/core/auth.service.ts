@@ -1,13 +1,15 @@
 import { Injectable, signal, computed, effect, inject } from '@angular/core';
 import { Session } from '@supabase/supabase-js';
 import { SupabaseService, AVATARS_BUCKET } from './supabase.service';
-import type { ActivityLevel } from './supabase.types';
+import { ActivityLevel, Sex, DbTable } from './enums';
+
+export { ActivityLevel, Sex };
 
 export interface UserProfile {
   full_name: string | null;
   avatar_path: string | null;
   birth_date: string | null;
-  sex: 'male' | 'female' | 'other' | null;
+  sex: Sex | null;
   height_cm: number | null;
   weight_kg: number | null;
   activity_level: ActivityLevel | null;
@@ -17,7 +19,7 @@ export interface UserProfile {
 
 export interface OnboardingData {
   birthDate: string;
-  sex: 'male' | 'female' | 'other';
+  sex: Sex;
   heightCm: number;
   weightKg: number;
   activityLevel: ActivityLevel;
@@ -60,7 +62,7 @@ export class AuthService {
 
   private async loadProfile(userId: string): Promise<void> {
     const { data, error } = await this.supabase.supabase
-      .from('profiles')
+      .from(DbTable.Profiles)
       .select(
         'full_name, avatar_path, birth_date, sex, height_cm, weight_kg, activity_level, goal_weight_kg, onboarding_completed_at',
       )
@@ -114,7 +116,7 @@ export class AuthService {
         upsert: true,
       });
       await this.supabase.supabase
-        .from('profiles')
+        .from(DbTable.Profiles)
         .update({ avatar_path: path, updated_at: new Date().toISOString() })
         .eq('id', user.id);
       await this.loadProfile(user.id);
@@ -155,7 +157,7 @@ export class AuthService {
         .upload(path, options.avatarFile, { upsert: true });
       if (uploadError) return { error: uploadError };
       await sb
-        .from('profiles')
+        .from(DbTable.Profiles)
         .update({ avatar_path: path, updated_at: new Date().toISOString() })
         .eq('id', userId);
     }
@@ -169,7 +171,7 @@ export class AuthService {
 
     if (Object.keys(profileUpdates).length > 1) {
       const { error: updateError } = await sb
-        .from('profiles')
+        .from(DbTable.Profiles)
         .update(profileUpdates)
         .eq('id', userId);
       if (updateError) return { error: updateError };
@@ -205,7 +207,7 @@ export class AuthService {
     if (!userId) return { error: new Error('Not authenticated') };
 
     const { error } = await this.supabase.supabase
-      .from('profiles')
+      .from(DbTable.Profiles)
       .update({
         birth_date: data.birthDate,
         sex: data.sex,

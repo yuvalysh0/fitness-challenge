@@ -12,14 +12,14 @@ import { AuthService, type OnboardingData } from '../../core/auth.service';
 import { ChallengeService } from '../../core/challenge.service';
 import { todayString } from '../../core/challenge.utils';
 import { tdee, ageFromBirthDate } from '../../core/tdee.utils';
-import type { ActivityLevel } from '../../core/supabase.types';
+import { ActivityLevel, Sex } from '../../core/enums';
 
 const ACTIVITY_OPTIONS: { value: ActivityLevel; label: string }[] = [
-  { value: 'sedentary', label: 'Sedentary (little or no exercise)' },
-  { value: 'light', label: 'Light (1–3 days/week)' },
-  { value: 'moderate', label: 'Moderate (3–5 days/week)' },
-  { value: 'active', label: 'Active (6–7 days/week)' },
-  { value: 'very_active', label: 'Very active (intense daily)' },
+  { value: ActivityLevel.Sedentary, label: 'Sedentary (little or no exercise)' },
+  { value: ActivityLevel.Light, label: 'Light (1–3 days/week)' },
+  { value: ActivityLevel.Moderate, label: 'Moderate (3–5 days/week)' },
+  { value: ActivityLevel.Active, label: 'Active (6–7 days/week)' },
+  { value: ActivityLevel.VeryActive, label: 'Very active (intense daily)' },
 ];
 
 @Component({
@@ -50,10 +50,10 @@ export class OnboardingComponent {
 
   readonly tdeeForm = this.fb.group({
     birthDate: ['', Validators.required],
-    sex: ['male' as const, Validators.required],
+    sex: [Sex.Male, Validators.required],
     heightCm: [170, [Validators.required, Validators.min(100), Validators.max(250)]],
     weightKg: [70, [Validators.required, Validators.min(30), Validators.max(300)]],
-    activityLevel: ['moderate' as ActivityLevel, Validators.required],
+    activityLevel: [ActivityLevel.Moderate, Validators.required],
     goalWeightKg: [null as number | null],
   });
 
@@ -67,8 +67,8 @@ export class OnboardingComponent {
   readonly tdeeResult = computed(() => {
     const g = this.tdeeForm.getRawValue();
     const bdStr = this.toDateString(g.birthDate);
-    const sex = g.sex ?? 'male';
-    const activityLevel = g.activityLevel ?? 'moderate';
+    const sex = (g.sex as Sex | null) ?? Sex.Male;
+    const activityLevel = (g.activityLevel as ActivityLevel | null) ?? ActivityLevel.Moderate;
     if (!bdStr || !g.heightCm || !g.weightKg) return null;
     const age = ageFromBirthDate(bdStr);
     if (age < 10 || age > 120) return null;
@@ -116,10 +116,10 @@ export class OnboardingComponent {
 
     const data: OnboardingData = {
       birthDate,
-      sex: tdeeVal.sex ?? 'male',
+      sex: tdeeVal.sex ?? Sex.Male,
       heightCm: tdeeVal.heightCm ?? 170,
       weightKg: tdeeVal.weightKg ?? 70,
-      activityLevel: tdeeVal.activityLevel ?? 'moderate',
+      activityLevel: tdeeVal.activityLevel ?? ActivityLevel.Moderate,
       goalWeightKg: tdeeVal.goalWeightKg ?? undefined,
       programEndDate,
     };

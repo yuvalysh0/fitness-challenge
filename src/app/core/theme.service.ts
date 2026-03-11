@@ -1,23 +1,26 @@
 import { Injectable, signal, computed, effect } from '@angular/core';
+import { Theme } from './enums';
 
-export type ThemePreference = 'dark' | 'light' | 'system';
-export type EffectiveTheme = 'dark' | 'light';
+export { Theme };
+/** Resolved theme applied to the document (excludes 'system'). */
+export type EffectiveTheme = Theme.Dark | Theme.Light;
 
 const STORAGE_KEY = '75-hard-theme';
 
-function getStoredTheme(): ThemePreference {
-  if (typeof localStorage === 'undefined') return 'dark';
-  const v = localStorage.getItem(STORAGE_KEY) as ThemePreference | null;
-  return v === 'dark' || v === 'light' || v === 'system' ? v : 'dark';
+function getStoredTheme(): Theme {
+  if (typeof localStorage === 'undefined') return Theme.Dark;
+  const v = localStorage.getItem(STORAGE_KEY);
+  if (v === Theme.Dark || v === Theme.Light || v === Theme.System) return v;
+  return Theme.Dark;
 }
 
-function resolveEffective(preference: ThemePreference): EffectiveTheme {
-  if (preference === 'system') {
+function resolveEffective(preference: Theme): EffectiveTheme {
+  if (preference === Theme.System) {
     return typeof matchMedia !== 'undefined' && matchMedia('(prefers-color-scheme: light)').matches
-      ? 'light'
-      : 'dark';
+      ? Theme.Light
+      : Theme.Dark;
   }
-  return preference;
+  return preference as EffectiveTheme;
 }
 
 function applyToDocument(effective: EffectiveTheme): void {
@@ -27,7 +30,7 @@ function applyToDocument(effective: EffectiveTheme): void {
 
 @Injectable({ providedIn: 'root' })
 export class ThemeService {
-  private readonly preference = signal<ThemePreference>(getStoredTheme());
+  private readonly preference = signal<Theme>(getStoredTheme());
 
   readonly theme = this.preference.asReadonly();
   readonly effectiveTheme = computed(() => resolveEffective(this.preference()));
@@ -35,19 +38,18 @@ export class ThemeService {
   constructor() {
     applyToDocument(resolveEffective(getStoredTheme()));
     effect(() => {
-      const eff = this.effectiveTheme();
-      applyToDocument(eff);
+      applyToDocument(this.effectiveTheme());
     });
     if (typeof window !== 'undefined') {
       matchMedia('(prefers-color-scheme: light)').addEventListener('change', () => {
-        if (this.preference() === 'system') {
-          applyToDocument(resolveEffective('system'));
+        if (this.preference() === Theme.System) {
+          applyToDocument(resolveEffective(Theme.System));
         }
       });
     }
   }
 
-  setTheme(value: ThemePreference): void {
+  setTheme(value: Theme): void {
     this.preference.set(value);
     try {
       localStorage.setItem(STORAGE_KEY, value);

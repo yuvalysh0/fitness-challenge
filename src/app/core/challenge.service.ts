@@ -10,9 +10,9 @@ import type {
 import type { DayLogRow, MeasurementRow, HabitRow } from './supabase.types';
 import { ChallengeStore } from './challenge.store';
 import { AuthService } from './auth.service';
-import { SupabaseService } from './supabase.service';
-import { PROGRESS_PHOTOS_BUCKET } from './supabase.service';
+import { SupabaseService, PROGRESS_PHOTOS_BUCKET } from './supabase.service';
 import { todayString, defaultHabits, getDefaultState } from './challenge.utils';
+import { DbTable } from './enums';
 
 const STORAGE_KEY = '75-hard-challenge';
 
@@ -189,7 +189,7 @@ export class ChallengeService {
 
     if (this.auth.isAuthenticated() && userId) {
       const sb = this.supabase.supabase;
-      await sb.from('challenge_settings').upsert(
+      await sb.from(DbTable.ChallengeSettings).upsert(
         {
           user_id: userId,
           start_date: today,
@@ -198,8 +198,8 @@ export class ChallengeService {
         },
         { onConflict: 'user_id' },
       );
-      await sb.from('day_logs').delete().eq('user_id', userId);
-      await sb.from('measurements').delete().eq('user_id', userId);
+      await sb.from(DbTable.DayLogs).delete().eq('user_id', userId);
+      await sb.from(DbTable.Measurements).delete().eq('user_id', userId);
       const { data: files } = await sb.storage.from(PROGRESS_PHOTOS_BUCKET).list(userId);
       if (files?.length) {
         const paths = files.map((f) => `${userId}/${f.name}`);
@@ -237,13 +237,17 @@ export class ChallengeService {
 
     const [settingsRes, dayLogsRes, measurementsRes, habitsRes] = await Promise.all([
       sb
-        .from('challenge_settings')
+        .from(DbTable.ChallengeSettings)
         .select('start_date, end_date')
         .eq('user_id', userId)
         .maybeSingle(),
-      sb.from('day_logs').select('*').eq('user_id', userId),
-      sb.from('measurements').select('*').eq('user_id', userId).order('date', { ascending: false }),
-      sb.from('habits').select('*').eq('user_id', userId).order('order', { ascending: true }),
+      sb.from(DbTable.DayLogs).select('*').eq('user_id', userId),
+      sb
+        .from(DbTable.Measurements)
+        .select('*')
+        .eq('user_id', userId)
+        .order('date', { ascending: false }),
+      sb.from(DbTable.Habits).select('*').eq('user_id', userId).order('order', { ascending: true }),
     ]);
 
     if (measurementsRes.error) {
@@ -286,7 +290,7 @@ export class ChallengeService {
     const s = this.store.getState();
     const sb = this.supabase.supabase;
 
-    sb.from('challenge_settings')
+    sb.from(DbTable.ChallengeSettings)
       .upsert(
         {
           user_id: userId,
@@ -311,12 +315,12 @@ export class ChallengeService {
       updated_at: new Date().toISOString(),
     }));
     if (dayLogRows.length > 0) {
-      sb.from('day_logs')
+      sb.from(DbTable.DayLogs)
         .upsert(dayLogRows, { onConflict: 'user_id,date' })
         .then(() => {});
     }
 
-    sb.from('measurements')
+    sb.from(DbTable.Measurements)
       .delete()
       .eq('user_id', userId)
       .then(() => {
@@ -334,7 +338,7 @@ export class ChallengeService {
             thigh_r: m.thighR ?? null,
             notes: m.notes ?? null,
           }));
-          sb.from('measurements')
+          sb.from(DbTable.Measurements)
             .insert(rows)
             .then(() => {});
         }
@@ -348,7 +352,7 @@ export class ChallengeService {
         icon: h.icon ?? null,
         order: h.order,
       }));
-      sb.from('habits')
+      sb.from(DbTable.Habits)
         .upsert(rows, { onConflict: 'user_id,id' })
         .then(() => {});
     }

@@ -1,4 +1,6 @@
 /** Row types for Supabase tables (match migration schema). */
+import { ActivityLevel, Sex } from './enums';
+export { ActivityLevel, Sex };
 
 export interface ChallengeSettingsRow {
   id: string;
@@ -9,12 +11,9 @@ export interface ChallengeSettingsRow {
   updated_at: string;
 }
 
-/** Activity level for TDEE (Mifflin-St Jeor multipliers). */
-export type ActivityLevel = 'sedentary' | 'light' | 'moderate' | 'active' | 'very_active';
-
 export interface ProfileOnboardingRow {
   birth_date: string | null;
-  sex: 'male' | 'female' | 'other' | null;
+  sex: Sex | null;
   height_cm: number | null;
   weight_kg: number | null;
   activity_level: ActivityLevel | null;

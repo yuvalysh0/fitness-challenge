@@ -6,7 +6,7 @@ import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
 import { AuthService } from '../../core/auth.service';
 import { ChallengeService } from '../../core/challenge.service';
-import { ThemeService, type ThemePreference } from '../../core/theme.service';
+import { ThemeService, Theme } from '../../core/theme.service';
 import { PhotoOverlayComponent } from '../../shared/photo-overlay/photo-overlay.component';
 
 interface SettingsFormModel {
@@ -27,10 +27,10 @@ function emptyFormModel(): SettingsFormModel {
   };
 }
 
-const THEME_OPTIONS: { value: ThemePreference; label: string }[] = [
-  { value: 'dark', label: 'Dark' },
-  { value: 'light', label: 'Light' },
-  { value: 'system', label: 'System' },
+const THEME_OPTIONS: { value: Theme; label: string }[] = [
+  { value: Theme.Dark, label: 'Dark' },
+  { value: Theme.Light, label: 'Light' },
+  { value: Theme.System, label: 'System' },
 ];
 
 @Component({
@@ -101,7 +101,7 @@ export class SettingsComponent implements OnInit {
     this.settingsModel.update((m) => ({ ...m, [field]: value }));
   }
 
-  setTheme(value: ThemePreference): void {
+  setTheme(value: Theme): void {
     this.themeService.setTheme(value);
   }
 
