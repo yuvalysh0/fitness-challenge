@@ -1,0 +1,13 @@
+<nav class="bottom-nav" aria-label="Main navigation">
+  @for (item of items; track item.path) {
+    <a
+      [routerLink]="item.path"
+      class="bottom-nav__item"
+      [class.bottom-nav__item--active]="isActive(item.path)"
+      [attr.aria-current]="isActive(item.path) ? 'page' : null"
+    >
+      <span class="material-icons bottom-nav__icon" aria-hidden="true">{{ item.icon }}</span>
+      <span class="bottom-nav__label">{{ item.label }}</span>
+    </a>
+  }
+</nav>

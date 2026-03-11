@@ -1,10 +1,16 @@
-<div class="layout flex min-h-screen flex-col">
+<div class="layout">
+  <!-- Top nav: desktop only -->
   <header class="layout__header">
     <app-nav-bar />
   </header>
-  <main
-    class="layout__main flex-1 px-4 py-6 md:px-6 md:py-8 lg:px-8 lg:py-10 max-w-3xl lg:max-w-5xl mx-auto w-full"
-  >
-    <router-outlet />
+
+  <!-- Scrollable content -->
+  <main class="layout__main">
+    <div class="layout__content">
+      <router-outlet />
+    </div>
   </main>
+
+  <!-- Bottom tab bar: mobile only -->
+  <app-bottom-nav />
 </div>

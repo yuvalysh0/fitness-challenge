@@ -105,6 +105,13 @@ body {
   line-height: 1.5;
   color: var(--text);
   background: var(--bg);
+  // Prevent tap highlight flash on mobile
+  -webkit-tap-highlight-color: transparent;
+  // Prevent text size adjustment on orientation change
+  -webkit-text-size-adjust: 100%;
+  // Smooth scrolling everywhere
+  scroll-behavior: smooth;
+  overscroll-behavior: none;
 }
 
 input,
@@ -117,12 +124,24 @@ button {
   cursor: pointer;
 }
 
+// Larger touch targets on mobile
+@media (max-width: 767px) {
+  button,
+  a {
+    min-height: 44px;
+  }
+}
+
 .card {
   background: var(--card-bg);
   border: 1px solid var(--border);
   border-radius: var(--radius);
-  padding: 1.25rem 1.5rem;
+  padding: 1rem;
   box-shadow: var(--shadow);
+
+  @media (min-width: 768px) {
+    padding: 1.25rem 1.5rem;
+  }
 }
 
 .btn {
