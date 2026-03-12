@@ -1,0 +1,179 @@
+.tg-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 200;
+  background: #000;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  user-select: none;
+  touch-action: pan-y;
+}
+
+// ─── Top bar ──────────────────────────────────────────────────────────────
+.tg-top {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px;
+  padding-top: calc(16px + env(safe-area-inset-top, 0px));
+  background: linear-gradient(to bottom, rgba(0, 0, 0, 0.7) 0%, transparent 100%);
+  z-index: 10;
+}
+
+.tg-dots {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.tg-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.35);
+  transition:
+    background-color 0.2s,
+    transform 0.2s;
+
+  &--active {
+    background: #d63031;
+    transform: scale(1.3);
+  }
+}
+
+.tg-close {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  border: none;
+  background: rgba(255, 255, 255, 0.1);
+  color: #fff;
+  cursor: pointer;
+  transition: background-color 0.15s;
+
+  &:hover {
+    background: rgba(255, 255, 255, 0.2);
+  }
+
+  .material-icons {
+    font-size: 1.375rem;
+  }
+}
+
+// ─── Photo ────────────────────────────────────────────────────────────────
+.tg-photo-wrap {
+  flex: 1;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.tg-photo {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+  pointer-events: none;
+}
+
+.tg-no-photo {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.75rem;
+  color: rgba(255, 255, 255, 0.4);
+
+  .material-icons {
+    font-size: 3rem;
+  }
+  p {
+    margin: 0;
+    font-size: 0.875rem;
+  }
+}
+
+// ─── Arrows ────────────────────────────────────────────────────────────────
+.tg-arrow {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  border: none;
+  background: rgba(255, 255, 255, 0.12);
+  color: #fff;
+  cursor: pointer;
+  z-index: 10;
+  transition: background-color 0.15s;
+
+  &:hover {
+    background: rgba(255, 255, 255, 0.22);
+  }
+
+  .material-icons {
+    font-size: 1.75rem;
+  }
+
+  &--left {
+    left: 12px;
+  }
+  &--right {
+    right: 12px;
+  }
+}
+
+// ─── Bottom info strip ────────────────────────────────────────────────────
+.tg-info {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  padding: 20px 20px calc(20px + env(safe-area-inset-bottom, 0px));
+  background: linear-gradient(to top, rgba(0, 0, 0, 0.85) 0%, transparent 100%);
+  display: flex;
+  align-items: flex-end;
+  gap: 1rem;
+  z-index: 10;
+}
+
+.tg-info__day {
+  font-family: var(--font);
+  font-size: 1.5rem;
+  font-weight: 800;
+  color: #fff;
+  line-height: 1;
+}
+
+.tg-info__sep {
+  font-size: 1rem;
+  color: rgba(255, 255, 255, 0.5);
+  margin: 0 2px;
+}
+
+.tg-info__date {
+  font-size: 0.8125rem;
+  color: rgba(255, 255, 255, 0.6);
+  margin-bottom: 2px;
+}
+
+.tg-info__weight {
+  margin-left: auto;
+  font-family: var(--font);
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: #d63031;
+}

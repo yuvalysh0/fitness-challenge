@@ -1,7 +1,7 @@
 <div class="progress-photos">
   <h1 class="progress-photos__title m-0 mb-2 text-2xl font-bold">Progress photos</h1>
   <p class="progress-photos__subtitle m-0 mb-6 text-sm text-[var(--text-muted)]">
-    Your progression by day with weight. Newest first.
+    Your progression by day with weight. Newest first. Tap any photo to open the full gallery.
   </p>
 
   @if (entries().length === 0) {
@@ -18,7 +18,7 @@
                 <span class="progress-photos__slot-label">Front</span>
                 <div
                   class="progress-photos__image-wrap progress-photos__image-wrap--clickable"
-                  (click)="openPhotoOverlay(frontUrl)"
+                  (click)="openGallery(entry.date)"
                 >
                   <img
                     [src]="frontUrl"
@@ -33,7 +33,7 @@
                 <span class="progress-photos__slot-label">Side</span>
                 <div
                   class="progress-photos__image-wrap progress-photos__image-wrap--clickable"
-                  (click)="openPhotoOverlay(sideUrl)"
+                  (click)="openGallery(entry.date)"
                 >
                   <img
                     [src]="sideUrl"
@@ -55,5 +55,10 @@
     </div>
   }
 
-  <app-photo-overlay [url]="photoOverlayUrl()" (close)="closePhotoOverlay()" />
+  <app-transformation-gallery
+    [entries]="entries()"
+    [startIndex]="galleryStartIndex()"
+    [visible]="galleryVisible()"
+    (closed)="closeGallery()"
+  />
 </div>

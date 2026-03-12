@@ -1,0 +1,72 @@
+@if (visible() && activeEntry(); as entry) {
+  <div
+    class="tg-overlay"
+    (pointerdown)="onPointerDown($event)"
+    (pointerup)="onPointerUp($event)"
+    role="dialog"
+    aria-modal="true"
+    aria-label="Transformation gallery"
+  >
+    <!-- Top bar -->
+    <div class="tg-top">
+      <!-- Dot pagination -->
+      <div class="tg-dots" aria-label="Photo {{ activeIndex() + 1 }} of {{ total() }}">
+        @for (e of entries(); track $index) {
+          <span class="tg-dot" [class.tg-dot--active]="$index === activeIndex()"></span>
+        }
+      </div>
+
+      <!-- Close -->
+      <button type="button" class="tg-close" aria-label="Close gallery" (click)="close()">
+        <span class="material-icons" aria-hidden="true">close</span>
+      </button>
+    </div>
+
+    <!-- Photo -->
+    <div class="tg-photo-wrap">
+      @if (photoUrl(entry); as src) {
+        <img [src]="src" [alt]="'Day ' + entry.dayNumber" class="tg-photo" draggable="false" />
+      } @else {
+        <div class="tg-no-photo">
+          <span class="material-icons" aria-hidden="true">photo_camera</span>
+          <p>No front photo for this day</p>
+        </div>
+      }
+    </div>
+
+    <!-- Left arrow -->
+    @if (hasPrev()) {
+      <button
+        type="button"
+        class="tg-arrow tg-arrow--left"
+        aria-label="Previous"
+        (click)="prev(); $event.stopPropagation()"
+      >
+        <span class="material-icons" aria-hidden="true">chevron_left</span>
+      </button>
+    }
+
+    <!-- Right arrow -->
+    @if (hasNext()) {
+      <button
+        type="button"
+        class="tg-arrow tg-arrow--right"
+        aria-label="Next"
+        (click)="next(); $event.stopPropagation()"
+      >
+        <span class="material-icons" aria-hidden="true">chevron_right</span>
+      </button>
+    }
+
+    <!-- Bottom info strip -->
+    <div class="tg-info">
+      <div class="tg-info__day">
+        DAY {{ entry.dayNumber }}<span class="tg-info__sep">/</span>{{ total() }} entries
+      </div>
+      <div class="tg-info__date">{{ entry.date }}</div>
+      @if (entry.weightKg != null) {
+        <div class="tg-info__weight">{{ entry.weightKg }} kg</div>
+      }
+    </div>
+  </div>
+}

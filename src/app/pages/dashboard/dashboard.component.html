@@ -149,7 +149,9 @@
   <app-progress-reference-card
     [firstEntry]="firstPhoto()"
     [latestEntry]="latestPhoto()"
+    [allEntries]="photoRefEntries()"
     [totalDays]="totalDays()"
+    (openGallery)="openGallery($event)"
     (photoClick)="openPhotoOverlay($event)"
   />
 
@@ -173,4 +175,11 @@
   </div>
 
   <app-photo-overlay [url]="photoOverlayUrl()" (close)="closePhotoOverlay()" />
+
+  <app-transformation-gallery
+    [entries]="photoRefEntries()"
+    [startIndex]="galleryStartIndex()"
+    [visible]="galleryVisible()"
+    (closed)="closeGallery()"
+  />
 </div>

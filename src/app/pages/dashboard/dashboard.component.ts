@@ -11,6 +11,7 @@ import { QuoteService } from '../../core/quote.service';
 import type { DayLog } from '../../models';
 import { ProgressReferenceCardComponent } from './progress-reference-card/progress-reference-card.component';
 import { PhotoOverlayComponent } from '../../shared/photo-overlay/photo-overlay.component';
+import { TransformationGalleryComponent } from '../../shared/transformation-gallery/transformation-gallery.component';
 import { ConfirmDialogComponent } from '../../shared/confirm-dialog/confirm-dialog.component';
 import { todayString } from '../../core/challenge.utils';
 import { AppRoute, ActivityLevel, Sex } from '../../core/enums';
@@ -55,6 +56,7 @@ function dayNumberFromStart(startDate: string, logDate: string, totalDays: numbe
     ForgeRingComponent,
     TodayTasksComponent,
     PhotoOverlayComponent,
+    TransformationGalleryComponent,
   ],
   templateUrl: './dashboard.component.html',
   styleUrl: './dashboard.component.scss',
@@ -145,6 +147,19 @@ export class DashboardComponent implements OnInit {
   }
   closePhotoOverlay(): void {
     this.photoOverlayUrl.set(null);
+  }
+
+  // Transformation gallery
+  readonly galleryVisible = signal(false);
+  readonly galleryStartIndex = signal(0);
+
+  openGallery(index: number): void {
+    this.galleryStartIndex.set(index);
+    this.galleryVisible.set(true);
+  }
+
+  closeGallery(): void {
+    this.galleryVisible.set(false);
   }
 
   readonly weightChartData = computed(() => {

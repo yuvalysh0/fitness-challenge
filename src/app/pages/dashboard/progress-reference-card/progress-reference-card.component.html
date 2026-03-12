@@ -16,7 +16,7 @@
                     [src]="src"
                     alt="Day 1 front"
                     class="progress-ref__img progress-ref__img--clickable"
-                    (click)="photoClick.emit(src)"
+                    (click)="openGalleryAt(entry)"
                   />
                 } @else {
                   <div class="progress-ref__empty">
@@ -33,7 +33,7 @@
                     [src]="src"
                     alt="Day 1 side"
                     class="progress-ref__img progress-ref__img--clickable"
-                    (click)="photoClick.emit(src)"
+                    (click)="openGalleryAt(entry)"
                   />
                 } @else {
                   <div class="progress-ref__empty">
@@ -77,7 +77,7 @@
                     [src]="src"
                     [alt]="'Day ' + entry.dayNumber + ' front'"
                     class="progress-ref__img progress-ref__img--clickable"
-                    (click)="photoClick.emit(src)"
+                    (click)="openGalleryAt(entry)"
                   />
                 } @else {
                   <div class="progress-ref__empty">
@@ -94,7 +94,7 @@
                     [src]="src"
                     [alt]="'Day ' + entry.dayNumber + ' side'"
                     class="progress-ref__img progress-ref__img--clickable"
-                    (click)="photoClick.emit(src)"
+                    (click)="openGalleryAt(entry)"
                   />
                 } @else {
                   <div class="progress-ref__empty">

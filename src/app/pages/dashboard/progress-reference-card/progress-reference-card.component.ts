@@ -27,10 +27,18 @@ export class ProgressReferenceCardComponent {
 
   readonly firstEntry = input<ProgressRefEntry | null>(null);
   readonly latestEntry = input<ProgressRefEntry | null>(null);
+  readonly allEntries = input<ProgressRefEntry[]>([]);
   readonly totalDays = input.required<number>();
 
-  /** Emits the image URL when a photo is clicked (for overlay). */
+  /** Emits the index into allEntries to open the transformation gallery. */
+  readonly openGallery = output<number>();
+  /** Legacy single-photo click (kept for backward compat). */
   readonly photoClick = output<string>();
+
+  openGalleryAt(entry: ProgressRefEntry): void {
+    const idx = this.allEntries().findIndex((e) => e.date === entry.date);
+    this.openGallery.emit(idx >= 0 ? idx : 0);
+  }
 
   getPhotoUrl(entry: ProgressRefEntry, type: ProgressPhotoType): string {
     if (type === 'front') {
