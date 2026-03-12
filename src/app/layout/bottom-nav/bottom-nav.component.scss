@@ -1,22 +1,25 @@
 $bar-height: 62px;
 $fab-size: 56px;
-$fab-elevation: 18px; // how much FAB pops above bar
+$fab-elevation: 20px; // how much FAB pops above bar top
 
 .bottom-nav {
   position: fixed;
-  bottom: 16px;
-  left: 16px;
-  right: 16px;
+  // Flush to the absolute bottom — avoids iOS Safari viewport-jump on scroll
+  bottom: 0;
+  left: 0;
+  right: 0;
   z-index: 100;
-  height: $bar-height;
   display: flex;
   align-items: center;
   background: var(--card-bg);
-  border: 1px solid var(--border);
-  border-radius: 9999px;
-  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.1);
-  padding: 0 8px;
-  padding-bottom: env(safe-area-inset-bottom, 0px);
+  border-top: 1px solid var(--border);
+  // Rounded top corners give the "floating" feel without the position instability
+  border-radius: 20px 20px 0 0;
+  box-shadow: 0 -2px 20px rgba(0, 0, 0, 0.08);
+  // Safe area padding so content clears iPhone home indicator
+  padding: 0 8px env(safe-area-inset-bottom, 0px);
+  // Fixed height for the visible bar portion
+  min-height: $bar-height;
   overflow: visible;
 
   @media (min-width: 768px) {
@@ -32,7 +35,7 @@ $fab-elevation: 18px; // how much FAB pops above bar
   align-items: center;
   justify-content: center;
   gap: 4px;
-  padding: 8px 0;
+  padding: 10px 0;
   text-decoration: none;
   color: var(--text-muted);
   transition: color 0.2s;
@@ -57,7 +60,7 @@ $fab-elevation: 18px; // how much FAB pops above bar
   line-height: 1;
 }
 
-// Active dot indicator (shown below icon when active)
+// Active dot indicator
 .bottom-nav__dot {
   width: 4px;
   height: 4px;
@@ -82,6 +85,7 @@ $fab-elevation: 18px; // how much FAB pops above bar
 
 .bottom-nav__fab {
   position: absolute;
+  // Pop above the top of the bar
   top: calc(-#{$fab-elevation} - #{$bar-height * 0.5});
   width: $fab-size;
   height: $fab-size;
@@ -95,9 +99,10 @@ $fab-elevation: 18px; // how much FAB pops above bar
   transition:
     transform 0.15s,
     box-shadow 0.15s;
+  // Ring uses the page background color to create the notch illusion
   box-shadow:
     0 0 0 6px var(--bg),
-    0 6px 20px rgba(51, 120, 254, 0.45);
+    0 6px 20px rgba(51, 120, 254, 0.4);
 
   &:active {
     transform: scale(0.93);
@@ -114,10 +119,10 @@ $fab-elevation: 18px; // how much FAB pops above bar
   font-size: 1.75rem;
 }
 
-// Dot below the FAB slot (when daily is active)
+// Dot below FAB slot when daily log is active
 .bottom-nav__dot--fab {
   position: absolute;
-  bottom: 8px;
+  bottom: 10px;
   opacity: 0;
   transform: scale(0);
   transition:
