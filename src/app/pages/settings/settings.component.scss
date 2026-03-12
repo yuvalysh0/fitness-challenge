@@ -260,6 +260,83 @@
   opacity: 0.65;
 }
 
+// ─── Challenge Console ─────────────────────────────────────────────────────
+.settings__console {
+  border-color: rgba(214, 48, 49, 0.25);
+}
+
+.settings__console-desc {
+  margin: 0;
+  font-size: 0.8125rem;
+  color: var(--text-muted);
+}
+
+.settings__console-action {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 0.875rem 0;
+  border-bottom: 1px solid var(--border);
+
+  &:last-child {
+    border-bottom: none;
+  }
+
+  &--danger .settings__console-action-name {
+    color: #d63031;
+  }
+}
+
+.settings__console-action-info {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.settings__console-action-name {
+  font-size: 0.875rem;
+  font-weight: 700;
+  font-family: var(--font);
+  color: var(--text);
+}
+
+.settings__console-action-desc {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+}
+
+.settings__console-btn {
+  flex-shrink: 0;
+  padding: 0.5rem 1rem;
+  border-radius: var(--radius-sm);
+  font-family: var(--font);
+  font-size: 0.6875rem;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  cursor: pointer;
+  border: none;
+  transition: background-color 0.15s;
+
+  &--warn {
+    background: rgba(251, 146, 60, 0.15);
+    color: #fb923c;
+    &:hover {
+      background: rgba(251, 146, 60, 0.25);
+    }
+  }
+
+  &--danger {
+    background: rgba(214, 48, 49, 0.15);
+    color: #d63031;
+    &:hover {
+      background: rgba(214, 48, 49, 0.25);
+    }
+  }
+}
+
 // ─── Sign out ──────────────────────────────────────────────────────────────
 .settings__signout {
   display: flex;

@@ -145,6 +145,46 @@
     </button>
   </section>
 
+  <!-- ─── Challenge Console ──────────────────────────────────────── -->
+  <section class="settings__section settings__console">
+    <h2 class="settings__section-title">Challenge Console</h2>
+    <p class="settings__console-desc">
+      These actions affect your challenge data and cannot be undone.
+    </p>
+
+    <div class="settings__console-action">
+      <div class="settings__console-action-info">
+        <span class="settings__console-action-name">Restart from Day 1</span>
+        <span class="settings__console-action-desc"
+          >Resets start date to today. Your logs and photos are kept.</span
+        >
+      </div>
+      <button
+        type="button"
+        class="settings__console-btn settings__console-btn--warn"
+        (click)="restartSliderVisible.set(true)"
+      >
+        Restart
+      </button>
+    </div>
+
+    <div class="settings__console-action settings__console-action--danger">
+      <div class="settings__console-action-info">
+        <span class="settings__console-action-name">Full Reset</span>
+        <span class="settings__console-action-desc"
+          >Deletes all logs, photos, and measurements. Irreversible.</span
+        >
+      </div>
+      <button
+        type="button"
+        class="settings__console-btn settings__console-btn--danger"
+        (click)="resetSliderVisible.set(true)"
+      >
+        Reset
+      </button>
+    </div>
+  </section>
+
   <!-- ─── Sign out ──────────────────────────────────────────────── -->
   <button type="button" class="settings__signout" (click)="signOut()">
     <span class="material-icons" aria-hidden="true">logout</span>
@@ -152,4 +192,24 @@
   </button>
 
   <app-photo-overlay [url]="photoOverlayUrl()" (close)="closePhotoOverlay()" />
+
+  <!-- Restart slider -->
+  <app-slide-to-confirm
+    [visible]="restartSliderVisible()"
+    title="RESTART FROM DAY 1"
+    message="Your start date will be set to today. All your existing logs, photos, and measurements will be kept."
+    slideLabel="SLIDE TO RESTART"
+    (confirmed)="onRestartConfirmed()"
+    (cancelled)="restartSliderVisible.set(false)"
+  />
+
+  <!-- Reset slider -->
+  <app-slide-to-confirm
+    [visible]="resetSliderVisible()"
+    title="CONSOLE CONFIRMATION — FULL RESET"
+    message="This will permanently delete all daily logs, progress photos, and measurements. You will restart at Day 1. This cannot be undone."
+    slideLabel="SLIDE TO RESET EVERYTHING"
+    (confirmed)="onResetConfirmed()"
+    (cancelled)="resetSliderVisible.set(false)"
+  />
 </div>

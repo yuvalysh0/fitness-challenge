@@ -1,0 +1,52 @@
+@if (visible()) {
+  <!-- Backdrop -->
+  <div class="stc-overlay">
+    <div class="stc-modal">
+      <!-- Warning header -->
+      <div class="stc-header">
+        <span class="material-icons stc-header__icon" aria-hidden="true">warning</span>
+        <h2 class="stc-header__title">{{ title() }}</h2>
+      </div>
+
+      <!-- Warning message -->
+      <p class="stc-message">{{ message() }}</p>
+
+      <!-- Slide track -->
+      <div class="stc-track-wrap">
+        <div
+          class="stc-track"
+          #slideTrack
+          [class.stc-track--ready]="dragPct() >= 85"
+          [class.stc-track--confirming]="isConfirming()"
+        >
+          <!-- Fill -->
+          <div class="stc-track__fill" [style.width.px]="dragX() + 28"></div>
+
+          <!-- Label -->
+          <span class="stc-track__label" [style.opacity]="1 - dragPct() / 100">
+            {{ slideLabel() }}
+          </span>
+
+          <!-- Handle -->
+          <div
+            class="stc-handle"
+            [style.transform]="'translateX(' + dragX() + 'px)'"
+            (pointerdown)="onPointerDown($event)"
+            (pointermove)="onPointerMove($event)"
+            (pointerup)="onPointerUp()"
+            (pointercancel)="onPointerUp()"
+            role="slider"
+            aria-label="Slide to confirm"
+          >
+            <span class="material-icons stc-handle__icon" aria-hidden="true">
+              {{ dragPct() >= 85 ? 'check' : 'chevron_right' }}
+            </span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Cancel -->
+      <button type="button" class="stc-cancel" (click)="cancel()">Cancel</button>
+    </div>
+  </div>
+}

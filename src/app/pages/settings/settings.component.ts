@@ -6,6 +6,8 @@ import { MatButtonModule } from '@angular/material/button';
 import { AuthService } from '../../core/auth.service';
 import { ChallengeService } from '../../core/challenge.service';
 import { PhotoOverlayComponent } from '../../shared/photo-overlay/photo-overlay.component';
+import { SlideToConfirmComponent } from '../../shared/slide-to-confirm/slide-to-confirm.component';
+import { AppRoute } from '../../core/enums';
 
 interface SettingsFormModel {
   readonly fullName: string;
@@ -28,7 +30,13 @@ function emptyFormModel(): SettingsFormModel {
 @Component({
   selector: 'app-settings',
   standalone: true,
-  imports: [FormField, FormsModule, MatButtonModule, PhotoOverlayComponent],
+  imports: [
+    FormField,
+    FormsModule,
+    MatButtonModule,
+    PhotoOverlayComponent,
+    SlideToConfirmComponent,
+  ],
   templateUrl: './settings.component.html',
   styleUrl: './settings.component.scss',
 })
@@ -49,6 +57,21 @@ export class SettingsComponent implements OnInit {
   readonly startDate = this.challenge.startDate;
   readonly currentDay = this.challenge.currentDay;
   readonly totalDays = this.challenge.totalDays;
+
+  // Challenge Console
+  readonly restartSliderVisible = signal(false);
+  readonly resetSliderVisible = signal(false);
+
+  onRestartConfirmed(): void {
+    this.restartSliderVisible.set(false);
+    this.challenge.restartChallenge();
+  }
+
+  async onResetConfirmed(): Promise<void> {
+    this.resetSliderVisible.set(false);
+    await this.challenge.resetChallenge();
+    this.router.navigate([AppRoute.Onboarding]);
+  }
 
   ngOnInit(): void {
     const p = this.auth.profile();

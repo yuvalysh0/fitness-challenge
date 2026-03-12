@@ -1,7 +1,6 @@
 import { DecimalPipe } from '@angular/common';
 import { Component, inject, computed, signal, OnInit } from '@angular/core';
 import { Router, RouterLink } from '@angular/router';
-import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { MatButtonModule } from '@angular/material/button';
 import { BaseChartDirective } from 'ng2-charts';
 import type { ChartConfiguration, ChartType } from 'chart.js';
@@ -12,7 +11,6 @@ import type { DayLog } from '../../models';
 import { ProgressReferenceCardComponent } from './progress-reference-card/progress-reference-card.component';
 import { PhotoOverlayComponent } from '../../shared/photo-overlay/photo-overlay.component';
 import { TransformationGalleryComponent } from '../../shared/transformation-gallery/transformation-gallery.component';
-import { ConfirmDialogComponent } from '../../shared/confirm-dialog/confirm-dialog.component';
 import { todayString } from '../../core/challenge.utils';
 import { AppRoute, ActivityLevel, Sex } from '../../core/enums';
 import { ForgeRingComponent } from './forge-ring/forge-ring.component';
@@ -47,7 +45,6 @@ function dayNumberFromStart(startDate: string, logDate: string, totalDays: numbe
   selector: 'app-dashboard',
   standalone: true,
   imports: [
-    MatDialogModule,
     MatButtonModule,
     BaseChartDirective,
     RouterLink,
@@ -65,7 +62,6 @@ export class DashboardComponent implements OnInit {
   protected readonly AppRoute = AppRoute;
   private readonly store = inject(ChallengeService);
   private readonly router = inject(Router);
-  private readonly dialog = inject(MatDialog);
   readonly auth = inject(AuthService);
   readonly quoteService = inject(QuoteService);
 
@@ -262,41 +258,5 @@ export class DashboardComponent implements OnInit {
   formatChartDate(dateStr: string): string {
     const d = new Date(dateStr + 'Z');
     return d.toLocaleDateString(undefined, { month: 'short', day: 'numeric' });
-  }
-
-  openRestartDialog(): void {
-    const ref = this.dialog.open(ConfirmDialogComponent, {
-      data: {
-        title: "I'm restarting",
-        message:
-          'Set your start date to today (Day 1)? Your logs, progress photos, and measurements will be kept.',
-        confirmText: 'Restart start date',
-        cancelText: 'Cancel',
-        confirmWarn: false,
-      },
-      width: 'min(400px, 95vw)',
-    });
-    ref.afterClosed().subscribe((confirmed) => {
-      if (confirmed) this.store.restartChallenge();
-    });
-  }
-
-  openResetDialog(): void {
-    const ref = this.dialog.open(ConfirmDialogComponent, {
-      data: {
-        title: 'Reset challenge',
-        message:
-          'Are you sure? This will delete all your daily logs, progress photos, and measurements, and restart the challenge from Day 1. This cannot be undone.',
-        confirmText: 'Reset',
-        cancelText: 'Cancel',
-        confirmWarn: true,
-      },
-      width: 'min(400px, 95vw)',
-    });
-    ref.afterClosed().subscribe(async (confirmed) => {
-      if (!confirmed) return;
-      await this.store.resetChallenge();
-      this.router.navigate([AppRoute.Onboarding]);
-    });
   }
 }

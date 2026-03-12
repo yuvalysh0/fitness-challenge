@@ -155,25 +155,6 @@
     (photoClick)="openPhotoOverlay($event)"
   />
 
-  <!-- ─── Quick actions ────────────────────────────────────────── -->
-  <div class="forge-actions">
-    <div class="grid grid-cols-2 gap-3">
-      <a class="btn btn--primary" [routerLink]="AppRoute.Daily">Log today</a>
-      <a class="btn btn--secondary" [routerLink]="AppRoute.Measurements">Measurements</a>
-    </div>
-    <div class="forge-reset-card">
-      <h3 class="forge-reset-card__title">Restart challenge</h3>
-      <div class="grid grid-cols-2 gap-2">
-        <button type="button" class="btn btn--secondary" (click)="openRestartDialog()">
-          I'm restarting
-        </button>
-        <button type="button" class="btn btn--error" (click)="openResetDialog()">
-          Reset challenge
-        </button>
-      </div>
-    </div>
-  </div>
-
   <app-photo-overlay [url]="photoOverlayUrl()" (close)="closePhotoOverlay()" />
 
   <app-transformation-gallery
