@@ -1,0 +1,14 @@
+<div class="hub">
+  @for (card of cards; track card.route) {
+    <a [routerLink]="card.route" class="hub__card">
+      <div class="hub__icon-wrap">
+        <span class="material-icons hub__icon" aria-hidden="true">{{ card.icon }}</span>
+      </div>
+      <div class="hub__info">
+        <span class="hub__title">{{ card.title }}</span>
+        <span class="hub__subtitle">{{ card.subtitle }}</span>
+      </div>
+      <span class="material-icons hub__arrow" aria-hidden="true">chevron_right</span>
+    </a>
+  }
+</div>

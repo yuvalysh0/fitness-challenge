@@ -1,9 +1,6 @@
 import { Component, inject, signal, effect } from '@angular/core';
 import { Router } from '@angular/router';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
-import { MatCardModule } from '@angular/material/card';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatInputModule } from '@angular/material/input';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { AuthService } from '../../core/auth.service';
 import { AppRoute } from '../../core/enums';
@@ -11,13 +8,7 @@ import { AppRoute } from '../../core/enums';
 @Component({
   selector: 'app-auth',
   standalone: true,
-  imports: [
-    ReactiveFormsModule,
-    MatCardModule,
-    MatFormFieldModule,
-    MatInputModule,
-    MatProgressSpinnerModule,
-  ],
+  imports: [ReactiveFormsModule, MatProgressSpinnerModule],
   templateUrl: './auth.component.html',
   styleUrl: './auth.component.scss',
 })

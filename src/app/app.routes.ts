@@ -29,6 +29,11 @@ export const routes: Routes = [
           import('./pages/daily-log/daily-log.component').then((m) => m.DailyLogComponent),
       },
       {
+        path: 'progress-hub',
+        loadComponent: () =>
+          import('./pages/progress-hub/progress-hub.component').then((m) => m.ProgressHubComponent),
+      },
+      {
         path: 'progress',
         loadComponent: () =>
           import('./pages/progress-photos/progress-photos.component').then(

@@ -38,9 +38,14 @@
 
   <!-- Right items -->
   <a
-    [routerLink]="AppRoute.Progress"
+    [routerLink]="AppRoute.ProgressHub"
     class="bottom-nav__item"
-    [class.bottom-nav__item--active]="isActive(AppRoute.Progress)"
+    [class.bottom-nav__item--active]="
+      isActive(AppRoute.ProgressHub) ||
+      isActive(AppRoute.Progress) ||
+      isActive(AppRoute.Measurements) ||
+      isActive(AppRoute.History)
+    "
     aria-label="Progress"
   >
     <span class="material-icons bottom-nav__icon" aria-hidden="true">trending_up</span>

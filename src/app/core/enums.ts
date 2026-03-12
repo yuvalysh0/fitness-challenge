@@ -48,6 +48,7 @@ export const AppRoute = {
   Login: '/login',
   Onboarding: '/onboarding',
   Daily: '/daily',
+  ProgressHub: '/progress-hub',
   Progress: '/progress',
   Measurements: '/measurements',
   Habits: '/habits',

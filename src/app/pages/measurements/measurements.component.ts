@@ -1,8 +1,4 @@
 import { Component, inject, signal } from '@angular/core';
-import { MatButtonModule } from '@angular/material/button';
-import { MatCardModule } from '@angular/material/card';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatInputModule } from '@angular/material/input';
 import { form, FormField } from '@angular/forms/signals';
 import { ChallengeService } from '../../core/challenge.service';
 import { MeasurementSet } from '../../models';
@@ -37,7 +33,7 @@ function emptyFormModel(): MeasurementFormModel {
 @Component({
   selector: 'app-measurements',
   standalone: true,
-  imports: [MatButtonModule, MatCardModule, MatFormFieldModule, MatInputModule, FormField],
+  imports: [FormField],
   templateUrl: './measurements.component.html',
   styleUrl: './measurements.component.scss',
 })
@@ -46,6 +42,15 @@ export class MeasurementsComponent {
 
   readonly measurements = this.store.measurements;
   readonly measurementModel = signal<MeasurementFormModel>(emptyFormModel());
+  readonly measurementFields: { key: keyof MeasurementFormModel; label: string }[] = [
+    { key: 'chest', label: 'Chest (cm)' },
+    { key: 'waist', label: 'Waist (cm)' },
+    { key: 'hips', label: 'Hips (cm)' },
+    { key: 'armL', label: 'Arm L (cm)' },
+    { key: 'armR', label: 'Arm R (cm)' },
+    { key: 'thighL', label: 'Thigh L (cm)' },
+    { key: 'thighR', label: 'Thigh R (cm)' },
+  ];
   readonly measurementForm = form(this.measurementModel);
   readonly showForm = signal(false);
 

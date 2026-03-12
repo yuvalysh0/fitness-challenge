@@ -1,9 +1,7 @@
 import { Component, inject, signal, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { form, FormField } from '@angular/forms/signals';
-import { MatCardModule } from '@angular/material/card';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatInputModule } from '@angular/material/input';
+import { FormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { AuthService } from '../../core/auth.service';
 import { ChallengeService } from '../../core/challenge.service';
@@ -30,19 +28,12 @@ function emptyFormModel(): SettingsFormModel {
 @Component({
   selector: 'app-settings',
   standalone: true,
-  imports: [
-    FormField,
-    MatCardModule,
-    MatFormFieldModule,
-    MatInputModule,
-    MatButtonModule,
-    PhotoOverlayComponent,
-  ],
+  imports: [FormField, FormsModule, MatButtonModule, PhotoOverlayComponent],
   templateUrl: './settings.component.html',
   styleUrl: './settings.component.scss',
 })
 export class SettingsComponent implements OnInit {
-  private readonly auth = inject(AuthService);
+  readonly auth = inject(AuthService);
   private readonly challenge = inject(ChallengeService);
   private readonly router = inject(Router);
 
@@ -56,6 +47,8 @@ export class SettingsComponent implements OnInit {
 
   readonly profile = this.auth.profile;
   readonly startDate = this.challenge.startDate;
+  readonly currentDay = this.challenge.currentDay;
+  readonly totalDays = this.challenge.totalDays;
 
   ngOnInit(): void {
     const p = this.auth.profile();

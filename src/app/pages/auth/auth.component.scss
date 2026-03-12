@@ -1,40 +1,122 @@
 .auth {
-  &__avatar-field {
-    margin-bottom: 0.25rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 100dvh;
+  padding: 1.5rem 1rem;
+  background: var(--bg);
+}
+
+.auth__card {
+  width: 100%;
+  max-width: 400px;
+  background: var(--card-bg);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 2rem 1.5rem;
+  box-shadow: 0 8px 40px rgba(0, 0, 0, 0.5);
+}
+
+.auth__header {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 2rem;
+  text-align: center;
+}
+
+.auth__logo {
+  width: 64px;
+  height: 64px;
+  border-radius: 16px;
+  object-fit: contain;
+}
+
+.auth__title {
+  margin: 0;
+  font-family: var(--font);
+  font-size: 2rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  color: var(--text);
+}
+
+.auth__subtitle {
+  margin: 0;
+  font-size: 0.875rem;
+  color: var(--text-muted);
+}
+
+.auth__form {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.auth__error {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1rem;
+  border-radius: var(--radius-sm);
+  background: var(--message-error-bg);
+  color: var(--message-error-text);
+  font-size: 0.875rem;
+  font-weight: 600;
+
+  .material-icons {
+    font-size: 1.125rem;
+    flex-shrink: 0;
   }
-  &__avatar-label {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    gap: 0.5rem;
-    cursor: pointer;
-    font-size: 0.875rem;
-    color: var(--text-muted);
+}
+
+.auth__avatar-field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.375rem;
+}
+
+.auth__avatar-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.375rem;
+  font-size: 0.8125rem;
+  color: var(--text-muted);
+  cursor: pointer;
+  transition: color 0.15s;
+
+  &:hover {
+    color: #d63031;
   }
-  &__avatar-input {
-    position: absolute;
-    width: 0.1px;
-    height: 0.1px;
-    opacity: 0;
-    overflow: hidden;
-    z-index: -1;
+
+  .material-icons {
+    font-size: 1rem;
   }
-  &__avatar-text {
-    text-decoration: underline;
-    &:hover {
-      color: var(--accent);
-    }
-  }
-  &__avatar-filename {
-    font-size: 0.8125rem;
-    color: var(--text);
-  }
-  &__spinner {
-    display: inline-block;
-    margin-right: 8px;
-    vertical-align: middle;
-  }
-  &__submit :host ::ng-deep .mat-mdc-button-touch-target {
-    height: 40px;
-  }
+}
+
+.auth__avatar-input {
+  position: absolute;
+  width: 0.1px;
+  height: 0.1px;
+  opacity: 0;
+  z-index: -1;
+}
+
+.auth__avatar-filename {
+  font-size: 0.75rem;
+  color: #d63031;
+}
+
+.auth__submit {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  margin-top: 0.5rem;
+}
+
+.auth__toggle {
+  width: 100%;
 }

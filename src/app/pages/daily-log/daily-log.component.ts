@@ -1,12 +1,7 @@
 import { Component, inject, computed, signal } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { FormsModule } from '@angular/forms';
-import { MatCardModule } from '@angular/material/card';
 import { MatCheckboxModule } from '@angular/material/checkbox';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatInputModule } from '@angular/material/input';
-import { MatButtonModule } from '@angular/material/button';
-import { MatIconModule } from '@angular/material/icon';
 import type { ProgressPhotoType } from '../../models';
 import { ChallengeService } from '../../core/challenge.service';
 import { AuthService } from '../../core/auth.service';
@@ -17,16 +12,7 @@ import { PhotoOverlayComponent } from '../../shared/photo-overlay/photo-overlay.
 @Component({
   selector: 'app-daily-log',
   standalone: true,
-  imports: [
-    FormsModule,
-    MatCardModule,
-    MatCheckboxModule,
-    MatFormFieldModule,
-    MatInputModule,
-    MatButtonModule,
-    MatIconModule,
-    PhotoOverlayComponent,
-  ],
+  imports: [FormsModule, MatCheckboxModule, PhotoOverlayComponent],
   templateUrl: './daily-log.component.html',
   styleUrl: './daily-log.component.scss',
 })

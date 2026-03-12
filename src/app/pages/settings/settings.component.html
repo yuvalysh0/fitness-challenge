@@ -1,136 +1,152 @@
 <div class="settings">
-  <h1 class="settings__title m-0 mb-2 text-2xl font-bold">Settings</h1>
-  <p class="settings__subtitle m-0 mb-6 text-sm text-(--text-muted)">
-    Update your profile, goals, and program settings.
-  </p>
+  @if (message(); as msg) {
+    <div
+      class="settings__toast"
+      [class.settings__toast--success]="msg.type === 'success'"
+      [class.settings__toast--error]="msg.type === 'error'"
+      role="alert"
+    >
+      <span class="material-icons settings__toast-icon" aria-hidden="true">
+        {{ msg.type === 'success' ? 'check_circle' : 'error' }}
+      </span>
+      {{ msg.text }}
+    </div>
+  }
 
-  <!-- Profile card -->
-  <mat-card class="settings__card rounded-xl p-5 shadow-sm">
-    <mat-card-header>
-      <mat-card-title class="text-base font-semibold text-(--text-muted)">Profile</mat-card-title>
-    </mat-card-header>
-    <mat-card-content>
-      @if (message(); as msg) {
-        <p
-          class="settings__message m-0 mb-4 mt-2 rounded-lg px-3 py-2 text-sm"
-          [class.settings__message--success]="msg.type === 'success'"
-          [class.settings__message--error]="msg.type === 'error'"
-          role="alert"
-        >
-          {{ msg.text }}
-        </p>
-      }
-
-      <!-- Avatar -->
-      <div class="settings__avatar-section mb-6">
-        <label class="settings__avatar-label">Profile photo</label>
-        <div class="settings__avatar-row">
-          @if (avatarUrl(); as url) {
-            <img
-              [src]="url"
-              alt="Profile photo"
-              class="settings__avatar-preview settings__avatar-preview--clickable"
-              (click)="openPhotoOverlay(url)"
-            />
-          } @else {
-            <div class="settings__avatar-placeholder">
-              <span class="material-icons settings__avatar-icon" aria-hidden="true">person</span>
-            </div>
-          }
-          <div class="settings__avatar-actions">
-            <label class="settings__file-label">
-              <input
-                type="file"
-                accept="image/*"
-                class="settings__file-input"
-                (change)="onAvatarChange($event)"
-              />
-              {{ avatarFile() ? 'Change photo' : 'Upload photo' }}
-            </label>
-            @if (avatarFile(); as file) {
-              <span class="settings__file-name">{{ file.name }}</span>
-            }
-          </div>
+  <!-- ─── Hero profile card ──────────────────────────────────────── -->
+  <div class="settings__hero">
+    <!-- Avatar -->
+    <label class="settings__hero-avatar-wrap" aria-label="Change profile photo">
+      @if (avatarUrl(); as url) {
+        <img [src]="url" alt="Profile photo" class="settings__hero-avatar" />
+      } @else {
+        <div class="settings__hero-avatar settings__hero-avatar--placeholder">
+          <span class="material-icons" aria-hidden="true">person</span>
         </div>
+      }
+      <div class="settings__hero-avatar-overlay" aria-hidden="true">
+        <span class="material-icons">photo_camera</span>
       </div>
+      <input
+        type="file"
+        accept="image/*"
+        class="settings__file-input"
+        (change)="onAvatarChange($event)"
+      />
+    </label>
 
-      <!-- Display name -->
-      <mat-form-field appearance="outline" class="block w-full mb-3">
-        <mat-label>Display name</mat-label>
-        <input
-          matInput
-          type="text"
-          [formField]="settingsForm.fullName"
-          placeholder="How we greet you on the dashboard"
-        />
-      </mat-form-field>
+    <!-- Name -->
+    <div class="settings__hero-info">
+      <p class="settings__hero-name">
+        {{ profile()?.full_name?.trim() || (auth.user()?.email ?? '').split('@')[0] || 'Athlete' }}
+      </p>
+      <p class="settings__hero-sub">YOUR FORGE PROFILE</p>
+    </div>
 
-      <!-- Date of birth -->
-      <mat-form-field appearance="outline" class="block w-full mb-3">
-        <mat-label>Date of birth</mat-label>
-        <input
-          matInput
-          type="date"
-          [value]="settingsModel().birthDate"
-          (change)="onDateChange('birthDate', $event)"
-        />
-      </mat-form-field>
+    <!-- Day counter -->
+    <div class="settings__hero-day">
+      <span class="settings__hero-day-val">{{ currentDay() }}</span>
+      <span class="settings__hero-day-sep">/</span>
+      <span class="settings__hero-day-total">{{ totalDays() }}</span>
+    </div>
+  </div>
 
-      <!-- Goal weight -->
-      <mat-form-field appearance="outline" class="block w-full">
-        <mat-label>Goal weight (kg)</mat-label>
+  <!-- ─── Profile section ────────────────────────────────────────── -->
+  <section class="settings__section">
+    <h2 class="settings__section-title">Profile</h2>
+
+    <div class="field">
+      <label class="field__label" for="fullName">Display name</label>
+      <input
+        id="fullName"
+        class="field__input"
+        type="text"
+        [formField]="settingsForm.fullName"
+        placeholder="How we greet you on the dashboard"
+        autocomplete="name"
+      />
+    </div>
+
+    <div class="field">
+      <label class="field__label" for="birthDate">Date of birth</label>
+      <input
+        id="birthDate"
+        class="field__input field__input--date"
+        type="date"
+        [value]="settingsModel().birthDate"
+        (change)="onDateChange('birthDate', $event)"
+      />
+    </div>
+
+    <div class="field">
+      <label class="field__label" for="goalWeight">Goal weight</label>
+      <div class="field__input-wrap">
         <input
-          matInput
+          id="goalWeight"
+          class="field__input"
           type="number"
           step="0.1"
           [formField]="settingsForm.goalWeightKg"
           placeholder="e.g. 65"
         />
-      </mat-form-field>
-
-      <div class="settings__actions mt-4">
-        <button class="btn btn--primary" type="button" [disabled]="loading()" (click)="save()">
-          {{ loading() ? 'Saving…' : 'Save' }}
-        </button>
+        <span class="field__unit">kg</span>
       </div>
-    </mat-card-content>
-  </mat-card>
+    </div>
 
-  <!-- Program card -->
-  <mat-card class="settings__card rounded-xl p-5 shadow-sm mt-6">
-    <mat-card-header>
-      <mat-card-title class="text-base font-semibold text-(--text-muted)">Program</mat-card-title>
-    </mat-card-header>
-    <mat-card-content>
-      <!-- Challenge end date -->
-      <mat-form-field appearance="outline" class="block w-full mb-3">
-        <mat-label>Challenge end date</mat-label>
-        <input
-          matInput
-          type="date"
-          [value]="settingsModel().challengeEndDate"
-          (change)="onDateChange('challengeEndDate', $event)"
-        />
-        <mat-hint>Start date: {{ startDate() }}</mat-hint>
-      </mat-form-field>
+    <button
+      class="btn btn--primary settings__save-btn"
+      type="button"
+      [disabled]="loading()"
+      (click)="save()"
+    >
+      {{ loading() ? 'Saving…' : 'Save changes' }}
+    </button>
+  </section>
 
-      <!-- Starting weight -->
-      <mat-form-field appearance="outline" class="block w-full">
-        <mat-label>Starting weight (kg)</mat-label>
+  <!-- ─── Program section ───────────────────────────────────────── -->
+  <section class="settings__section">
+    <h2 class="settings__section-title">Program</h2>
+
+    <div class="field">
+      <label class="field__label" for="endDate">Challenge end date</label>
+      <input
+        id="endDate"
+        class="field__input field__input--date"
+        type="date"
+        [value]="settingsModel().challengeEndDate"
+        (change)="onDateChange('challengeEndDate', $event)"
+      />
+      <span class="field__hint">Start: {{ startDate() }}</span>
+    </div>
+
+    <div class="field">
+      <label class="field__label" for="startWeight">Starting weight</label>
+      <div class="field__input-wrap">
         <input
-          matInput
+          id="startWeight"
+          class="field__input"
           type="number"
           step="0.1"
           [formField]="settingsForm.startingWeightKg"
           placeholder="Weight on day 1"
         />
-        <mat-hint>Logged on {{ startDate() }}</mat-hint>
-      </mat-form-field>
-    </mat-card-content>
-  </mat-card>
+        <span class="field__unit">kg</span>
+      </div>
+      <span class="field__hint">Logged on {{ startDate() }}</span>
+    </div>
 
-  <!-- Sign out — mobile only (desktop uses the nav bar sign out) -->
-  <button type="button" class="settings__signout btn btn--ghost md:hidden" (click)="signOut()">
+    <button
+      class="btn btn--primary settings__save-btn"
+      type="button"
+      [disabled]="loading()"
+      (click)="save()"
+    >
+      {{ loading() ? 'Saving…' : 'Save changes' }}
+    </button>
+  </section>
+
+  <!-- ─── Sign out ──────────────────────────────────────────────── -->
+  <button type="button" class="settings__signout" (click)="signOut()">
     <span class="material-icons" aria-hidden="true">logout</span>
     Sign out
   </button>

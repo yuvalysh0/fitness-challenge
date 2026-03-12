@@ -1,9 +1,5 @@
 import { Component, inject, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { MatButtonModule } from '@angular/material/button';
-import { MatCardModule } from '@angular/material/card';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatInputModule } from '@angular/material/input';
 import { MatMenuModule } from '@angular/material/menu';
 import { ChallengeService } from '../../core/challenge.service';
 import { HabitDefinition } from '../../models';
@@ -45,14 +41,7 @@ const EMOJI_OPTIONS = [
 @Component({
   selector: 'app-habits',
   standalone: true,
-  imports: [
-    FormsModule,
-    MatButtonModule,
-    MatCardModule,
-    MatFormFieldModule,
-    MatInputModule,
-    MatMenuModule,
-  ],
+  imports: [FormsModule, MatMenuModule],
   templateUrl: './habits.component.html',
   styleUrl: './habits.component.scss',
 })

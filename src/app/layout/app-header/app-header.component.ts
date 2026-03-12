@@ -8,7 +8,8 @@ import { AppRoute } from '../../core/enums';
 const ROUTE_TITLES: Record<string, string> = {
   [AppRoute.Home]: 'Home',
   [AppRoute.Daily]: 'Daily Log',
-  [AppRoute.Progress]: 'Progress',
+  [AppRoute.ProgressHub]: 'Progress',
+  [AppRoute.Progress]: 'Photos',
   [AppRoute.Measurements]: 'Measurements',
   [AppRoute.Habits]: 'Tasks',
   [AppRoute.History]: 'History',

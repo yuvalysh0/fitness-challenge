@@ -1,90 +1,105 @@
-<div class="auth flex min-h-screen items-center justify-center p-4">
-  <mat-card class="auth__card w-full max-w-md rounded-xl p-6 shadow-lg">
-    <mat-card-header class="auth__header mb-6">
-      <mat-card-title class="auth__title text-2xl font-bold">Forge</mat-card-title>
-      <mat-card-subtitle class="auth__subtitle text-[var(--text-muted)]">
+<div class="auth">
+  <div class="auth__card">
+    <!-- Header -->
+    <div class="auth__header">
+      <img src="/icon.png" alt="Forge" class="auth__logo" />
+      <h1 class="auth__title">FORGE</h1>
+      <p class="auth__subtitle">
         {{
           isLogin() ? 'Log in to sync your progress' : 'Create an account to sync across devices'
         }}
-      </mat-card-subtitle>
-    </mat-card-header>
-    <mat-card-content>
-      <form class="auth__form flex flex-col gap-4" [formGroup]="loginForm" (ngSubmit)="onSubmit()">
-        @if (errorMessage(); as msg) {
-          <p
-            class="auth__error m-0 rounded-lg bg-red-950/60 px-3 py-2 text-sm text-red-300"
-            role="alert"
-          >
-            {{ msg }}
-          </p>
-        }
-        @if (!isLogin()) {
-          <mat-form-field appearance="outline" class="w-full">
-            <mat-label>Name</mat-label>
-            <input
-              matInput
-              type="text"
-              formControlName="fullName"
-              placeholder="How we'll greet you"
-            />
-          </mat-form-field>
-          <div class="auth__avatar-field">
-            <label class="auth__avatar-label">
-              <span class="auth__avatar-text">Profile photo (optional)</span>
-              <input
-                type="file"
-                accept="image/*"
-                class="auth__avatar-input"
-                (change)="onAvatarChange($event)"
-              />
-              @if (avatarFile(); as file) {
-                <span class="auth__avatar-filename">{{ file.name }}</span>
-              }
-            </label>
-          </div>
-        }
-        <mat-form-field appearance="outline" class="w-full">
-          <mat-label>Email</mat-label>
-          <input matInput type="email" formControlName="email" placeholder="you@example.com" />
-          @if (loginForm.get('email')?.invalid && loginForm.get('email')?.touched) {
-            <mat-error>Enter a valid email</mat-error>
-          }
-        </mat-form-field>
-        <mat-form-field appearance="outline" class="w-full">
-          <mat-label>Password</mat-label>
-          <input
-            matInput
-            type="password"
-            formControlName="password"
-            placeholder="Min 6 characters"
-          />
-          @if (loginForm.get('password')?.invalid && loginForm.get('password')?.touched) {
-            <mat-error>At least 6 characters</mat-error>
-          }
-        </mat-form-field>
-        <div class="auth__actions flex flex-col gap-2">
-          <button
-            class="btn btn--primary auth__submit w-full"
-            type="submit"
-            [disabled]="loginForm.invalid || loading()"
-          >
-            @if (loading()) {
-              <mat-spinner diameter="24" class="auth__spinner" />
-              <span>{{ isLogin() ? 'Logging in…' : 'Signing up…' }}</span>
-            } @else {
-              {{ isLogin() ? 'Log in' : 'Sign up' }}
-            }
-          </button>
-          <button
-            class="btn btn--ghost w-full"
-            type="button"
-            (click)="toggleMode()"
-            [disabled]="loading()"
-          >
-            {{ isLogin() ? "Don't have an account? Sign up" : 'Already have an account? Log in' }}
-          </button>
+      </p>
+    </div>
+
+    <form class="auth__form" [formGroup]="loginForm" (ngSubmit)="onSubmit()">
+      @if (errorMessage(); as msg) {
+        <div class="auth__error" role="alert">
+          <span class="material-icons" aria-hidden="true">error</span>
+          {{ msg }}
         </div>
-      </form>
-    </mat-card-content>
-  </mat-card>
+      }
+
+      @if (!isLogin()) {
+        <div class="field">
+          <label class="field__label" for="fullName">Name</label>
+          <input
+            id="fullName"
+            class="field__input"
+            type="text"
+            formControlName="fullName"
+            placeholder="How we'll greet you"
+            autocomplete="name"
+          />
+        </div>
+
+        <div class="auth__avatar-field">
+          <label class="auth__avatar-label">
+            <span class="material-icons" aria-hidden="true">photo_camera</span>
+            Profile photo (optional)
+            <input
+              type="file"
+              accept="image/*"
+              class="auth__avatar-input"
+              (change)="onAvatarChange($event)"
+            />
+          </label>
+          @if (avatarFile(); as file) {
+            <span class="auth__avatar-filename">{{ file.name }}</span>
+          }
+        </div>
+      }
+
+      <div class="field">
+        <label class="field__label" for="email">Email</label>
+        <input
+          id="email"
+          class="field__input"
+          type="email"
+          formControlName="email"
+          placeholder="you@example.com"
+          autocomplete="email"
+        />
+        @if (loginForm.get('email')?.invalid && loginForm.get('email')?.touched) {
+          <span class="field__error">Enter a valid email</span>
+        }
+      </div>
+
+      <div class="field">
+        <label class="field__label" for="password">Password</label>
+        <input
+          id="password"
+          class="field__input"
+          type="password"
+          formControlName="password"
+          placeholder="Min 6 characters"
+          autocomplete="current-password"
+        />
+        @if (loginForm.get('password')?.invalid && loginForm.get('password')?.touched) {
+          <span class="field__error">At least 6 characters</span>
+        }
+      </div>
+
+      <button
+        class="btn btn--primary auth__submit"
+        type="submit"
+        [disabled]="loginForm.invalid || loading()"
+      >
+        @if (loading()) {
+          <mat-spinner diameter="20" />
+          {{ isLogin() ? 'Logging in…' : 'Signing up…' }}
+        } @else {
+          {{ isLogin() ? 'Log in' : 'Sign up' }}
+        }
+      </button>
+
+      <button
+        class="btn btn--ghost auth__toggle"
+        type="button"
+        (click)="toggleMode()"
+        [disabled]="loading()"
+      >
+        {{ isLogin() ? "Don't have an account? Sign up" : 'Already have an account? Log in' }}
+      </button>
+    </form>
+  </div>
 </div>

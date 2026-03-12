@@ -1,72 +1,54 @@
 <div class="measurements">
-  <h1 class="measurements__title m-0 mb-1 text-2xl font-bold">Measurements</h1>
-  <p class="measurements__subtitle m-0 mb-4 text-sm text-[var(--text-muted)]">
+  <p class="measurements__subtitle m-0 mb-4 text-sm text-(--text-muted)">
     Log every 2 weeks. All values in cm.
   </p>
 
   <button class="btn btn--primary mb-4" type="button" (click)="openForm()">Add measurement</button>
 
   @if (showForm()) {
-    <mat-card class="measurements__form-card mb-4 rounded-xl p-5 shadow-sm">
-      <mat-card-header>
-        <mat-card-title class="text-base font-semibold">New measurement</mat-card-title>
-      </mat-card-header>
-      <mat-card-content>
-        <div
-          class="measurements__form-grid grid grid-cols-[repeat(auto-fill,minmax(140px,1fr))] gap-3 mb-3"
-        >
-          <mat-form-field appearance="outline" class="w-full">
-            <mat-label>Date</mat-label>
-            <input matInput type="date" [formField]="measurementForm.date" />
-          </mat-form-field>
-          <mat-form-field appearance="outline" class="w-full">
-            <mat-label>Chest (cm)</mat-label>
-            <input matInput type="number" step="0.1" [formField]="measurementForm.chest" />
-          </mat-form-field>
-          <mat-form-field appearance="outline" class="w-full">
-            <mat-label>Waist (cm)</mat-label>
-            <input matInput type="number" step="0.1" [formField]="measurementForm.waist" />
-          </mat-form-field>
-          <mat-form-field appearance="outline" class="w-full">
-            <mat-label>Hips (cm)</mat-label>
-            <input matInput type="number" step="0.1" [formField]="measurementForm.hips" />
-          </mat-form-field>
-          <mat-form-field appearance="outline" class="w-full">
-            <mat-label>Arm L (cm)</mat-label>
-            <input matInput type="number" step="0.1" [formField]="measurementForm.armL" />
-          </mat-form-field>
-          <mat-form-field appearance="outline" class="w-full">
-            <mat-label>Arm R (cm)</mat-label>
-            <input matInput type="number" step="0.1" [formField]="measurementForm.armR" />
-          </mat-form-field>
-          <mat-form-field appearance="outline" class="w-full">
-            <mat-label>Thigh L (cm)</mat-label>
-            <input matInput type="number" step="0.1" [formField]="measurementForm.thighL" />
-          </mat-form-field>
-          <mat-form-field appearance="outline" class="w-full">
-            <mat-label>Thigh R (cm)</mat-label>
-            <input matInput type="number" step="0.1" [formField]="measurementForm.thighR" />
-          </mat-form-field>
+    <div class="log-card mb-4">
+      <h2 class="log-card__title">New measurement</h2>
+
+      <div class="measurements__form-grid">
+        <div class="field">
+          <label class="field__label">Date</label>
+          <input
+            class="field__input field__input--date"
+            type="date"
+            [formField]="measurementForm.date"
+          />
         </div>
-        <mat-form-field appearance="outline" class="mb-4 block w-full">
-          <mat-label>Notes</mat-label>
-          <textarea matInput [formField]="measurementForm.notes" rows="2"></textarea>
-        </mat-form-field>
-        <div class="measurements__form-actions flex gap-2 mt-4">
-          <button class="btn btn--secondary" type="button" (click)="closeForm()">Cancel</button>
-          <button class="btn btn--primary" type="button" (click)="saveMeasurement()">Save</button>
-        </div>
-      </mat-card-content>
-    </mat-card>
+        @for (f of measurementFields; track f.key) {
+          <div class="field">
+            <label class="field__label">{{ f.label }}</label>
+            <input
+              class="field__input"
+              type="number"
+              step="0.1"
+              [formField]="$any(measurementForm)[$any(f.key)]"
+            />
+          </div>
+        }
+      </div>
+
+      <div class="field">
+        <label class="field__label">Notes</label>
+        <textarea class="field__textarea" [formField]="measurementForm.notes" rows="2"></textarea>
+      </div>
+
+      <div class="flex gap-2">
+        <button class="btn btn--secondary" type="button" (click)="closeForm()">Cancel</button>
+        <button class="btn btn--primary" type="button" (click)="saveMeasurement()">Save</button>
+      </div>
+    </div>
   }
 
-  <div class="measurements__list flex flex-col gap-4">
+  <div class="measurements__list">
     @for (m of measurements(); track m.id) {
-      <mat-card class="measurements__measurement-card rounded-xl p-5 shadow-sm">
-        <mat-card-header class="measurements__card-header">
-          <mat-card-title class="text-base font-semibold">{{ m.date }}</mat-card-title>
+      <div class="measurements__card">
+        <div class="measurements__card-header">
+          <span class="measurements__card-date">{{ m.date }}</span>
           <button
-            mat-icon-button
             type="button"
             class="measurements__delete-btn"
             (click)="deleteMeasurement(m.id)"
@@ -74,38 +56,34 @@
           >
             <span class="material-icons" aria-hidden="true">delete</span>
           </button>
-        </mat-card-header>
-        <mat-card-content>
-          <div class="measurements__measurement-body flex flex-wrap gap-3 text-sm">
-            @if (m.chest != null) {
-              <span>Chest: {{ m.chest }} cm</span>
-            }
-            @if (m.waist != null) {
-              <span>Waist: {{ m.waist }} cm</span>
-            }
-            @if (m.hips != null) {
-              <span>Hips: {{ m.hips }} cm</span>
-            }
-            @if (m.armL != null) {
-              <span>Arm L: {{ m.armL }} cm</span>
-            }
-            @if (m.armR != null) {
-              <span>Arm R: {{ m.armR }} cm</span>
-            }
-            @if (m.thighL != null) {
-              <span>Thigh L: {{ m.thighL }} cm</span>
-            }
-            @if (m.thighR != null) {
-              <span>Thigh R: {{ m.thighR }} cm</span>
-            }
-          </div>
-          @if (m.notes) {
-            <p class="measurements__notes mt-2 mb-0 text-sm text-[var(--text-muted)]">
-              {{ m.notes }}
-            </p>
+        </div>
+        <div class="measurements__body">
+          @if (m.chest != null) {
+            <span>Chest: {{ m.chest }} cm</span>
           }
-        </mat-card-content>
-      </mat-card>
+          @if (m.waist != null) {
+            <span>Waist: {{ m.waist }} cm</span>
+          }
+          @if (m.hips != null) {
+            <span>Hips: {{ m.hips }} cm</span>
+          }
+          @if (m.armL != null) {
+            <span>Arm L: {{ m.armL }} cm</span>
+          }
+          @if (m.armR != null) {
+            <span>Arm R: {{ m.armR }} cm</span>
+          }
+          @if (m.thighL != null) {
+            <span>Thigh L: {{ m.thighL }} cm</span>
+          }
+          @if (m.thighR != null) {
+            <span>Thigh R: {{ m.thighR }} cm</span>
+          }
+        </div>
+        @if (m.notes) {
+          <p class="measurements__notes">{{ m.notes }}</p>
+        }
+      </div>
     }
   </div>
 </div>
