@@ -5,9 +5,9 @@ html {
   @include mat.theme(
     (
       color: (
-        theme-type: light,
-        primary: mat.$blue-palette,
-        tertiary: mat.$blue-palette,
+        theme-type: dark,
+        primary: mat.$red-palette,
+        tertiary: mat.$orange-palette,
       ),
       typography: null,
       density: 0,
@@ -24,63 +24,88 @@ html {
   --mat-card-outlined-container-color: var(--card-bg);
 }
 
+// ─── Igneous palette (dark, default) ───────────────────────────────────────
 :root {
-  --bg: #f5f5f5;
-  --surface: #fafafa;
-  --card-bg: #ffffff;
-  --border: #eeeeee;
-  --text: #262626;
-  --text-muted: #737373;
-  --accent: #3378fe;
-  --accent-hover: #2862d9;
-  --accent-subtle: #f7faff;
-  --error: #dc324f;
-  --error-hover: #c42d47;
-  --error-subtle: #fef3f2;
-  --text-on-error: #ffffff;
-  --text-on-accent: #ffffff;
-  --radius: 12px;
-  --radius-sm: 8px;
-  --shadow:
-    0 1px 1px rgba(128, 128, 128, 0.05), 0 2px 1px rgba(128, 128, 128, 0.01),
-    0 3px 1px rgba(128, 128, 128, 0);
-  --shadow-lg: 0 4px 12px rgba(0, 0, 0, 0.08);
-  --font: 'Open Sans', 'Outfit', system-ui, -apple-system, sans-serif;
-  --message-success-bg: rgba(34, 197, 94, 0.15);
-  --message-success-text: #15803d;
-  --message-error-bg: rgba(220, 50, 79, 0.12);
-  --message-error-text: #b91c1c;
-  --overlay-backdrop: rgba(0, 0, 0, 0.5);
-  --overlay-bg: rgba(255, 255, 255, 0.98);
-  --overlay-btn-bg: rgba(0, 0, 0, 0.06);
-  --overlay-btn-bg-hover: rgba(0, 0, 0, 0.1);
-  --overlay-btn-color: #262626;
-  --button-ripple: rgba(51, 120, 254, 0.12);
-}
-
-[data-theme='dark'] {
-  --bg: #1a1a1a;
-  --surface: #262626;
-  --card-bg: #2e2e2e;
-  --border: #404040;
-  --text: #fafafa;
-  --text-muted: #a3a3a3;
-  --accent: #3378fe;
-  --accent-hover: #5b94fe;
-  --accent-subtle: rgba(51, 120, 254, 0.15);
+  --bg: #1a1d21;
+  --surface: #22262d;
+  --card-bg: #2a2e35;
+  --border: #363b45;
+  --text: #ffffff;
+  --text-muted: #9a9ea4;
+  --accent: #d63031;
+  --accent-hover: #b72828;
+  --accent-secondary: #e17055;
+  --accent-subtle: rgba(214, 48, 49, 0.15);
   --error: #ef4444;
   --error-hover: #f87171;
   --error-subtle: rgba(239, 68, 68, 0.15);
-  --text-on-error: #ffffff;
   --text-on-accent: #ffffff;
-  --shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
-  --shadow-lg: 0 4px 20px rgba(0, 0, 0, 0.4);
-  --overlay-backdrop: rgba(0, 0, 0, 0.6);
-  --overlay-bg: rgba(26, 26, 26, 0.98);
-  --overlay-btn-bg: rgba(255, 255, 255, 0.1);
-  --overlay-btn-bg-hover: rgba(255, 255, 255, 0.18);
-  --overlay-btn-color: #fafafa;
-  --button-ripple: rgba(51, 120, 254, 0.25);
+  --text-on-error: #ffffff;
+  --radius: 12px;
+  --radius-sm: 8px;
+  --shadow: 0 1px 3px rgba(0, 0, 0, 0.5);
+  --shadow-lg: 0 4px 20px rgba(0, 0, 0, 0.6);
+  --font: 'Montserrat', 'Open Sans', system-ui, -apple-system, sans-serif;
+  --font-body: 'Open Sans', system-ui, -apple-system, sans-serif;
+  --message-success-bg: rgba(34, 197, 94, 0.12);
+  --message-success-text: #4ade80;
+  --message-error-bg: rgba(214, 48, 49, 0.15);
+  --message-error-text: #f87171;
+  --overlay-backdrop: rgba(0, 0, 0, 0.7);
+  --overlay-bg: rgba(26, 29, 33, 0.98);
+  --overlay-btn-bg: rgba(255, 255, 255, 0.08);
+  --overlay-btn-bg-hover: rgba(255, 255, 255, 0.15);
+  --overlay-btn-color: #ffffff;
+  --button-ripple: rgba(214, 48, 49, 0.2);
+}
+
+// ─── Light variant ─────────────────────────────────────────────────────────
+[data-theme='light'] {
+  --bg: #f5f0ef;
+  --surface: #fdfcfc;
+  --card-bg: #ffffff;
+  --border: #e8e0de;
+  --text: #1a1d21;
+  --text-muted: #6b6b6b;
+  --accent: #d63031;
+  --accent-hover: #b72828;
+  --accent-subtle: rgba(214, 48, 49, 0.1);
+  --shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+  --shadow-lg: 0 4px 16px rgba(0, 0, 0, 0.12);
+  --message-success-bg: rgba(34, 197, 94, 0.12);
+  --message-success-text: #15803d;
+  --message-error-bg: rgba(214, 48, 49, 0.08);
+  --message-error-text: #b72828;
+  --overlay-backdrop: rgba(0, 0, 0, 0.5);
+  --overlay-bg: rgba(253, 252, 252, 0.98);
+  --overlay-btn-bg: rgba(0, 0, 0, 0.06);
+  --overlay-btn-bg-hover: rgba(0, 0, 0, 0.1);
+  --overlay-btn-color: #1a1d21;
+  --button-ripple: rgba(214, 48, 49, 0.15);
+}
+
+// ─── Dark variant (same as root) ─────────────────────────────────────────
+[data-theme='dark'] {
+  --bg: #1a1d21;
+  --surface: #22262d;
+  --card-bg: #2a2e35;
+  --border: #363b45;
+  --text: #ffffff;
+  --text-muted: #9a9ea4;
+  --accent: #d63031;
+  --accent-hover: #b72828;
+  --accent-subtle: rgba(214, 48, 49, 0.15);
+  --shadow: 0 1px 3px rgba(0, 0, 0, 0.5);
+  --shadow-lg: 0 4px 20px rgba(0, 0, 0, 0.6);
+  --message-success-bg: rgba(34, 197, 94, 0.12);
+  --message-success-text: #4ade80;
+  --message-error-bg: rgba(214, 48, 49, 0.15);
+  --message-error-text: #f87171;
+  --overlay-backdrop: rgba(0, 0, 0, 0.7);
+  --overlay-bg: rgba(26, 29, 33, 0.98);
+  --overlay-btn-bg: rgba(255, 255, 255, 0.08);
+  --overlay-btn-bg-hover: rgba(255, 255, 255, 0.15);
+  --overlay-btn-color: #ffffff;
 }
 
 *,
@@ -90,6 +115,10 @@ html {
 }
 
 :root {
+  color-scheme: dark;
+}
+
+[data-theme='light'] {
   color-scheme: light;
 }
 
@@ -100,18 +129,26 @@ html {
 body {
   margin: 0;
   height: 100%;
-  font-family: var(--font);
+  font-family: var(--font-body);
   font-size: 16px;
   line-height: 1.5;
   color: var(--text);
   background: var(--bg);
-  // Prevent tap highlight flash on mobile
   -webkit-tap-highlight-color: transparent;
-  // Prevent text size adjustment on orientation change
   -webkit-text-size-adjust: 100%;
-  // Smooth scrolling everywhere
   scroll-behavior: smooth;
   overscroll-behavior: none;
+}
+
+// Headings use Montserrat (bold geometric)
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-family: var(--font);
+  font-weight: 700;
 }
 
 input,
@@ -124,7 +161,6 @@ button {
   cursor: pointer;
 }
 
-// Larger touch targets on mobile
 @media (max-width: 767px) {
   button,
   a {
@@ -150,8 +186,11 @@ button {
   justify-content: center;
   gap: 0.375rem;
   padding: 0.5rem 1rem;
-  font-weight: 600;
+  font-family: var(--font);
+  font-weight: 700;
   font-size: 0.75rem;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
   line-height: 1.25;
   border-radius: var(--radius-sm);
   border: none;
@@ -177,8 +216,8 @@ button {
     border: 1px solid transparent;
 
     &:hover {
-      background: rgba(51, 120, 254, 0.12);
-      color: var(--accent-hover);
+      background: rgba(214, 48, 49, 0.2);
+      color: var(--accent);
     }
   }
 
@@ -208,7 +247,7 @@ button {
   gap: 0.5rem;
   padding: 0.5rem 0.75rem;
   font-size: 0.9375rem;
-  font-weight: 500;
+  font-weight: 600;
   color: var(--text-muted);
   text-decoration: none;
   border-radius: var(--radius-sm);
@@ -244,6 +283,7 @@ button {
   --mdc-outlined-text-field-focus-outline-color: var(--accent);
   --mdc-outlined-text-field-input-text-color: var(--text);
   --mdc-outlined-text-field-label-text-color: var(--text-muted);
+  --mdc-outlined-text-field-caret-color: var(--accent);
 }
 
 .mat-mdc-button,
@@ -251,7 +291,7 @@ button {
 .mat-mdc-unelevated-button,
 .mat-mdc-outlined-button {
   font-family: var(--font) !important;
-  font-weight: 500 !important;
+  font-weight: 700 !important;
 }
 
 .mat-mdc-progress-bar {
@@ -267,4 +307,18 @@ button {
 .mat-mdc-progress-bar .mdc-linear-progress__bar-inner {
   background-color: var(--accent) !important;
   border-color: var(--accent) !important;
+}
+
+// Select / option overrides for dark theme
+.mat-mdc-select-panel {
+  background: var(--card-bg) !important;
+}
+
+.mat-mdc-option {
+  color: var(--text) !important;
+
+  &:hover,
+  &.mat-mdc-option-active {
+    background: var(--surface) !important;
+  }
 }
