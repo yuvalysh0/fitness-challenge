@@ -1,226 +1,284 @@
-<div class="onboarding flex min-h-screen items-center justify-center p-4">
-  <mat-card class="onboarding__card w-full max-w-lg rounded-xl p-6 shadow-lg">
-    <mat-card-header class="onboarding__header mb-6">
-      <mat-card-title class="onboarding__title text-2xl font-bold"
-        >Set up your program</mat-card-title
-      >
-      <mat-card-subtitle class="onboarding__subtitle text-(--text-muted)">
-        @switch (step()) {
-          @case (1) {
-            Tell us a bit about you — we'll calculate your daily calories
-          }
-          @case (2) {
-            When do you want to finish?
-          }
-          @case (3) {
-            Here's your daily nutrition plan
-          }
-        }
-      </mat-card-subtitle>
-    </mat-card-header>
+<div class="ob">
+  <!-- ─── Step dots ────────────────────────────────────────────── -->
+  <div class="ob__steps" aria-label="Step {{ step() }} of 3">
+    @for (i of [1, 2, 3]; track i) {
+      <div
+        class="ob__step"
+        [class.ob__step--active]="step() === i"
+        [class.ob__step--done]="step() > i"
+      ></div>
+    }
+  </div>
 
-    <!-- Step indicator -->
-    <div class="onboarding__steps flex gap-1 mb-6" aria-label="Progress">
-      @for (i of [1, 2, 3]; track i) {
-        <div
-          class="onboarding__step-dot"
-          [class.onboarding__step-dot--active]="step() === i"
-          [class.onboarding__step-dot--done]="step() > i"
-        ></div>
+  @if (errorMessage(); as msg) {
+    <div class="ob__error" role="alert">
+      <span class="material-icons" aria-hidden="true">error</span>{{ msg }}
+    </div>
+  }
+
+  <!-- ═══════════════════════════════════════════════════════════ -->
+  <!-- STEP 1: Personal Blueprint                                  -->
+  <!-- ═══════════════════════════════════════════════════════════ -->
+  @if (step() === 1) {
+    <div class="ob__hero ob__hero--1">
+      <div class="ob__hero-icon" aria-hidden="true">🏋️</div>
+      <h1 class="ob__title"><span class="ob__title-accent">PERSONAL</span><br />BLUEPRINT</h1>
+    </div>
+
+    <div class="ob__form">
+      <div class="field">
+        <label class="field__label" for="birthDate">Date of birth</label>
+        <input
+          id="birthDate"
+          class="field__input field__input--date"
+          type="date"
+          [value]="tdeeModel().birthDate"
+          [min]="minBirthDate"
+          [max]="maxBirthDate"
+          (change)="onDateChange($event)"
+        />
+        @if (showErrors() && !tdeeModel().birthDate) {
+          <span class="field__error">Required — must be 10–120 years ago</span>
+        }
+      </div>
+
+      <div class="field">
+        <label class="field__label" for="sex">Sex</label>
+        <select
+          id="sex"
+          class="field__input ob__select"
+          [value]="tdeeModel().sex"
+          (change)="tdeeModel.update(m => ({ ...m, sex: $any($event.target).value }))"
+        >
+          <option value="male">Male</option>
+          <option value="female">Female</option>
+          <option value="other">Other</option>
+        </select>
+      </div>
+
+      <div class="field">
+        <label class="field__label" for="heightCm">Height</label>
+        <div class="field__input-wrap">
+          <input
+            id="heightCm"
+            class="field__input"
+            type="number"
+            [formField]="tdeeForm.heightCm"
+            placeholder="170"
+          />
+          <span class="field__unit">cm</span>
+        </div>
+        @if (showErrors() && (tdeeModel().heightCm < 100 || tdeeModel().heightCm > 250)) {
+          <span class="field__error">100–250 cm</span>
+        }
+      </div>
+
+      <div class="field">
+        <label class="field__label" for="weightKg">Current weight</label>
+        <div class="field__input-wrap">
+          <input
+            id="weightKg"
+            class="field__input"
+            type="number"
+            [formField]="tdeeForm.weightKg"
+            placeholder="70"
+          />
+          <span class="field__unit">kg</span>
+        </div>
+        @if (showErrors() && (tdeeModel().weightKg < 30 || tdeeModel().weightKg > 300)) {
+          <span class="field__error">30–300 kg</span>
+        }
+      </div>
+
+      <div class="field">
+        <label class="field__label" for="activity">Activity level</label>
+        <select
+          id="activity"
+          class="field__input ob__select"
+          [value]="tdeeModel().activityLevel"
+          (change)="tdeeModel.update(m => ({ ...m, activityLevel: $any($event.target).value }))"
+        >
+          @for (opt of activityOptions; track opt.value) {
+            <option [value]="opt.value">{{ opt.label }}</option>
+          }
+        </select>
+      </div>
+
+      <div class="field">
+        <label class="field__label" for="goalWeight"
+          >Goal weight <span class="ob__optional">(optional)</span></label
+        >
+        <div class="field__input-wrap">
+          <input
+            id="goalWeight"
+            class="field__input"
+            type="number"
+            [formField]="tdeeForm.goalWeightKg"
+            placeholder="e.g. 65"
+          />
+          <span class="field__unit">kg</span>
+        </div>
+      </div>
+
+      @if (tdeeResult(); as result) {
+        <div class="ob__tdee-hint">
+          <span class="material-icons ob__tdee-icon" aria-hidden="true">local_fire_department</span>
+          Estimated TDEE: <strong>{{ result }} kcal/day</strong>
+        </div>
       }
     </div>
 
-    <mat-card-content>
-      @if (errorMessage(); as msg) {
-        <p class="onboarding__error m-0 mb-4 rounded-lg px-3 py-2 text-sm" role="alert">
-          {{ msg }}
-        </p>
-      }
+    <button type="button" class="ob__cta" (click)="nextStep()">NEXT</button>
+  }
 
-      <!-- Step 1: Body stats -->
-      @if (step() === 1) {
-        <div class="onboarding__form flex flex-col gap-4">
-          <!-- Birth date — mat-datepicker doesn't support [formField], use (dateChange) -->
-          <mat-form-field appearance="outline" class="w-full">
-            <mat-label>Date of birth</mat-label>
-            <input
-              matInput
-              [matDatepicker]="picker"
-              [value]="birthDateForPicker()"
-              (dateChange)="onBirthDateChange($event)"
-            />
-            <mat-datepicker-toggle matIconSuffix [for]="picker" />
-            <mat-datepicker #picker />
-            @if (showErrors() && !tdeeModel().birthDate) {
-              <mat-error>Required</mat-error>
-            }
-          </mat-form-field>
+  <!-- ═══════════════════════════════════════════════════════════ -->
+  <!-- STEP 2: Define your goal                                    -->
+  <!-- ═══════════════════════════════════════════════════════════ -->
+  @if (step() === 2) {
+    <div class="ob__hero ob__hero--2">
+      <div class="ob__hero-icon" aria-hidden="true">⛰️</div>
+      <h1 class="ob__title">DEFINE YOUR GOAL</h1>
+    </div>
 
-          <!-- Sex — mat-select doesn't support [formField], update model directly -->
-          <mat-form-field appearance="outline" class="w-full">
-            <mat-label>Sex</mat-label>
-            <mat-select
-              [value]="tdeeModel().sex"
-              (selectionChange)="tdeeModel.update(m => ({ ...m, sex: $event.value }))"
-            >
-              <mat-option value="male">Male</mat-option>
-              <mat-option value="female">Female</mat-option>
-              <mat-option value="other">Other</mat-option>
-            </mat-select>
-          </mat-form-field>
+    <div class="ob__form">
+      <p class="ob__section-label">Set your program</p>
 
-          <!-- Number inputs — [formField] works fine for these -->
-          <mat-form-field appearance="outline" class="w-full">
-            <mat-label>Height (cm)</mat-label>
-            <input matInput type="number" [formField]="tdeeForm.heightCm" placeholder="170" />
-            @if (showErrors() && (tdeeModel().heightCm < 100 || tdeeModel().heightCm > 250)) {
-              <mat-error>Between 100 and 250</mat-error>
-            }
-          </mat-form-field>
+      <div class="field">
+        <label class="field__label" for="endDate">Program end date</label>
+        <input
+          id="endDate"
+          class="field__input field__input--date"
+          type="date"
+          [value]="programModel().programEndDate"
+          [min]="minEndDate"
+          (change)="onEndDateChange($event)"
+        />
+        @if (showErrors() && !programModel().programEndDate) {
+          <span class="field__error">Pick an end date</span>
+        }
+        <span class="field__hint">e.g. vacation date or when you want to hit your goal</span>
+      </div>
 
-          <mat-form-field appearance="outline" class="w-full">
-            <mat-label>Current weight (kg)</mat-label>
-            <input matInput type="number" [formField]="tdeeForm.weightKg" placeholder="70" />
-            @if (showErrors() && (tdeeModel().weightKg < 30 || tdeeModel().weightKg > 300)) {
-              <mat-error>Between 30 and 300</mat-error>
-            }
-          </mat-form-field>
-
-          <!-- Activity level — mat-select, update model directly -->
-          <mat-form-field appearance="outline" class="w-full">
-            <mat-label>Activity level</mat-label>
-            <mat-select
-              [value]="tdeeModel().activityLevel"
-              (selectionChange)="tdeeModel.update(m => ({ ...m, activityLevel: $event.value }))"
-            >
-              @for (opt of activityOptions; track opt.value) {
-                <mat-option [value]="opt.value">{{ opt.label }}</mat-option>
-              }
-            </mat-select>
-          </mat-form-field>
-
-          <mat-form-field appearance="outline" class="w-full">
-            <mat-label>Goal weight (kg, optional)</mat-label>
-            <input
-              matInput
-              type="number"
-              [formField]="tdeeForm.goalWeightKg"
-              placeholder="e.g. 65"
-            />
-          </mat-form-field>
-
-          @if (tdeeResult(); as result) {
-            <p class="onboarding__tdee-hint m-0 text-sm text-(--text-muted)">
-              Estimated TDEE:
-              <strong class="text-(--accent)">{{ result }} kcal/day</strong>
-            </p>
-          }
+      @if (programDays(); as days) {
+        <div class="ob__days-badge">
+          Your program will be <strong>{{ days }} days</strong>.
         </div>
       }
+    </div>
 
-      <!-- Step 2: Program end date -->
-      @if (step() === 2) {
-        <div class="onboarding__form flex flex-col gap-4">
-          <mat-form-field appearance="outline" class="w-full">
-            <mat-label>Program end date</mat-label>
-            <input
-              matInput
-              [matDatepicker]="endPicker"
-              [value]="programEndDateForPicker()"
-              [min]="minEndDate"
-              (dateChange)="onProgramEndDateChange($event)"
+    <div class="ob__actions">
+      <button
+        type="button"
+        class="ob__cta ob__cta--ghost"
+        (click)="prevStep()"
+        [disabled]="loading()"
+      >
+        BACK
+      </button>
+      <button
+        type="button"
+        class="ob__cta ob__cta--primary"
+        (click)="submit()"
+        [disabled]="loading()"
+      >
+        @if (loading()) {
+          ⏳
+        } @else {
+          SEE MY PLAN
+        }
+      </button>
+    </div>
+  }
+
+  <!-- ═══════════════════════════════════════════════════════════ -->
+  <!-- STEP 3: Ready to Forge                                      -->
+  <!-- ═══════════════════════════════════════════════════════════ -->
+  @if (step() === 3) {
+    <div class="ob__hero ob__hero--3">
+      <div class="ob__hero-icon ob__hero-icon--forge" aria-hidden="true">🔥</div>
+      <h1 class="ob__title">READY TO <span class="ob__title-accent">FORGE</span></h1>
+      <p class="ob__title-sub">Here's your daily nutrition plan</p>
+    </div>
+
+    @if (macros(); as m) {
+      <div class="ob__rings">
+        <!-- Calories ring -->
+        <div class="ob__ring-item">
+          <svg class="ob__ring-svg" viewBox="0 0 64 64" aria-hidden="true">
+            <circle class="ob__ring-track" cx="32" cy="32" r="28" />
+            <circle
+              class="ob__ring-fill ob__ring-fill--cal"
+              cx="32"
+              cy="32"
+              r="28"
+              [style.stroke-dasharray]="ringC"
+              [style.stroke-dashoffset]="macroRingOffset(75)"
             />
-            <mat-datepicker-toggle matIconSuffix [for]="endPicker" />
-            <mat-datepicker #endPicker />
-            <mat-hint>e.g. vacation date or when you want to hit your goal</mat-hint>
-            @if (showErrors() && !programModel().programEndDate) {
-              <mat-error>Pick an end date</mat-error>
-            }
-          </mat-form-field>
-
-          @if (programDays(); as days) {
-            <p class="onboarding__days-hint m-0 text-sm text-(--text-muted)">
-              Your program will be <strong class="text-(--accent)">{{ days }} days</strong>.
-            </p>
-          }
+          </svg>
+          <div class="ob__ring-label">
+            <span class="ob__ring-val">{{ m.calories }}</span>
+            <span class="ob__ring-sub">Calories<br />Budget</span>
+          </div>
         </div>
-      }
 
-      <!-- Step 3: TDEE + Macro results -->
-      @if (step() === 3) {
-        @if (macrosResult(); as m) {
-          <div class="onboarding__results flex flex-col gap-4">
-            <div class="onboarding__calories-card">
-              <p class="onboarding__calories-label">Daily calorie target</p>
-              <p class="onboarding__calories-value">{{ m.calories }}</p>
-              <p class="onboarding__calories-unit">kcal / day</p>
-              @if (m.isDeficit) {
-                <span class="onboarding__deficit-badge">~400 kcal deficit for weight loss</span>
-              }
-            </div>
+        <!-- Protein ring -->
+        <div class="ob__ring-item">
+          <svg class="ob__ring-svg" viewBox="0 0 64 64" aria-hidden="true">
+            <circle class="ob__ring-track" cx="32" cy="32" r="28" />
+            <circle
+              class="ob__ring-fill ob__ring-fill--protein"
+              cx="32"
+              cy="32"
+              r="28"
+              [style.stroke-dasharray]="ringC"
+              [style.stroke-dashoffset]="macroRingOffset(66)"
+            />
+          </svg>
+          <div class="ob__ring-label">
+            <span class="ob__ring-val">{{ m.proteinG }}g</span>
+            <span class="ob__ring-sub">Protein<br />Goal</span>
+          </div>
+        </div>
 
-            <div class="onboarding__macros grid grid-cols-3 gap-3">
-              <div class="onboarding__macro-card onboarding__macro-card--protein">
-                <p class="onboarding__macro-value">{{ m.proteinG }}g</p>
-                <p class="onboarding__macro-label">Protein</p>
-                <p class="onboarding__macro-pct">30%</p>
-              </div>
-              <div class="onboarding__macro-card onboarding__macro-card--carbs">
-                <p class="onboarding__macro-value">{{ m.carbsG }}g</p>
-                <p class="onboarding__macro-label">Carbs</p>
-                <p class="onboarding__macro-pct">40%</p>
-              </div>
-              <div class="onboarding__macro-card onboarding__macro-card--fat">
-                <p class="onboarding__macro-value">{{ m.fatG }}g</p>
-                <p class="onboarding__macro-label">Fat</p>
-                <p class="onboarding__macro-pct">30%</p>
-              </div>
-            </div>
+        <!-- Fat/Carbs ring -->
+        <div class="ob__ring-item">
+          <svg class="ob__ring-svg" viewBox="0 0 64 64" aria-hidden="true">
+            <circle class="ob__ring-track" cx="32" cy="32" r="28" />
+            <circle
+              class="ob__ring-fill ob__ring-fill--fats"
+              cx="32"
+              cy="32"
+              r="28"
+              [style.stroke-dasharray]="ringC"
+              [style.stroke-dashoffset]="macroRingOffset(40)"
+            />
+          </svg>
+          <div class="ob__ring-label">
+            <span class="ob__ring-val">{{ m.fatG }}g</span>
+            <span class="ob__ring-sub">Fat/Carbs<br />Target</span>
+          </div>
+        </div>
+      </div>
 
-            <!-- Projected weight -->
-            @if (projectedWeightKg(); as projected) {
-              <div class="onboarding__projected">
-                <span class="onboarding__projected-label">Projected weight after program</span>
-                <span class="onboarding__projected-value">{{ projected }} kg</span>
-                @if (projected < tdeeModel().weightKg) {
-                  <span class="onboarding__projected-delta">
-                    −{{ tdeeModel().weightKg - projected | number: '1.1-1' }} kg
-                  </span>
-                }
-              </div>
-            }
-
-            <p class="onboarding__results-note m-0 text-xs text-(--text-muted)">
-              Based on Mifflin-St Jeor &amp; 7,700 kcal/kg rule. Adjust as needed.
-            </p>
+      @if (projectedWeightKg(); as projected) {
+        @if (projected < tdeeModel().weightKg) {
+          <div class="ob__projected">
+            <span class="material-icons" aria-hidden="true">trending_down</span>
+            Projected: <strong>{{ projected | number: '1.1-1' }} kg</strong>
+            <span class="ob__projected-delta"
+              >−{{ tdeeModel().weightKg - projected | number: '1.1-1' }} kg</span
+            >
           </div>
         }
       }
 
-      <!-- Actions -->
-      <div class="onboarding__actions flex flex-wrap gap-2 mt-6">
-        @if (step() === 2) {
-          <button type="button" class="btn btn--ghost" (click)="prevStep()" [disabled]="loading()">
-            Back
-          </button>
-        }
-        @if (step() === 1) {
-          <button type="button" class="btn btn--primary" (click)="nextStep()">Next</button>
-        } @else if (step() === 2) {
-          <button type="button" class="btn btn--primary" (click)="submit()" [disabled]="loading()">
-            @if (loading()) {
-              <mat-spinner diameter="24" class="inline-block" />
-              <span class="ml-2">Starting…</span>
-            } @else {
-              See my plan
-            }
-          </button>
-        } @else if (step() === 3) {
-          <button type="button" class="btn btn--primary" (click)="goToDashboard()">
-            Go to Dashboard
-          </button>
-        }
-      </div>
-    </mat-card-content>
-  </mat-card>
+      @if (m.isDeficit) {
+        <p class="ob__deficit-note">~400 kcal/day deficit for weight loss applied</p>
+      }
+    }
+
+    <p class="ob__data-note">Data from settings visualized</p>
+
+    <button type="button" class="ob__cta" (click)="goToDashboard()">GO TO DASHBOARD</button>
+  }
 </div>

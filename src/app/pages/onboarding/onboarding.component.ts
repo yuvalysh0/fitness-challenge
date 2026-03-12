@@ -2,13 +2,6 @@ import { Component, computed, inject, signal } from '@angular/core';
 import { DecimalPipe } from '@angular/common';
 import { Router } from '@angular/router';
 import { form, FormField } from '@angular/forms/signals';
-import { MatCardModule } from '@angular/material/card';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatInputModule } from '@angular/material/input';
-import { MatSelectModule } from '@angular/material/select';
-import { MatDatepickerModule, MatDatepickerInputEvent } from '@angular/material/datepicker';
-import { MatNativeDateModule } from '@angular/material/core';
-import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { AuthService, type OnboardingData } from '../../core/auth.service';
 import { ChallengeService } from '../../core/challenge.service';
 import { todayString } from '../../core/challenge.utils';
@@ -45,17 +38,7 @@ const ACTIVITY_OPTIONS: { value: ActivityLevel; label: string }[] = [
 @Component({
   selector: 'app-onboarding',
   standalone: true,
-  imports: [
-    DecimalPipe,
-    FormField,
-    MatCardModule,
-    MatFormFieldModule,
-    MatInputModule,
-    MatSelectModule,
-    MatDatepickerModule,
-    MatNativeDateModule,
-    MatProgressSpinnerModule,
-  ],
+  imports: [DecimalPipe, FormField],
   templateUrl: './onboarding.component.html',
   styleUrl: './onboarding.component.scss',
 })
@@ -71,7 +54,6 @@ export class OnboardingComponent {
   readonly projectedWeightKg = signal<number | null>(null);
   readonly showErrors = signal(false);
 
-  // --- Signal-based form models ---
   readonly tdeeModel = signal<TdeeFormModel>({
     birthDate: '',
     sex: Sex.Male,
@@ -86,9 +68,19 @@ export class OnboardingComponent {
   readonly programForm = form(this.programModel);
 
   readonly activityOptions = ACTIVITY_OPTIONS;
-  readonly minEndDate = new Date();
+  readonly minEndDate = todayString();
 
-  // --- Computed signals now properly track signal model changes ---
+  readonly maxBirthDate = (() => {
+    const d = new Date();
+    d.setFullYear(d.getFullYear() - 10);
+    return d.toISOString().slice(0, 10);
+  })();
+  readonly minBirthDate = (() => {
+    const d = new Date();
+    d.setFullYear(d.getFullYear() - 120);
+    return d.toISOString().slice(0, 10);
+  })();
+
   readonly tdeeResult = computed(() => {
     const m = this.tdeeModel();
     if (!m.birthDate || m.heightCm <= 0 || m.weightKg <= 0) return null;
@@ -121,35 +113,33 @@ export class OnboardingComponent {
 
   readonly programFormValid = computed(() => this.programModel().programEndDate !== '');
 
-  // --- Date helpers for mat-datepicker (doesn't support [formField]) ---
-  birthDateForPicker(): Date | null {
-    const s = this.tdeeModel().birthDate;
-    if (!s) return null;
-    const d = new Date(s);
-    return isNaN(d.getTime()) ? null : d;
+  /** Macros for step 3 — uses submitted result or computes fresh from the signal model. */
+  readonly macros = computed((): MacroBreakdown | null => {
+    const submitted = this.macrosResult();
+    if (submitted) return submitted;
+    const tdeeKcal = this.tdeeResult();
+    if (!tdeeKcal) return null;
+    const m = this.tdeeModel();
+    return macroBreakdown(tdeeKcal, m.goalWeightKg > 0 ? m.goalWeightKg : null, m.weightKg);
+  });
+
+  // Ring circumference for macro circles
+  readonly ringC = 2 * Math.PI * 28; // r=28
+
+  macroRingOffset(pct: number): number {
+    return this.ringC * (1 - Math.min(pct, 100) / 100);
   }
 
-  onBirthDateChange(event: MatDatepickerInputEvent<Date>): void {
-    const d = event.value;
-    this.tdeeModel.update((m) => ({ ...m, birthDate: d ? d.toISOString().slice(0, 10) : '' }));
+  onDateChange(event: Event): void {
+    const value = (event.target as HTMLInputElement).value;
+    this.tdeeModel.update((m) => ({ ...m, birthDate: value }));
   }
 
-  programEndDateForPicker(): Date | null {
-    const s = this.programModel().programEndDate;
-    if (!s) return null;
-    const d = new Date(s);
-    return isNaN(d.getTime()) ? null : d;
+  onEndDateChange(event: Event): void {
+    const value = (event.target as HTMLInputElement).value;
+    this.programModel.update((m) => ({ ...m, programEndDate: value }));
   }
 
-  onProgramEndDateChange(event: MatDatepickerInputEvent<Date>): void {
-    const d = event.value;
-    this.programModel.update((m) => ({
-      ...m,
-      programEndDate: d ? d.toISOString().slice(0, 10) : '',
-    }));
-  }
-
-  // --- Navigation ---
   nextStep(): void {
     this.showErrors.set(true);
     if (!this.tdeeFormValid()) return;
@@ -193,13 +183,14 @@ export class OnboardingComponent {
 
     this.challenge.setStartAndEndDate(todayString(), programEndDate);
 
-    // tdeeResult() is now properly reactive — it reads from the signal model
-    const tdeeKcal = this.tdeeResult();
-    if (tdeeKcal != null) {
+    // Compute TDEE and macros directly from raw values — never rely on computed signals
+    // that may be cached stale due to reactive graph timing
+    const age = ageFromBirthDate(m.birthDate);
+    if (age >= 10 && age <= 120 && m.weightKg > 0 && m.heightCm > 0) {
+      const tdeeKcal = tdee(m.weightKg, m.heightCm, age, m.sex, m.activityLevel);
       const goalKg = m.goalWeightKg > 0 ? m.goalWeightKg : null;
       const macros = macroBreakdown(tdeeKcal, goalKg, m.weightKg);
       this.macrosResult.set(macros);
-
       const days = this.programDays();
       if (days != null) {
         this.projectedWeightKg.set(projectedWeight(m.weightKg, tdeeKcal, macros.calories, days));
