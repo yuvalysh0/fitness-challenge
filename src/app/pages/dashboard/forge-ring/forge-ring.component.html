@@ -1,0 +1,53 @@
+<div
+  class="forge-ring-scene"
+  [class.forge-ring-scene--flipped]="ringFlipped()"
+  (click)="toggleFlip()"
+  role="button"
+  aria-label="Tap to see stats"
+>
+  <!-- Front face: circular progress ring -->
+  <div class="forge-ring-face forge-ring-face--front">
+    <div class="forge-ring-wrap">
+      <svg class="forge-ring" viewBox="0 0 120 120" aria-hidden="true">
+        <defs>
+          <linearGradient id="forge-grad" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stop-color="#D63031" />
+            <stop offset="100%" stop-color="#E17055" />
+          </linearGradient>
+        </defs>
+        <circle class="forge-ring__track" cx="60" cy="60" r="54" />
+        <circle
+          class="forge-ring__fill"
+          cx="60"
+          cy="60"
+          r="54"
+          [style.stroke-dasharray]="ringCircumference"
+          [style.stroke-dashoffset]="ringOffset()"
+        />
+      </svg>
+      <div class="forge-ring__content">
+        <span class="forge-ring__day">DAY {{ currentDay() }}</span>
+        <span class="forge-ring__total">/ {{ totalDays() }}</span>
+        <span class="forge-ring__pct">{{ progressPercent() | number: '1.0-0' }}% complete</span>
+        <span class="forge-ring__sub">{{ habitsRemaining() }} task(s) left today</span>
+        <span class="forge-ring__hint">tap for stats</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Back face: log stats -->
+  <div class="forge-ring-face forge-ring-face--back">
+    <div class="forge-ring-stats">
+      <div class="forge-ring-stat">
+        <span class="forge-ring-stat__val">{{ daysCompleted() }}</span>
+        <span class="forge-ring-stat__label">TOTAL LOGS</span>
+      </div>
+      <div class="forge-ring-stat__divider"></div>
+      <div class="forge-ring-stat">
+        <span class="forge-ring-stat__val">{{ daysRemaining() }}</span>
+        <span class="forge-ring-stat__label">DAYS LEFT</span>
+      </div>
+    </div>
+    <span class="forge-ring-stats__hint">tap to go back</span>
+  </div>
+</div>

@@ -2,7 +2,6 @@ import { DecimalPipe } from '@angular/common';
 import { Component, inject, computed, signal, OnInit } from '@angular/core';
 import { Router, RouterLink } from '@angular/router';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
-import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatButtonModule } from '@angular/material/button';
 import { BaseChartDirective } from 'ng2-charts';
 import type { ChartConfiguration, ChartType } from 'chart.js';
@@ -15,6 +14,8 @@ import { PhotoOverlayComponent } from '../../shared/photo-overlay/photo-overlay.
 import { ConfirmDialogComponent } from '../../shared/confirm-dialog/confirm-dialog.component';
 import { todayString } from '../../core/challenge.utils';
 import { AppRoute, ActivityLevel, Sex } from '../../core/enums';
+import { ForgeRingComponent } from './forge-ring/forge-ring.component';
+import { TodayTasksComponent } from './today-tasks/today-tasks.component';
 import { tdee, macroBreakdown, projectedWeight, ageFromBirthDate } from '../../core/tdee.utils';
 import type { MacroBreakdown } from '../../core/tdee.utils';
 
@@ -46,12 +47,13 @@ function dayNumberFromStart(startDate: string, logDate: string, totalDays: numbe
   standalone: true,
   imports: [
     MatDialogModule,
-    MatCheckboxModule,
     MatButtonModule,
     BaseChartDirective,
     RouterLink,
     DecimalPipe,
     ProgressReferenceCardComponent,
+    ForgeRingComponent,
+    TodayTasksComponent,
     PhotoOverlayComponent,
   ],
   templateUrl: './dashboard.component.html',
@@ -76,31 +78,6 @@ export class DashboardComponent implements OnInit {
   readonly totalDays = this.store.totalDays;
   readonly daysCompleted = computed(() => Object.keys(this.store.dayLogs()).length);
   readonly daysRemaining = computed(() => this.store.totalDays() - this.store.currentDay());
-
-  // Circular ring progress (SVG stroke-dashoffset)
-  readonly ringCircumference = 2 * Math.PI * 54; // r=54
-  readonly ringOffset = computed(
-    () => this.ringCircumference * (1 - Math.min(this.progressPercent(), 100) / 100),
-  );
-
-  // Ring flip — tap to show stats face, auto-flips back after 3s
-  readonly ringFlipped = signal(false);
-  private flipTimer: ReturnType<typeof setTimeout> | null = null;
-
-  toggleRingFlip(): void {
-    if (this.flipTimer) {
-      clearTimeout(this.flipTimer);
-      this.flipTimer = null;
-    }
-    const next = !this.ringFlipped();
-    this.ringFlipped.set(next);
-    if (next) {
-      this.flipTimer = setTimeout(() => {
-        this.ringFlipped.set(false);
-        this.flipTimer = null;
-      }, 3000);
-    }
-  }
 
   readonly habitsRemainingToday = computed(() => {
     const log = this.todayLog();
