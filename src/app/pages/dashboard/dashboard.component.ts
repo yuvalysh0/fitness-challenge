@@ -83,6 +83,25 @@ export class DashboardComponent implements OnInit {
     () => this.ringCircumference * (1 - Math.min(this.progressPercent(), 100) / 100),
   );
 
+  // Ring flip — tap to show stats face, auto-flips back after 3s
+  readonly ringFlipped = signal(false);
+  private flipTimer: ReturnType<typeof setTimeout> | null = null;
+
+  toggleRingFlip(): void {
+    if (this.flipTimer) {
+      clearTimeout(this.flipTimer);
+      this.flipTimer = null;
+    }
+    const next = !this.ringFlipped();
+    this.ringFlipped.set(next);
+    if (next) {
+      this.flipTimer = setTimeout(() => {
+        this.ringFlipped.set(false);
+        this.flipTimer = null;
+      }, 3000);
+    }
+  }
+
   readonly habitsRemainingToday = computed(() => {
     const log = this.todayLog();
     return this.habits().filter((h) => !log.habitChecks[h.id]).length;
