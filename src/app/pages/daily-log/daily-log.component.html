@@ -1,59 +1,139 @@
 <div class="daily-log">
-  <!-- Date picker -->
-  <div class="field daily-log__date-field">
-    <label class="field__label" for="logDate">Date</label>
+  <!-- ─── Header ──────────────────────────────────────────────── -->
+  <header class="dl-header">
+    <div class="dl-header__left">
+      <span class="dl-header__label">FORGE DAILY LOG</span>
+      <span class="dl-header__date">{{ formattedDate() }}</span>
+    </div>
+    <div class="dl-header__day">
+      <span class="dl-header__day-val">{{ currentDay() }}</span>
+      <span class="dl-header__day-sep">/</span>
+      <span class="dl-header__day-total">{{ totalDays() }}</span>
+    </div>
+  </header>
+
+  <!-- Date picker (hidden behind native input triggered by clicking date) -->
+  <div class="field dl-date-field">
+    <label class="field__label" for="logDate">Change date</label>
     <input
       id="logDate"
       class="field__input field__input--date"
       type="date"
       [ngModel]="date()"
+      [max]="today"
       (ngModelChange)="date.set($event)"
     />
   </div>
 
-  <!-- Progress photos -->
+  <!-- ─── 1. Transformation state ─────────────────────────────── -->
   <div class="log-card">
-    <h2 class="log-card__title">Progress photos</h2>
-    <div class="daily-log__photos-grid">
+    <h2 class="log-card__title">Transformation state</h2>
+
+    <!-- Weight slider -->
+    <div class="dl-weight">
+      <div class="dl-weight__display">
+        <span class="dl-weight__val">{{ log().weightKg ?? '--' }}</span>
+        <span class="dl-weight__unit">kg</span>
+      </div>
+      <input
+        class="dl-slider"
+        type="range"
+        min="30"
+        max="200"
+        step="0.1"
+        [value]="log().weightKg ?? 75"
+        (input)="setWeight(+$any($event.target).value)"
+      />
+      <div class="dl-slider__labels"><span>30 kg</span><span>200 kg</span></div>
+    </div>
+
+    <!-- Mood emojis -->
+    <div class="dl-mood">
+      <span class="field__label">How did you feel?</span>
+      <div class="dl-mood__row">
+        @for (opt of moodOptions; track opt.emoji) {
+          <button
+            type="button"
+            class="dl-mood__btn"
+            [class.dl-mood__btn--active]="log().mood === opt.emoji"
+            (click)="setMood(opt.emoji)"
+            [attr.aria-label]="opt.label"
+            [title]="opt.label"
+          >
+            {{ opt.emoji }}
+          </button>
+        }
+      </div>
+    </div>
+  </div>
+
+  <!-- ─── 2. Challenge tasks ───────────────────────────────────── -->
+  <div class="log-card">
+    <div class="dl-tasks-header">
+      <h2 class="log-card__title">Daily Tasks</h2>
+      <span class="dl-tasks-count" [class.dl-tasks-count--done]="allHabitsComplete()">
+        {{ habitsCompleted() }}/{{ habits().length }}
+        @if (allHabitsComplete()) {
+          ✓
+        }
+      </span>
+    </div>
+
+    <div class="dl-habits">
+      @for (habit of habits(); track habit.id) {
+        <label class="dl-habit" [class.dl-habit--done]="log().habitChecks[habit.id]">
+          <mat-checkbox
+            [checked]="log().habitChecks[habit.id] === true"
+            (change)="toggleHabit(habit.id)"
+            class="dl-habit__check"
+          />
+          <span class="dl-habit__icon" aria-hidden="true">{{ habit.icon ?? '✓' }}</span>
+          <span class="dl-habit__label">{{ habit.label }}</span>
+        </label>
+      }
+    </div>
+  </div>
+
+  <!-- ─── 3. Photo verification ───────────────────────────────── -->
+  <div class="log-card">
+    <h2 class="log-card__title">Photo Verification</h2>
+    <div class="dl-photos">
       @for (
         slot of [
-          { type: 'front', label: 'Front' },
-          { type: 'side', label: 'Side' },
+          { type: 'front', label: 'Full-body Front' },
+          { type: 'side', label: 'Full-body Side' },
         ];
         track slot.type
       ) {
-        <div class="daily-log__photo-slot">
+        <div class="dl-photo-slot">
           <p class="field__label mb-2">{{ slot.label }}</p>
           @if (getPhotoDisplayUrl($any(slot.type)); as url) {
-            <div class="daily-log__photo-preview">
+            <div class="dl-photo-preview">
               <img
                 [src]="url"
-                [alt]="slot.label + ' progress'"
-                class="daily-log__photo-thumb"
+                [alt]="slot.label"
+                class="dl-photo-thumb"
                 (click)="openPhotoOverlay(url)"
               />
-              <button
-                type="button"
-                class="daily-log__photo-remove"
-                (click)="removePhoto($any(slot.type))"
-                [attr.aria-label]="'Remove ' + slot.label + ' photo'"
-              >
+              <button type="button" class="dl-photo-remove" (click)="removePhoto($any(slot.type))">
                 <span class="material-icons" aria-hidden="true">close</span>
               </button>
+              <div class="dl-photo-glow"></div>
             </div>
           } @else if (slot.type === 'front' ? photoUploadingFront() : photoUploadingSide()) {
-            <p class="field__hint">Uploading…</p>
+            <div class="dl-photo-uploading">
+              <span class="material-icons">sync</span>
+              <span>Uploading…</span>
+            </div>
           } @else {
-            <label class="daily-log__upload-zone">
-              <span class="material-icons daily-log__upload-icon" aria-hidden="true"
-                >add_a_photo</span
-              >
-              <span>{{ slot.label === 'Front' ? 'Full-body front' : 'Full-body side' }}</span>
+            <label class="dl-photo-zone">
+              <span class="material-icons dl-photo-zone__icon" aria-hidden="true">add_a_photo</span>
+              <span class="dl-photo-zone__text">Tap to capture</span>
               <input
                 type="file"
                 accept="image/*"
                 (change)="onPhotoChange($any(slot.type), $event)"
-                class="daily-log__upload-input"
+                class="dl-hidden-input"
               />
             </label>
           }
@@ -62,84 +142,30 @@
     </div>
   </div>
 
-  <!-- Weight -->
-  <div class="log-card">
-    <h2 class="log-card__title">Weight</h2>
-    <div class="field">
-      <label class="field__label" for="weightInput">Today's weight</label>
-      <div class="field__input-wrap">
-        <input
-          id="weightInput"
-          class="field__input"
-          type="number"
-          step="0.1"
-          [value]="log().weightKg ?? ''"
-          (input)="setWeight($any($event.target).valueAsNumber ?? null)"
-          placeholder="e.g. 72.5"
-        />
-        <span class="field__unit">kg</span>
-      </div>
-    </div>
-  </div>
-
-  <!-- Mood -->
-  <div class="log-card">
-    <h2 class="log-card__title">How did you feel?</h2>
-    <div class="field">
-      <label class="field__label" for="moodInput">Mood / energy</label>
-      <textarea
-        id="moodInput"
-        class="field__textarea"
-        [value]="log().mood ?? ''"
-        (input)="setMood($any($event.target).value)"
-        placeholder="Energy, mood, anything..."
-        rows="3"
-      ></textarea>
-    </div>
-  </div>
-
-  <!-- Notes -->
+  <!-- ─── 4. Notes ────────────────────────────────────────────── -->
   <div class="log-card">
     <h2 class="log-card__title">Notes</h2>
     <div class="field">
-      <label class="field__label" for="notesInput">Notes</label>
       <textarea
-        id="notesInput"
         class="field__textarea"
         [value]="log().notes ?? ''"
         (input)="setNotes($any($event.target).value)"
-        placeholder="Optional notes for the day"
+        placeholder="Optional notes for the day…"
         rows="2"
       ></textarea>
     </div>
   </div>
 
-  <!-- Daily tasks -->
-  <div class="log-card">
-    <h2 class="log-card__title">5 Daily tasks</h2>
-    <div class="daily-log__habits">
-      @for (habit of habits(); track habit.id) {
-        <label class="daily-log__habit">
-          <mat-checkbox
-            [checked]="log().habitChecks[habit.id] === true"
-            (change)="toggleHabit(habit.id)"
-          />
-          <span class="daily-log__habit-icon" aria-hidden="true">{{ habit.icon ?? '✓' }}</span>
-          <span class="daily-log__habit-label">{{ habit.label }}</span>
-        </label>
-      }
-    </div>
-  </div>
+  <!--
+ <div class="log-card">
+    <h2 class="log-card__title">Food Log</h2>
 
-  <!-- Food log -->
-  <div class="log-card">
-    <h2 class="log-card__title">Food log</h2>
-    <div class="daily-log__food-add">
-      <div class="field daily-log__food-time-field">
+    <div class="dl-food-add">
+      <div class="field dl-food-time">
         <label class="field__label" for="foodTime">Time</label>
         <input id="foodTime" class="field__input" type="time" [(ngModel)]="newFoodTime" />
       </div>
-      <div class="field daily-log__food-desc-field">
+      <div class="field dl-food-desc">
         <label class="field__label" for="foodDesc">What did you eat?</label>
         <input
           id="foodDesc"
@@ -150,30 +176,54 @@
           (keydown.enter)="addFood()"
         />
       </div>
-      <button class="btn btn--primary daily-log__food-add-btn" type="button" (click)="addFood()">
-        Add
-      </button>
+      <button class="btn btn--primary dl-food-add-btn" type="button" (click)="addFood()">Add</button>
     </div>
 
     @if (log().foodEntries.length > 0) {
-      <ul class="daily-log__food-list">
+      <ul class="dl-food-list">
         @for (entry of log().foodEntries; track entry.id) {
-          <li class="daily-log__food-item">
-            <span class="daily-log__food-time">{{ entry.time }}</span>
-            <span class="daily-log__food-desc">{{ entry.description }}</span>
-            <button
-              type="button"
-              class="daily-log__food-remove"
-              (click)="removeFood(entry.id)"
-              aria-label="Remove"
-            >
+          <li class="dl-food-item">
+            <span class="dl-food-time">{{ entry.time }}</span>
+            <span class="dl-food-desc">{{ entry.description }}</span>
+            <button type="button" class="dl-food-remove" (click)="removeFood(entry.id)" aria-label="Remove">
               <span class="material-icons" aria-hidden="true">close</span>
             </button>
           </li>
         }
       </ul>
     }
-  </div>
+  </div>  -->
+
+  <!-- ─── Submit warning ──────────────────────────────────────── -->
+  @if (submitWarning(); as warn) {
+    <div class="dl-warning">
+      <p class="dl-warning__text">⚠️ {{ warn }}</p>
+      <div class="dl-warning__actions">
+        <button type="button" class="btn btn--ghost" (click)="submitWarning.set(null)">
+          Cancel
+        </button>
+        <button type="button" class="btn btn--primary" (click)="confirmSubmit()">
+          Finalize anyway
+        </button>
+      </div>
+    </div>
+  }
+
+  <!-- ─── Submit success ──────────────────────────────────────── -->
+  @if (submitSuccess()) {
+    <div class="dl-success">
+      <span class="dl-success__icon">🔥</span>
+      <span class="dl-success__text">Day Forged!</span>
+    </div>
+  }
+
+  <!-- ─── Complete Forge Day CTA ──────────────────────────────── -->
+  @if (!submitWarning() && !submitSuccess()) {
+    <button type="button" class="dl-cta" (click)="completeForgDay()">
+      <span class="material-icons dl-cta__icon" aria-hidden="true">local_fire_department</span>
+      COMPLETE FORGE DAY
+    </button>
+  }
 
   <app-photo-overlay [url]="photoOverlayUrl()" (close)="closePhotoOverlay()" />
 </div>
