@@ -27,18 +27,14 @@
 
     <div class="ob__form">
       <div class="field">
-        <label class="field__label" for="birthDate">Date of birth</label>
-        <input
-          id="birthDate"
-          class="field__input field__input--date"
-          type="date"
+        <label class="field__label">Date of birth</label>
+        <app-date-select
           [value]="tdeeModel().birthDate"
-          [min]="minBirthDate"
-          [max]="maxBirthDate"
-          (change)="onDateChange($event)"
+          yearMode="past"
+          (valueChange)="tdeeModel.update(m => ({ ...m, birthDate: $event }))"
         />
         @if (showErrors() && !tdeeModel().birthDate) {
-          <span class="field__error">Required — must be 10–120 years ago</span>
+          <span class="field__error">Required</span>
         }
       </div>
 
@@ -144,14 +140,11 @@
       <p class="ob__section-label">Set your program</p>
 
       <div class="field">
-        <label class="field__label" for="endDate">Program end date</label>
-        <input
-          id="endDate"
-          class="field__input field__input--date"
-          type="date"
+        <label class="field__label">Program end date</label>
+        <app-date-select
           [value]="programModel().programEndDate"
-          [min]="minEndDate"
-          (change)="onEndDateChange($event)"
+          yearMode="future"
+          (valueChange)="programModel.update(m => ({ ...m, programEndDate: $event }))"
         />
         @if (showErrors() && !programModel().programEndDate) {
           <span class="field__error">Pick an end date</span>

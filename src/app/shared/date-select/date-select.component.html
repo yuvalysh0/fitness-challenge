@@ -1,0 +1,37 @@
+<div class="ds">
+  <select
+    class="ds__select"
+    [value]="day()"
+    (change)="onPart('day', $any($event.target).value)"
+    aria-label="Day"
+  >
+    <option value="" disabled>Day</option>
+    @for (d of days; track d) {
+      <option [value]="d">{{ d }}</option>
+    }
+  </select>
+
+  <select
+    class="ds__select ds__select--month"
+    [value]="month()"
+    (change)="onPart('month', $any($event.target).value)"
+    aria-label="Month"
+  >
+    <option value="" disabled>Month</option>
+    @for (m of months; track m.v) {
+      <option [value]="m.v">{{ m.l }}</option>
+    }
+  </select>
+
+  <select
+    class="ds__select ds__select--year"
+    [value]="year()"
+    (change)="onPart('year', $any($event.target).value)"
+    aria-label="Year"
+  >
+    <option value="" disabled>Year</option>
+    @for (y of years(); track y) {
+      <option [value]="y">{{ y }}</option>
+    }
+  </select>
+</div>

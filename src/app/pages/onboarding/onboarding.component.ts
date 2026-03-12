@@ -2,6 +2,7 @@ import { Component, computed, inject, signal } from '@angular/core';
 import { DecimalPipe } from '@angular/common';
 import { Router } from '@angular/router';
 import { form, FormField } from '@angular/forms/signals';
+import { DateSelectComponent } from '../../shared/date-select/date-select.component';
 import { AuthService, type OnboardingData } from '../../core/auth.service';
 import { ChallengeService } from '../../core/challenge.service';
 import { todayString } from '../../core/challenge.utils';
@@ -38,7 +39,7 @@ const ACTIVITY_OPTIONS: { value: ActivityLevel; label: string }[] = [
 @Component({
   selector: 'app-onboarding',
   standalone: true,
-  imports: [DecimalPipe, FormField],
+  imports: [DecimalPipe, FormField, DateSelectComponent],
   templateUrl: './onboarding.component.html',
   styleUrl: './onboarding.component.scss',
 })
@@ -69,17 +70,6 @@ export class OnboardingComponent {
 
   readonly activityOptions = ACTIVITY_OPTIONS;
   readonly minEndDate = todayString();
-
-  readonly maxBirthDate = (() => {
-    const d = new Date();
-    d.setFullYear(d.getFullYear() - 10);
-    return d.toISOString().slice(0, 10);
-  })();
-  readonly minBirthDate = (() => {
-    const d = new Date();
-    d.setFullYear(d.getFullYear() - 120);
-    return d.toISOString().slice(0, 10);
-  })();
 
   readonly tdeeResult = computed(() => {
     const m = this.tdeeModel();
@@ -128,16 +118,6 @@ export class OnboardingComponent {
 
   macroRingOffset(pct: number): number {
     return this.ringC * (1 - Math.min(pct, 100) / 100);
-  }
-
-  onDateChange(event: Event): void {
-    const value = (event.target as HTMLInputElement).value;
-    this.tdeeModel.update((m) => ({ ...m, birthDate: value }));
-  }
-
-  onEndDateChange(event: Event): void {
-    const value = (event.target as HTMLInputElement).value;
-    this.programModel.update((m) => ({ ...m, programEndDate: value }));
   }
 
   nextStep(): void {

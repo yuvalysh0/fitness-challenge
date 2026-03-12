@@ -115,6 +115,12 @@
   letter-spacing: 0;
 }
 
+.ob__date-row {
+  display: grid;
+  grid-template-columns: 80px 1fr 90px;
+  gap: 0.5rem;
+}
+
 .ob__select {
   // Native select needs chevron
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%239A9EA4'%3E%3Cpath d='M7 10l5 5 5-5z'/%3E%3C/svg%3E");
