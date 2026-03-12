@@ -2,7 +2,7 @@
 <html lang="en">
   <head>
     <meta charset="utf-8" />
-    <title>Fitness Challenge</title>
+    <title>Forge</title>
     <base href="/" />
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
     <meta name="mobile-web-app-capable" content="yes" />
@@ -21,18 +21,8 @@
   </head>
   <body>
     <script>
-      (function () {
-        var t = localStorage.getItem('75-hard-theme') || 'dark';
-        var eff =
-          t === 'system'
-            ? window.matchMedia('(prefers-color-scheme: light)').matches
-              ? 'light'
-              : 'dark'
-            : t === 'light'
-              ? 'light'
-              : 'dark';
-        document.documentElement.setAttribute('data-theme', eff);
-      })();
+      // Forge is always dark — prevent any flash of light theme
+      document.documentElement.setAttribute('data-theme', 'dark');
     </script>
     <app-root></app-root>
   </body>

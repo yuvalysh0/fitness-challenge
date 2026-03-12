@@ -83,12 +83,36 @@
     line-height: 1;
   }
 
-  &__btn-link {
-    min-width: auto;
-    padding: 0 0.25rem;
+  &__icon-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 34px;
+    height: 34px;
+    padding: 0;
+    background: transparent;
+    border: none;
+    border-radius: 50%;
+    color: var(--text-muted);
+    cursor: pointer;
+    transition:
+      background-color 0.15s,
+      color 0.15s;
+
+    .material-icons {
+      font-size: 1.125rem;
+    }
+
+    &:hover {
+      color: var(--accent);
+      background: var(--accent-subtle);
+    }
 
     &--danger {
-      color: var(--error);
+      &:hover {
+        color: var(--error);
+        background: var(--error-subtle);
+      }
     }
   }
 }

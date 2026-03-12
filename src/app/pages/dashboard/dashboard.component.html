@@ -1,206 +1,229 @@
-<div class="dashboard w-full">
-  <header class="dashboard__header mb-6">
-    <h1 class="dashboard__title m-0 mb-1 text-2xl md:text-3xl font-bold tracking-tight">
-      {{ programTitle() }}
-    </h1>
-    <p class="dashboard__subtitle m-0 mb-1 text-text-muted">
-      Day {{ currentDay() }} of {{ totalDays() }}
-    </p>
+<div class="dashboard">
+  <!-- ─── 0. Forge header ──────────────────────────────────────── -->
+  <header class="forge-header">
+    <span class="forge-header__logo">FORGE</span>
+    <a [routerLink]="AppRoute.Settings" class="forge-header__settings" aria-label="Settings">
+      <span class="material-icons" aria-hidden="true">settings</span>
+    </a>
   </header>
 
-  <section class="dashboard__greeting card mb-6">
+  <!-- ─── 1. Welcome & Mindset ─────────────────────────────────── -->
+  <section class="forge-welcome">
     @let profile = auth.profile();
-    <div class="dashboard__greeting-inner">
-      @if (auth.avatarUrl(); as avatarUrl) {
-        <img [src]="avatarUrl" alt="" class="dashboard__avatar" />
+    <div class="forge-welcome__row">
+      @if (auth.avatarUrl(); as url) {
+        <img [src]="url" alt="Profile" class="forge-welcome__avatar" />
       } @else {
-        <div class="dashboard__avatar dashboard__avatar--placeholder" aria-hidden="true">
-          <span class="material-icons dashboard__avatar-icon">person</span>
+        <div class="forge-welcome__avatar forge-welcome__avatar--placeholder">
+          <span class="material-icons" aria-hidden="true">person</span>
         </div>
       }
-      <div class="dashboard__greeting-text">
-        <p class="dashboard__greeting-line m-0">
-          Hello,
-          {{ profile?.full_name?.trim() || (auth.user()?.email ?? '').split('@')[0] || 'there' }},
-          how are you today?
+      <div class="forge-welcome__text">
+        <p class="forge-welcome__greeting">Hello,</p>
+        <p class="forge-welcome__name">
+          {{ profile?.full_name?.trim() || (auth.user()?.email ?? '').split('@')[0] || 'Athlete' }}
         </p>
       </div>
     </div>
+
+    @if (quoteService.quoteOfTheDay(); as q) {
+      <blockquote class="forge-welcome__quote">
+        <p class="forge-welcome__quote-text">"{{ q.quote }}"</p>
+        <cite class="forge-welcome__quote-author">— {{ q.author }}</cite>
+      </blockquote>
+    } @else if (quoteService.quoteLoading()) {
+      <div class="forge-welcome__quote forge-welcome__quote--loading">
+        <p class="forge-welcome__quote-text">Loading…</p>
+      </div>
+    }
   </section>
 
-  @if (quoteService.quoteOfTheDay() || quoteService.quoteLoading() || quoteService.quoteError()) {
-    <div class="card dashboard__quote-card mb-6">
-      <h2
-        class="dashboard__quote-title m-0 mb-2 text-sm font-semibold uppercase tracking-wide text-[var(--text-muted)]"
+  <!-- ─── 2. Core Challenge ────────────────────────────────────── -->
+  <section class="forge-core">
+    <!-- Circular ring -->
+    <div class="forge-ring-wrap">
+      <svg
+        class="forge-ring"
+        viewBox="0 0 120 120"
+        role="img"
+        [attr.aria-label]="(progressPercent() | number: '1.0-0') + '% complete'"
       >
-        Quote of the day
-      </h2>
-      @if (quoteService.quoteLoading()) {
-        <p class="dashboard__quote-loading m-0 text-sm text-[var(--text-muted)]">Loading…</p>
-      } @else if (quoteService.quoteError(); as err) {
-        <p class="dashboard__quote-error m-0 text-sm text-[var(--text-muted)]">{{ err }}</p>
-      } @else if (quoteService.quoteOfTheDay(); as q) {
-        <blockquote class="dashboard__quote-block m-0">
-          <p class="dashboard__quote-text m-0 mb-2 text-[var(--text)]">"{{ q.quote }}"</p>
-          <cite class="dashboard__quote-author not-italic text-sm text-[var(--text-muted)]"
-            >— {{ q.author }}{{ q.work ? ', ' + q.work : '' }}</cite
-          >
-        </blockquote>
-      }
+        <defs>
+          <linearGradient id="forge-grad" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stop-color="#D63031" />
+            <stop offset="100%" stop-color="#E17055" />
+          </linearGradient>
+        </defs>
+        <circle class="forge-ring__track" cx="60" cy="60" r="54" />
+        <circle
+          class="forge-ring__fill"
+          cx="60"
+          cy="60"
+          r="54"
+          [style.stroke-dasharray]="ringCircumference"
+          [style.stroke-dashoffset]="ringOffset()"
+        />
+      </svg>
+      <div class="forge-ring__content">
+        <span class="forge-ring__day">DAY {{ currentDay() }}</span>
+        <span class="forge-ring__total">/ {{ totalDays() }}</span>
+        <span class="forge-ring__pct">{{ progressPercent() | number: '1.0-0' }}% complete</span>
+      </div>
     </div>
-  }
 
-  <div class="card dashboard__progress-card mb-6">
-    <mat-progress-bar
-      mode="determinate"
-      [value]="progressPercent()"
-      class="dashboard__progress-bar mb-3 h-2 w-full rounded-full"
-    />
-    <p class="dashboard__progress-label m-0 text-sm text-[var(--text-muted)]">
-      {{ progressPercent() | number: '1.0-0' }}% complete
-    </p>
-  </div>
+    <!-- Stats row -->
+    <div class="forge-stats">
+      <div class="forge-stat">
+        <span class="forge-stat__value">{{ daysCompleted() }}</span>
+        <span class="forge-stat__label">TOTAL LOGS</span>
+      </div>
+      <div class="forge-stat__divider"></div>
+      <div class="forge-stat">
+        <span class="forge-stat__value">{{ daysRemaining() }}</span>
+        <span class="forge-stat__label">DAYS REMAINING</span>
+      </div>
+    </div>
 
-  @if (nutritionPlan(); as plan) {
-    <div class="card dashboard__nutrition-card mb-6">
-      <h2 class="dashboard__section-title m-0 mb-4 text-base font-semibold">
-        Daily nutrition plan
-      </h2>
-
-      <div class="dashboard__nutrition-top">
-        <div class="dashboard__nutrition-calories flex-1">
-          <span class="dashboard__nutrition-calories-value">{{ plan.calories }}</span>
-          <span class="dashboard__nutrition-calories-unit">kcal / day</span>
-          @if (plan.isDeficit) {
-            <span class="dashboard__nutrition-deficit-badge">−400 kcal deficit</span>
-          }
-        </div>
-
-        <div class="dashboard__nutrition-macros">
-          <div class="dashboard__nutrition-macro dashboard__nutrition-macro--protein">
-            <span class="dashboard__nutrition-macro-val">{{ plan.proteinG }}g</span>
-            <span class="dashboard__nutrition-macro-label">Protein</span>
-          </div>
-          <div class="dashboard__nutrition-macro dashboard__nutrition-macro--carbs">
-            <span class="dashboard__nutrition-macro-val">{{ plan.carbsG }}g</span>
-            <span class="dashboard__nutrition-macro-label">Carbs</span>
-          </div>
-          <div class="dashboard__nutrition-macro dashboard__nutrition-macro--fat">
-            <span class="dashboard__nutrition-macro-val">{{ plan.fatG }}g</span>
-            <span class="dashboard__nutrition-macro-label">Fat</span>
-          </div>
-        </div>
+    <!-- Today's tasks -->
+    <div class="forge-tasks">
+      <div class="forge-tasks__header">
+        <h2 class="forge-section-title">TODAY'S TASKS</h2>
+        <span class="forge-tasks__count">{{ habitsCompletedToday() }} / {{ habits().length }}</span>
       </div>
 
-      @if (plan.isDeficit) {
-        <div class="dashboard__nutrition-projected">
-          <span class="dashboard__nutrition-projected-label">Projected weight after program</span>
-          <span class="dashboard__nutrition-projected-value">
-            {{ plan.projectedWeightKg | number: '1.1-1' }} kg
-            <span class="dashboard__nutrition-projected-delta">
-              −{{ auth.profile()!.weight_kg! - plan.projectedWeightKg | number: '1.1-1' }} kg
-            </span>
-          </span>
-        </div>
-      }
-    </div>
-  }
-
-  <div class="dashboard__stats flex gap-8 md:gap-12 mb-8">
-    <div class="dashboard__stat flex flex-col">
-      <span class="dashboard__stat-value text-2xl font-semibold text-[var(--accent)]">{{
-        daysCompleted()
-      }}</span>
-      <span class="dashboard__stat-label text-sm text-[var(--text-muted)]">Days logged</span>
-    </div>
-    <div class="dashboard__stat flex flex-col">
-      <span class="dashboard__stat-value text-2xl font-semibold text-[var(--accent)]">{{
-        daysRemaining()
-      }}</span>
-      <span class="dashboard__stat-label text-sm text-[var(--text-muted)]">Days left</span>
-    </div>
-  </div>
-
-  <div class="card dashboard__habits-card mb-6">
-    <div class="dashboard__habits-header">
-      <h2 class="dashboard__section-title m-0 text-base font-semibold">Today's tasks</h2>
-      <span class="dashboard__habits-count text-sm text-[var(--text-muted)]">
-        {{ habitsCompletedToday() }}/{{ habits().length }} done
-      </span>
-    </div>
-    @if (nextHabit(); as habit) {
-      <div class="dashboard__next-habit">
-        <span class="dashboard__next-label">Next</span>
-        <span class="dashboard__next-icon" aria-hidden="true">{{ habit.icon ?? '✓' }}</span>
-        <span class="dashboard__next-text">{{ habit.label }}</span>
-      </div>
-    } @else {
-      <p class="dashboard__all-done m-0">All done for today.</p>
-    }
-    <div class="dashboard__habits-list">
       @for (habit of habits(); track habit.id) {
-        <label class="dashboard__habit-row">
+        <div
+          class="forge-task"
+          [class.forge-task--done]="todayLog().habitChecks[habit.id]"
+          (click)="toggleHabit(habit.id)"
+        >
           <mat-checkbox
             [checked]="todayLog().habitChecks[habit.id] === true"
             (change)="toggleHabit(habit.id)"
+            (click)="$event.stopPropagation()"
+            class="forge-task__check"
           />
-          <span class="dashboard__habit-icon" aria-hidden="true">{{ habit.icon ?? '✓' }}</span>
-          <span class="dashboard__habit-label">{{ habit.label }}</span>
-        </label>
+          <div class="forge-task__info">
+            @if (habit.icon) {
+              <span class="forge-task__icon" aria-hidden="true">{{ habit.icon }}</span>
+            }
+            <span class="forge-task__label">{{ habit.label }}</span>
+          </div>
+        </div>
       }
-    </div>
-    <a
-      [routerLink]="AppRoute.Daily"
-      class="dashboard__habits-link text-sm font-medium text-[var(--accent)]"
-    >
-      Full daily log →
-    </a>
-  </div>
 
-  <div class="dashboard__middle grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
-    @if (weightChartData().length > 0) {
-      <div class="card dashboard__chart-card">
-        <h2 class="dashboard__section-title m-0 mb-3 text-base font-semibold">Weight (kg)</h2>
-        <div class="dashboard__chart-wrap dashboard__chart-wrap--chartjs">
+      <a [routerLink]="AppRoute.Daily" class="forge-tasks__link">Full daily log →</a>
+    </div>
+  </section>
+
+  <!-- ─── 3. Fuel (Nutrition) ──────────────────────────────────── -->
+  @if (nutritionPlan(); as plan) {
+    <section class="forge-fuel">
+      <h2 class="forge-section-title">TODAY'S FUEL</h2>
+
+      <div class="forge-fuel__card">
+        <div class="forge-fuel__cal-row">
+          <div class="forge-fuel__cal-text">
+            <span class="forge-fuel__cal-val">{{ plan.calories }}</span>
+            <span class="forge-fuel__cal-unit">KCAL / DAY</span>
+          </div>
+          @if (plan.isDeficit) {
+            <span class="forge-fuel__badge">−400 kcal deficit</span>
+          }
+        </div>
+
+        <div class="forge-fuel__macros">
+          <div class="forge-fuel__macro">
+            <div class="forge-fuel__macro-header">
+              <span class="forge-fuel__macro-name">Protein</span>
+              <span class="forge-fuel__macro-val">{{ plan.proteinG }}g</span>
+            </div>
+            <div class="forge-fuel__bar">
+              <div
+                class="forge-fuel__bar-fill forge-fuel__bar-fill--protein"
+                [style.width.%]="30"
+              ></div>
+            </div>
+          </div>
+          <div class="forge-fuel__macro">
+            <div class="forge-fuel__macro-header">
+              <span class="forge-fuel__macro-name">Carbs</span>
+              <span class="forge-fuel__macro-val">{{ plan.carbsG }}g</span>
+            </div>
+            <div class="forge-fuel__bar">
+              <div
+                class="forge-fuel__bar-fill forge-fuel__bar-fill--carbs"
+                [style.width.%]="40"
+              ></div>
+            </div>
+          </div>
+          <div class="forge-fuel__macro">
+            <div class="forge-fuel__macro-header">
+              <span class="forge-fuel__macro-name">Fat</span>
+              <span class="forge-fuel__macro-val">{{ plan.fatG }}g</span>
+            </div>
+            <div class="forge-fuel__bar">
+              <div
+                class="forge-fuel__bar-fill forge-fuel__bar-fill--fat"
+                [style.width.%]="30"
+              ></div>
+            </div>
+          </div>
+        </div>
+
+        @if (plan.isDeficit) {
+          <div class="forge-fuel__projected">
+            <span>Projected after program</span>
+            <span>
+              {{ plan.projectedWeightKg | number: '1.1-1' }} kg
+              <span class="forge-fuel__delta">
+                −{{ auth.profile()!.weight_kg! - plan.projectedWeightKg | number: '1.1-1' }} kg
+              </span>
+            </span>
+          </div>
+        }
+      </div>
+    </section>
+  }
+
+  <!-- ─── 4. Transformation ────────────────────────────────────── -->
+  @if (weightChartData().length > 0) {
+    <section class="forge-transform">
+      <h2 class="forge-section-title">WEIGHT TREND</h2>
+      <div class="forge-chart-card">
+        <div class="forge-chart-wrap">
           <canvas
             baseChart
-            type="bar"
+            type="line"
             [data]="weightChartDataConfig()"
             [options]="weightChartOptions"
-          ></canvas>
+          >
+          </canvas>
         </div>
-        <p class="dashboard__chart-hint m-0 mt-2 text-xs text-[var(--text-muted)]">
-          From day logs. Add weight on the Daily log.
-        </p>
       </div>
-    }
-    <app-progress-reference-card
-      [firstEntry]="firstPhoto()"
-      [latestEntry]="latestPhoto()"
-      [totalDays]="totalDays()"
-      (photoClick)="openPhotoOverlay($event)"
-    />
-  </div>
+    </section>
+  }
 
-  <div class="dashboard__actions flex flex-col gap-3">
-    <!-- Quick links row -->
+  <app-progress-reference-card
+    [firstEntry]="firstPhoto()"
+    [latestEntry]="latestPhoto()"
+    [totalDays]="totalDays()"
+    (photoClick)="openPhotoOverlay($event)"
+  />
+
+  <!-- ─── Quick actions ────────────────────────────────────────── -->
+  <div class="forge-actions">
     <div class="grid grid-cols-2 gap-3">
       <a class="btn btn--primary" [routerLink]="AppRoute.Daily">Log today</a>
       <a class="btn btn--secondary" [routerLink]="AppRoute.Measurements">Measurements</a>
     </div>
-
-    <!-- Reset / restart — full width -->
-    <div class="card flex flex-col gap-2">
-      <h2 class="card__title m-0 text-base font-semibold">Restart challenge</h2>
+    <div class="forge-reset-card">
+      <h3 class="forge-reset-card__title">Restart challenge</h3>
       <div class="grid grid-cols-2 gap-2">
         <button type="button" class="btn btn--secondary" (click)="openRestartDialog()">
           I'm restarting
         </button>
-        <button
-          type="button"
-          class="btn btn--error dashboard__reset-btn"
-          (click)="openResetDialog()"
-        >
+        <button type="button" class="btn btn--error" (click)="openResetDialog()">
           Reset challenge
         </button>
       </div>

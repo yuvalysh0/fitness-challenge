@@ -1,6 +1,6 @@
 $bar-height: 62px;
 $fab-size: 56px;
-$fab-elevation: 20px; // how much FAB pops above bar top
+$fab-elevation: 25px; // how much FAB pops above bar top
 
 .bottom-nav {
   position: fixed;
@@ -102,7 +102,7 @@ $fab-elevation: 20px; // how much FAB pops above bar top
   // Ring uses the page background color to create the notch illusion
   box-shadow:
     0 0 0 6px var(--bg),
-    0 6px 20px rgba(51, 120, 254, 0.4);
+    0 6px 20px rgba(214, 48, 49, 0.4);
 
   &:active {
     transform: scale(0.93);
@@ -111,7 +111,7 @@ $fab-elevation: 20px; // how much FAB pops above bar top
   &--active {
     box-shadow:
       0 0 0 6px var(--bg),
-      0 6px 24px rgba(51, 120, 254, 0.6);
+      0 6px 24px rgba(214, 48, 49, 0.6);
   }
 }
 

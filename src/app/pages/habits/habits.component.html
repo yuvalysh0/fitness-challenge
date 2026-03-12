@@ -16,7 +16,6 @@
               <div class="habits-page__icon-picker">
                 <span class="habits-page__icon-label">Icon</span>
                 <button
-                  mat-button
                   type="button"
                   [matMenuTriggerFor]="emojiPicker"
                   class="habits-page__icon-trigger"
@@ -62,20 +61,20 @@
           <span class="habits-page__habit-label">{{ habit.label }}</span>
           <div class="habits-page__actions-cell flex gap-1">
             <button
-              mat-button
               type="button"
-              class="habits-page__btn-link text-[var(--accent)]"
+              class="habits-page__icon-btn"
+              aria-label="Edit task"
               (click)="startEdit(habit)"
             >
-              Edit
+              <span class="material-icons" aria-hidden="true">edit</span>
             </button>
             <button
-              mat-button
               type="button"
-              class="habits-page__btn-link habits-page__btn-link--danger text-red-700"
+              class="habits-page__icon-btn habits-page__icon-btn--danger"
+              aria-label="Remove task"
               (click)="remove(habit.id)"
             >
-              Remove
+              <span class="material-icons" aria-hidden="true">delete</span>
             </button>
           </div>
         }
@@ -87,7 +86,6 @@
           <div class="habits-page__icon-picker">
             <span class="habits-page__icon-label">Icon</span>
             <button
-              mat-button
               type="button"
               [matMenuTriggerFor]="emojiPickerNew"
               class="habits-page__icon-trigger"

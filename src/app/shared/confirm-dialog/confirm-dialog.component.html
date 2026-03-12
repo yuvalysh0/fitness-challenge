@@ -1,17 +1,18 @@
 <div class="confirm-dialog">
-  <h2 mat-dialog-title class="confirm-dialog__title">{{ data.title }}</h2>
-  <mat-dialog-content class="confirm-dialog__content">
-    <p class="confirm-dialog__message m-0">{{ data.message }}</p>
-  </mat-dialog-content>
-  <mat-dialog-actions class="confirm-dialog__actions" align="end">
-    <button mat-button type="button" (click)="cancel()">{{ cancelText }}</button>
+  <h2 class="confirm-dialog__title">{{ data.title }}</h2>
+  <p class="confirm-dialog__message">{{ data.message }}</p>
+  <div class="confirm-dialog__actions">
+    <button type="button" class="btn btn--ghost confirm-dialog__btn" (click)="cancel()">
+      {{ cancelText }}
+    </button>
     <button
-      mat-flat-button
       type="button"
-      [color]="data.confirmWarn ? 'warn' : 'primary'"
+      class="btn confirm-dialog__btn"
+      [class.btn--error]="data.confirmWarn"
+      [class.btn--primary]="!data.confirmWarn"
       (click)="confirm()"
     >
       {{ confirmText }}
     </button>
-  </mat-dialog-actions>
+  </div>
 </div>

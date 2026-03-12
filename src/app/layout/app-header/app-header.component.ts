@@ -37,6 +37,8 @@ export class AppHeaderComponent {
 
   readonly pageTitle = computed(() => {
     const url = this.currentUrl();
-    return ROUTE_TITLES[url] ?? 'Fitness Challenge';
+    return ROUTE_TITLES[url] ?? 'Forge';
   });
+
+  readonly isHome = computed(() => this.currentUrl() === AppRoute.Home || this.currentUrl() === '');
 }

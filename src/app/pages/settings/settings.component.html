@@ -129,30 +129,6 @@
     </mat-card-content>
   </mat-card>
 
-  <!-- Appearance card -->
-  <mat-card class="settings__card rounded-xl p-5 shadow-sm mt-6">
-    <mat-card-header>
-      <mat-card-title class="text-base font-semibold text-(--text-muted)"
-        >Appearance</mat-card-title
-      >
-    </mat-card-header>
-    <mat-card-content>
-      <p class="settings__theme-label m-0 mb-3 text-sm text-(--text-muted)">Theme</p>
-      <div class="settings__theme-options" role="group" aria-label="Theme preference">
-        @for (opt of themeOptions; track opt.value) {
-          <button
-            type="button"
-            class="settings__theme-btn"
-            [class.settings__theme-btn--active]="themeService.theme() === opt.value"
-            (click)="setTheme(opt.value)"
-          >
-            {{ opt.label }}
-          </button>
-        }
-      </div>
-    </mat-card-content>
-  </mat-card>
-
   <!-- Sign out — mobile only (desktop uses the nav bar sign out) -->
   <button type="button" class="settings__signout btn btn--ghost md:hidden" (click)="signOut()">
     <span class="material-icons" aria-hidden="true">logout</span>

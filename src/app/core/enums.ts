@@ -56,3 +56,7 @@ export const AppRoute = {
 } as const;
 
 export type AppRoutePath = (typeof AppRoute)[keyof typeof AppRoute];
+
+export enum AppTitle {
+  Forge = 'Forge',
+}

@@ -2,11 +2,10 @@ import { DecimalPipe } from '@angular/common';
 import { Component, inject, computed, signal, OnInit } from '@angular/core';
 import { Router, RouterLink } from '@angular/router';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
-import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatButtonModule } from '@angular/material/button';
 import { BaseChartDirective } from 'ng2-charts';
-import type { ChartConfiguration } from 'chart.js';
+import type { ChartConfiguration, ChartType } from 'chart.js';
 import { ChallengeService } from '../../core/challenge.service';
 import { AuthService } from '../../core/auth.service';
 import { QuoteService } from '../../core/quote.service';
@@ -47,7 +46,6 @@ function dayNumberFromStart(startDate: string, logDate: string, totalDays: numbe
   standalone: true,
   imports: [
     MatDialogModule,
-    MatProgressBarModule,
     MatCheckboxModule,
     MatButtonModule,
     BaseChartDirective,
@@ -78,6 +76,17 @@ export class DashboardComponent implements OnInit {
   readonly totalDays = this.store.totalDays;
   readonly daysCompleted = computed(() => Object.keys(this.store.dayLogs()).length);
   readonly daysRemaining = computed(() => this.store.totalDays() - this.store.currentDay());
+
+  // Circular ring progress (SVG stroke-dashoffset)
+  readonly ringCircumference = 2 * Math.PI * 54; // r=54
+  readonly ringOffset = computed(
+    () => this.ringCircumference * (1 - Math.min(this.progressPercent(), 100) / 100),
+  );
+
+  readonly habitsRemainingToday = computed(() => {
+    const log = this.todayLog();
+    return this.habits().filter((h) => !log.habitChecks[h.id]).length;
+  });
 
   readonly nutritionPlan = computed(
     (): (MacroBreakdown & { tdeeKcal: number; projectedWeightKg: number }) | null => {
@@ -190,7 +199,7 @@ export class DashboardComponent implements OnInit {
   });
 
   /** Chart.js bar chart data: labels = dates, dataset = weights */
-  readonly weightChartDataConfig = computed((): ChartConfiguration<'bar'>['data'] => {
+  readonly weightChartDataConfig = computed((): ChartConfiguration<'line'>['data'] => {
     const points = this.weightChartData();
     if (points.length === 0) return { labels: [], datasets: [] };
     return {
@@ -199,30 +208,42 @@ export class DashboardComponent implements OnInit {
         {
           label: 'Weight (kg)',
           data: points.map((p) => p.weight),
-          backgroundColor: '#db2777',
+          borderColor: '#D63031',
+          backgroundColor: 'rgba(214,48,49,0.15)',
+          pointBackgroundColor: '#E17055',
+          pointBorderColor: '#D63031',
+          pointRadius: 5,
+          pointHoverRadius: 7,
+          borderWidth: 2.5,
+          tension: 0.35,
+          fill: true,
         },
       ],
     };
   });
 
-  /** Chart.js bar options: Y from 0, tooltip "X kg" */
-  readonly weightChartOptions: ChartConfiguration<'bar'>['options'] = {
+  readonly weightChartOptions: ChartConfiguration<'line'>['options'] = {
     responsive: true,
     maintainAspectRatio: false,
     scales: {
+      x: {
+        grid: { color: 'rgba(154,158,164,0.15)' },
+        ticks: { color: '#9A9EA4', font: { size: 11 } },
+      },
       y: {
         beginAtZero: false,
+        grid: { color: 'rgba(154,158,164,0.15)' },
         ticks: {
-          callback: (value) => (typeof value === 'number' ? `${value} kg` : value),
+          color: '#9A9EA4',
+          font: { size: 11 },
+          callback: (value) => (typeof value === 'number' ? `${value}kg` : value),
         },
       },
     },
     plugins: {
       legend: { display: false },
       tooltip: {
-        callbacks: {
-          label: (ctx) => `${ctx.parsed.y} kg`,
-        },
+        callbacks: { label: (ctx) => `${ctx.parsed.y} kg` },
       },
     },
   };

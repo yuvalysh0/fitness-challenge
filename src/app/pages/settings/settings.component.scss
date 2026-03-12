@@ -108,50 +108,6 @@
   &__actions {
     margin-top: 1rem;
   }
-
-  &__theme-label {
-    display: block;
-    font-weight: 500;
-    color: var(--text-muted);
-  }
-
-  &__theme-options {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.5rem;
-  }
-
-  &__theme-btn {
-    padding: 0.5rem 1rem;
-    font-size: 0.9375rem;
-    font-weight: 500;
-    border-radius: var(--radius-sm);
-    border: 1px solid var(--border);
-    background: var(--surface);
-    color: var(--text-muted);
-    cursor: pointer;
-    transition:
-      background-color 0.15s,
-      color 0.15s,
-      border-color 0.15s;
-
-    &:hover {
-      color: var(--text);
-      border-color: var(--text-muted);
-      background: var(--card-bg);
-    }
-
-    &--active {
-      background: var(--accent);
-      color: var(--text-on-accent);
-      border-color: var(--accent);
-
-      &:hover {
-        background: var(--accent-hover);
-        border-color: var(--accent-hover);
-      }
-    }
-  }
 }
 
 .settings__signout {

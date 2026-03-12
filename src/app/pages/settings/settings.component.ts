@@ -7,7 +7,6 @@ import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
 import { AuthService } from '../../core/auth.service';
 import { ChallengeService } from '../../core/challenge.service';
-import { ThemeService, Theme } from '../../core/theme.service';
 import { PhotoOverlayComponent } from '../../shared/photo-overlay/photo-overlay.component';
 
 interface SettingsFormModel {
@@ -28,12 +27,6 @@ function emptyFormModel(): SettingsFormModel {
   };
 }
 
-const THEME_OPTIONS: { value: Theme; label: string }[] = [
-  { value: Theme.Dark, label: 'Dark' },
-  { value: Theme.Light, label: 'Light' },
-  { value: Theme.System, label: 'System' },
-];
-
 @Component({
   selector: 'app-settings',
   standalone: true,
@@ -52,8 +45,6 @@ export class SettingsComponent implements OnInit {
   private readonly auth = inject(AuthService);
   private readonly challenge = inject(ChallengeService);
   private readonly router = inject(Router);
-  readonly themeService = inject(ThemeService);
-  readonly themeOptions = THEME_OPTIONS;
 
   readonly settingsModel = signal<SettingsFormModel>(emptyFormModel());
   readonly settingsForm = form(this.settingsModel);
@@ -101,10 +92,6 @@ export class SettingsComponent implements OnInit {
   onDateChange(field: 'birthDate' | 'challengeEndDate', event: Event): void {
     const value = (event.target as HTMLInputElement).value;
     this.settingsModel.update((m) => ({ ...m, [field]: value }));
-  }
-
-  setTheme(value: Theme): void {
-    this.themeService.setTheme(value);
   }
 
   async signOut(): Promise<void> {
