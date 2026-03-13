@@ -11,51 +11,14 @@
     @for (habit of habits(); track habit.id) {
       <div class="habits-page__row border-b border-[var(--border)] py-3 last:border-b-0">
         @if (editingId() === habit.id) {
-          <div class="habits-page__edit">
-            <div class="habits-page__icon-cell">
-              <div class="habits-page__icon-picker">
-                <span class="habits-page__icon-label">Icon</span>
-                <button
-                  type="button"
-                  [matMenuTriggerFor]="emojiPicker"
-                  class="habits-page__icon-trigger"
-                >
-                  <span class="habits-page__icon-value" aria-hidden="true">{{
-                    newIcon() || '✓'
-                  }}</span>
-                </button>
-                <mat-menu #emojiPicker="matMenu" panelClass="habits-page__emoji-menu">
-                  <div class="habits-page__emoji-grid">
-                    @for (emoji of emojiOptions; track emoji) {
-                      <button
-                        mat-menu-item
-                        type="button"
-                        (click)="setIcon(emoji)"
-                        class="habits-page__emoji-btn"
-                      >
-                        {{ emoji }}
-                      </button>
-                    }
-                  </div>
-                </mat-menu>
-              </div>
-            </div>
-            <div class="habits-page__label-cell field min-w-0">
-              <input
-                class="field__input"
-                type="text"
-                [ngModel]="newLabel()"
-                (ngModelChange)="newLabel.set($event)"
-                placeholder="Task label"
-              />
-            </div>
-            <div class="habits-page__actions-cell flex gap-2">
-              <button class="btn btn--primary" type="button" (click)="save()">Save</button>
-              <button class="btn btn--secondary" type="button" (click)="cancelEdit()">
-                Cancel
-              </button>
-            </div>
-          </div>
+          <app-habit-form-row
+            class="habits-page__form-span"
+            [initialLabel]="habit.label"
+            [initialIcon]="habit.icon ?? '✓'"
+            [emojiOptions]="emojiOptions"
+            (saved)="save($event)"
+            (cancelled)="cancelEdit()"
+          />
         } @else {
           <span class="habits-page__habit-icon">{{ habit.icon ?? '✓' }}</span>
           <span class="habits-page__habit-label">{{ habit.label }}</span>
@@ -80,47 +43,15 @@
         }
       </div>
     }
+
     @if (editingId() === '__new__') {
       <div class="habits-page__row border-b border-[var(--border)] py-3">
-        <div class="habits-page__icon-cell">
-          <div class="habits-page__icon-picker">
-            <span class="habits-page__icon-label">Icon</span>
-            <button
-              type="button"
-              [matMenuTriggerFor]="emojiPickerNew"
-              class="habits-page__icon-trigger"
-            >
-              <span class="habits-page__icon-value" aria-hidden="true">{{ newIcon() || '✓' }}</span>
-            </button>
-            <mat-menu #emojiPickerNew="matMenu" panelClass="habits-page__emoji-menu">
-              <div class="habits-page__emoji-grid">
-                @for (emoji of emojiOptions; track emoji) {
-                  <button
-                    mat-menu-item
-                    type="button"
-                    (click)="setIcon(emoji)"
-                    class="habits-page__emoji-btn"
-                  >
-                    {{ emoji }}
-                  </button>
-                }
-              </div>
-            </mat-menu>
-          </div>
-        </div>
-        <div class="habits-page__label-cell field min-w-0">
-          <input
-            class="field__input"
-            type="text"
-            [ngModel]="newLabel()"
-            (ngModelChange)="newLabel.set($event)"
-            placeholder="Task label"
-          />
-        </div>
-        <div class="habits-page__actions-cell flex gap-2">
-          <button class="btn btn--primary" type="button" (click)="save()">Save</button>
-          <button class="btn btn--secondary" type="button" (click)="cancelEdit()">Cancel</button>
-        </div>
+        <app-habit-form-row
+          class="habits-page__form-span"
+          [emojiOptions]="emojiOptions"
+          (saved)="save($event)"
+          (cancelled)="cancelEdit()"
+        />
       </div>
     }
   </div>

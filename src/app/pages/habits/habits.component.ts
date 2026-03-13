@@ -1,8 +1,7 @@
 import { Component, inject, signal } from '@angular/core';
-import { FormsModule } from '@angular/forms';
-import { MatMenuModule } from '@angular/material/menu';
 import { ChallengeService } from '../../core/challenge.service';
 import { HabitDefinition } from '../../models';
+import { HabitFormRowComponent, HabitFormValue } from './habit-form-row/habit-form-row.component';
 
 /** Emojis offered in the icon picker (fitness/habits + common). */
 const EMOJI_OPTIONS = [
@@ -36,12 +35,12 @@ const EMOJI_OPTIONS = [
   '🧴',
   '🪥',
   '🧹',
-];
+] as const;
 
 @Component({
   selector: 'app-habits',
   standalone: true,
-  imports: [FormsModule, MatMenuModule],
+  imports: [HabitFormRowComponent],
   templateUrl: './habits.component.html',
   styleUrl: './habits.component.scss',
 })
@@ -50,39 +49,31 @@ export class HabitsComponent {
 
   readonly emojiOptions = EMOJI_OPTIONS;
   readonly habits = this.store.habits;
-  editingId = signal<string | null>(null);
-  newLabel = signal('');
-  newIcon = signal('✓');
-
-  setIcon(emoji: string): void {
-    this.newIcon.set(emoji);
-  }
+  readonly editingId = signal<string | null>(null);
+  readonly editingHabit = signal<HabitDefinition | null>(null);
 
   startAdd(): void {
     this.editingId.set('__new__');
-    this.newLabel.set('');
-    this.newIcon.set('✓');
+    this.editingHabit.set(null);
   }
 
   startEdit(habit: HabitDefinition): void {
     this.editingId.set(habit.id);
-    this.newLabel.set(habit.label);
-    this.newIcon.set(habit.icon ?? '✓');
+    this.editingHabit.set(habit);
   }
 
   cancelEdit(): void {
     this.editingId.set(null);
+    this.editingHabit.set(null);
   }
 
-  save(): void {
-    const label = this.newLabel().trim();
-    if (!label) return;
+  save(value: HabitFormValue): void {
     const list = this.habits();
     if (this.editingId() === '__new__') {
       const newHabit: HabitDefinition = {
         id: crypto.randomUUID(),
-        label,
-        icon: this.newIcon() || undefined,
+        label: value.label,
+        icon: value.icon || undefined,
         order: list.length,
       };
       this.store.updateHabits([...list, newHabit]);
@@ -90,7 +81,7 @@ export class HabitsComponent {
       const id = this.editingId();
       if (!id) return;
       const updated = list.map((h) =>
-        h.id === id ? { ...h, label, icon: this.newIcon() || undefined } : h,
+        h.id === id ? { ...h, label: value.label, icon: value.icon || undefined } : h,
       );
       this.store.updateHabits(updated);
     }
