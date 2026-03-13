@@ -79,19 +79,12 @@
       </span>
     </div>
 
-    <div class="dl-habits">
-      @for (habit of habits(); track habit.id) {
-        <label class="dl-habit" [class.dl-habit--done]="log().habitChecks[habit.id]">
-          <mat-checkbox
-            [checked]="log().habitChecks[habit.id] === true"
-            (change)="toggleHabit(habit.id)"
-            class="dl-habit__check"
-          />
-          <span class="dl-habit__icon" aria-hidden="true">{{ habit.icon ?? '✓' }}</span>
-          <span class="dl-habit__label">{{ habit.label }}</span>
-        </label>
-      }
-    </div>
+    <app-habit-checklist
+      [habits]="habits()"
+      [log]="log()"
+      variant="flat"
+      (habitToggled)="toggleHabit($event)"
+    />
   </div>
 
   <!-- ─── 3. Photo verification ───────────────────────────────── -->

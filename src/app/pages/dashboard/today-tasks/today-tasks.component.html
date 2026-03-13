@@ -4,26 +4,12 @@
     <span class="forge-tasks__count">{{ habitsCompleted() }} / {{ habits().length }}</span>
   </div>
 
-  @for (habit of habits(); track habit.id) {
-    <div
-      class="forge-task"
-      [class.forge-task--done]="todayLog().habitChecks[habit.id]"
-      (click)="toggle(habit.id)"
-    >
-      <mat-checkbox
-        [checked]="todayLog().habitChecks[habit.id] === true"
-        (change)="toggle(habit.id)"
-        (click)="$event.stopPropagation()"
-        class="forge-task__check"
-      />
-      <div class="forge-task__info">
-        @if (habit.icon) {
-          <span class="forge-task__icon" aria-hidden="true">{{ habit.icon }}</span>
-        }
-        <span class="forge-task__label">{{ habit.label }}</span>
-      </div>
-    </div>
-  }
+  <app-habit-checklist
+    [habits]="habits()"
+    [log]="todayLog()"
+    variant="card"
+    (habitToggled)="habitToggled.emit($event)"
+  />
 
   <a [routerLink]="AppRoute.Daily" class="forge-tasks__link">Full daily log →</a>
 </div>

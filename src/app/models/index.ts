@@ -16,7 +16,6 @@ export interface DayLog {
   mood?: string;
   notes?: string;
   habitChecks: Record<string, boolean>;
-  habitNotes: Record<string, string>;
 }
 
 export interface FoodEntry {

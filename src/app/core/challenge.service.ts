@@ -53,7 +53,6 @@ function rowToDayLog(row: DayLogRow): DayLog {
     mood: row.mood ?? undefined,
     notes: row.notes ?? undefined,
     habitChecks: (row.habit_checks as Record<string, boolean>) ?? {},
-    habitNotes: (row.habit_notes as Record<string, string>) ?? {},
     photoPath: row.photo_path ?? undefined,
     photoPathSide: row.photo_path_side ?? undefined,
   };
@@ -143,11 +142,6 @@ export class ChallengeService {
 
   setHabitCheck(date: DateString, habitId: string, checked: boolean): void {
     this.store.setHabitCheck(date, habitId, checked);
-    this.persist();
-  }
-
-  setHabitNote(date: DateString, habitId: string, note: string): void {
-    this.store.setHabitNote(date, habitId, note);
     this.persist();
   }
 
@@ -306,7 +300,6 @@ export class ChallengeService {
       mood: log.mood ?? null,
       notes: log.notes ?? null,
       habit_checks: log.habitChecks,
-      habit_notes: log.habitNotes ?? {},
       photo_path: log.photoPath ?? null,
       photo_path_side: log.photoPathSide ?? null,
       updated_at: new Date().toISOString(),
@@ -341,18 +334,31 @@ export class ChallengeService {
         }
       });
 
-    if (s.habits.length > 0) {
-      const rows = s.habits.map((h) => ({
-        id: h.id,
-        user_id: userId,
-        label: h.label,
-        icon: h.icon ?? null,
-        order: h.order,
-        is_default: h.isDefault ?? false,
-      }));
-      sb.from(DbTable.Habits)
-        .upsert(rows, { onConflict: 'user_id,id' })
-        .then(() => {});
-    }
+    const habitRows = s.habits.map((h) => ({
+      id: h.id,
+      user_id: userId,
+      label: h.label,
+      icon: h.icon ?? null,
+      order: h.order,
+      is_default: h.isDefault ?? false,
+    }));
+    const habitIds = s.habits.map((h) => h.id);
+    // Upsert current habits, then delete any DB rows no longer in the list
+    sb.from(DbTable.Habits)
+      .upsert(habitRows, { onConflict: 'user_id,id' })
+      .then(() => {
+        if (habitIds.length > 0) {
+          sb.from(DbTable.Habits)
+            .delete()
+            .eq('user_id', userId)
+            .not('id', 'in', `(${habitIds.join(',')})`)
+            .then(() => {});
+        } else {
+          sb.from(DbTable.Habits)
+            .delete()
+            .eq('user_id', userId)
+            .then(() => {});
+        }
+      });
   }
 }
