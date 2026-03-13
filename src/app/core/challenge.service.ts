@@ -53,6 +53,7 @@ function rowToDayLog(row: DayLogRow): DayLog {
     mood: row.mood ?? undefined,
     notes: row.notes ?? undefined,
     habitChecks: (row.habit_checks as Record<string, boolean>) ?? {},
+    habitNotes: (row.habit_notes as Record<string, string>) ?? {},
     photoPath: row.photo_path ?? undefined,
     photoPathSide: row.photo_path_side ?? undefined,
   };
@@ -80,6 +81,7 @@ function rowToHabit(row: HabitRow): HabitDefinition {
     label: row.label,
     icon: row.icon ?? undefined,
     order: row.order,
+    isDefault: row.is_default,
   };
 }
 
@@ -141,6 +143,11 @@ export class ChallengeService {
 
   setHabitCheck(date: DateString, habitId: string, checked: boolean): void {
     this.store.setHabitCheck(date, habitId, checked);
+    this.persist();
+  }
+
+  setHabitNote(date: DateString, habitId: string, note: string): void {
+    this.store.setHabitNote(date, habitId, note);
     this.persist();
   }
 
@@ -299,6 +306,7 @@ export class ChallengeService {
       mood: log.mood ?? null,
       notes: log.notes ?? null,
       habit_checks: log.habitChecks,
+      habit_notes: log.habitNotes ?? {},
       photo_path: log.photoPath ?? null,
       photo_path_side: log.photoPathSide ?? null,
       updated_at: new Date().toISOString(),
@@ -340,6 +348,7 @@ export class ChallengeService {
         label: h.label,
         icon: h.icon ?? null,
         order: h.order,
+        is_default: h.isDefault ?? false,
       }));
       sb.from(DbTable.Habits)
         .upsert(rows, { onConflict: 'user_id,id' })

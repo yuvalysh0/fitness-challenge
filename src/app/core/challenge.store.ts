@@ -59,6 +59,7 @@ export class ChallengeStore {
     return {
       date,
       habitChecks,
+      habitNotes: {},
     };
   }
 
@@ -82,6 +83,7 @@ export class ChallengeStore {
         ...patch,
         date,
         habitChecks: { ...existing.habitChecks, ...(patch.habitChecks ?? {}) },
+        habitNotes: { ...existing.habitNotes, ...(patch.habitNotes ?? {}) },
       };
       const dayLogs = { ...s.dayLogs, [date]: updated };
       return { ...s, dayLogs };
@@ -93,6 +95,17 @@ export class ChallengeStore {
     this.updateDayLog(date, {
       habitChecks: { ...log.habitChecks, [habitId]: checked },
     });
+  }
+
+  setHabitNote(date: DateString, habitId: string, note: string): void {
+    const log = this.getOrCreateDayLog(date);
+    const habitNotes = { ...log.habitNotes };
+    if (note.trim()) {
+      habitNotes[habitId] = note;
+    } else {
+      delete habitNotes[habitId];
+    }
+    this.updateDayLog(date, { habitNotes });
   }
 
   addMeasurement(measurement: MeasurementSet): void {
