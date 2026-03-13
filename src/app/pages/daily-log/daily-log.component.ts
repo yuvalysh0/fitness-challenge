@@ -70,10 +70,6 @@ export class DailyLogComponent {
   readonly submitWarning = signal<string | null>(null);
   readonly submitSuccess = signal(false);
 
-  // Food add
-  newFoodTime = new Date().toTimeString().slice(0, 5);
-  newFoodDescription = '';
-
   // Formatted date for display
   readonly formattedDate = computed(() => {
     const d = new Date(this.date() + 'Z');
@@ -157,30 +153,10 @@ export class DailyLogComponent {
     else this.store.updateDayLog(date, { photoDataUrlSide: undefined, photoPathSide: undefined });
   }
 
-  openPhotoOverlay(url: string | null): void {
-    this.photoOverlayUrl.set(url ?? null);
-  }
-  closePhotoOverlay(): void {
-    this.photoOverlayUrl.set(null);
-  }
-
   // ── Habits ─────────────────────────────────────────────────────────────────
   toggleHabit(habitId: string): void {
     const current = this.log().habitChecks[habitId];
     this.store.setHabitCheck(this.date(), habitId, !current);
-  }
-
-  // ── Food ───────────────────────────────────────────────────────────────────
-  addFood(): void {
-    const desc = this.newFoodDescription.trim();
-    if (!desc) return;
-    this.store.addFoodEntry(this.date(), { time: this.newFoodTime, description: desc });
-    this.newFoodDescription = '';
-    this.newFoodTime = new Date().toTimeString().slice(0, 5);
-  }
-
-  removeFood(entryId: string): void {
-    this.store.removeFoodEntry(this.date(), entryId);
   }
 
   // ── Submit ─────────────────────────────────────────────────────────────────

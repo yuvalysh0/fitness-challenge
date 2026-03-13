@@ -58,7 +58,6 @@ export class ChallengeStore {
     }
     return {
       date,
-      foodEntries: [],
       habitChecks,
     };
   }
@@ -87,22 +86,6 @@ export class ChallengeStore {
       const dayLogs = { ...s.dayLogs, [date]: updated };
       return { ...s, dayLogs };
     });
-  }
-
-  addFoodEntry(date: DateString, entry: Omit<FoodEntry, 'id'>): void {
-    const log = this.getOrCreateDayLog(date);
-    const newEntry = {
-      ...entry,
-      id: crypto.randomUUID(),
-    };
-    const foodEntries = [...log.foodEntries, newEntry];
-    this.updateDayLog(date, { foodEntries });
-  }
-
-  removeFoodEntry(date: DateString, entryId: string): void {
-    const log = this.getOrCreateDayLog(date);
-    const foodEntries = log.foodEntries.filter((e) => e.id !== entryId);
-    this.updateDayLog(date, { foodEntries });
   }
 
   setHabitCheck(date: DateString, habitId: string, checked: boolean): void {

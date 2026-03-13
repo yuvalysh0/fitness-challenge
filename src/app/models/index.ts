@@ -15,7 +15,6 @@ export interface DayLog {
   photoPathSide?: string;
   mood?: string;
   notes?: string;
-  foodEntries: FoodEntry[];
   habitChecks: Record<string, boolean>;
 }
 
