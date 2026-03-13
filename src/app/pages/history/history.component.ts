@@ -19,6 +19,8 @@ export interface HistoryEntry {
   completed: boolean;
   weightKg: number | undefined;
   mood: string | undefined;
+  readingPages: number | undefined;
+  readingBook: string | undefined;
 }
 
 @Component({
@@ -55,6 +57,8 @@ export class HistoryComponent {
         completed: total > 0 && done === total,
         weightKg: log.weightKg,
         mood: log.mood?.trim() || undefined,
+        readingPages: log.readingPages,
+        readingBook: log.readingBook?.trim() || undefined,
       });
     }
     return list;
