@@ -1,14 +1,13 @@
 import { Component, inject, computed, signal } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { FormsModule } from '@angular/forms';
-import { MatCheckboxModule } from '@angular/material/checkbox';
 import type { ProgressPhotoType } from '../../models';
 import { ChallengeService } from '../../core/challenge.service';
 import { AuthService } from '../../core/auth.service';
 import { SupabaseService, PROGRESS_PHOTOS_BUCKET } from '../../core/supabase.service';
 import { todayString } from '../../core/challenge.utils';
 import { PhotoOverlayComponent } from '../../shared/photo-overlay/photo-overlay.component';
-
+import { HabitChecklistComponent } from '../../shared/habit-checklist/habit-checklist.component';
 export const MOOD_OPTIONS = [
   { emoji: '🔥', label: 'Fired Up' },
   { emoji: '💪', label: 'Strong' },
@@ -29,7 +28,7 @@ export const WORKOUT_TYPES = [
 @Component({
   selector: 'app-daily-log',
   standalone: true,
-  imports: [FormsModule, MatCheckboxModule, PhotoOverlayComponent],
+  imports: [FormsModule, PhotoOverlayComponent, HabitChecklistComponent],
   templateUrl: './daily-log.component.html',
   styleUrl: './daily-log.component.scss',
 })

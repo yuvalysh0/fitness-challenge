@@ -115,13 +115,6 @@ button {
   cursor: pointer;
 }
 
-@media (max-width: 767px) {
-  button,
-  a {
-    min-height: 44px;
-  }
-}
-
 .card {
   background: var(--card-bg);
   border: 1px solid var(--border);

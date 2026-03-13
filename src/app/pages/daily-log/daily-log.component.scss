@@ -187,54 +187,6 @@
   }
 }
 
-.dl-habits {
-  display: flex;
-  flex-direction: column;
-  gap: 0.25rem;
-}
-
-.dl-habit {
-  display: flex;
-  align-items: center;
-  gap: 0.75rem;
-  padding: 0.75rem 0.5rem;
-  border-radius: var(--radius-sm);
-  cursor: pointer;
-  transition: background-color 0.15s;
-
-  &:hover {
-    background: rgba(255, 255, 255, 0.04);
-  }
-
-  &--done .dl-habit__label {
-    text-decoration: line-through;
-    color: var(--text-muted);
-  }
-}
-
-.dl-habit__check {
-  flex-shrink: 0;
-  --mdc-checkbox-selected-icon-color: #d63031;
-  --mdc-checkbox-selected-focus-icon-color: #d63031;
-  --mdc-checkbox-selected-hover-icon-color: #d63031;
-  --mdc-checkbox-selected-pressed-icon-color: #d63031;
-  --mdc-checkbox-selected-checkmark-color: #fff;
-  --mdc-checkbox-unselected-icon-color: rgba(255, 255, 255, 0.5);
-}
-
-.dl-habit__icon {
-  font-size: 1.25rem;
-  flex-shrink: 0;
-}
-
-.dl-habit__label {
-  font-size: 0.9375rem;
-  color: var(--text);
-  transition:
-    color 0.2s,
-    text-decoration 0.2s;
-}
-
 // ─── Photos ────────────────────────────────────────────────────────────────
 .dl-photos {
   display: grid;

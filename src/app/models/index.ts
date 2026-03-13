@@ -43,6 +43,7 @@ export interface HabitDefinition {
   label: string;
   icon?: string;
   order: number;
+  isDefault?: boolean;
 }
 
 export interface ChallengeState {

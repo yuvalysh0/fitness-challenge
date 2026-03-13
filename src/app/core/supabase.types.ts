@@ -29,6 +29,7 @@ export interface DayLogRow {
   mood: string | null;
   notes: string | null;
   habit_checks: Record<string, boolean>;
+  habit_notes: Record<string, string>;
   food_entries: Array<{ id: string; time: string; description: string; calories?: number }>;
   photo_path: string | null;
   photo_path_side: string | null;
@@ -57,5 +58,6 @@ export interface HabitRow {
   label: string;
   icon: string | null;
   order: number;
+  is_default: boolean;
   created_at: string;
 }

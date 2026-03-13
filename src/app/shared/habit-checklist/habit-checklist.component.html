@@ -1,0 +1,23 @@
+@for (habit of habits(); track habit.id) {
+  <button
+    type="button"
+    class="hc-row"
+    [class.hc-row--done]="log().habitChecks[habit.id]"
+    role="checkbox"
+    [attr.aria-checked]="!!log().habitChecks[habit.id]"
+    [attr.aria-label]="habit.label"
+    (click)="habitToggled.emit(habit.id)"
+  >
+    <span
+      class="hc-row__check"
+      [class.hc-row__check--done]="log().habitChecks[habit.id]"
+      aria-hidden="true"
+    >
+      @if (log().habitChecks[habit.id]) {
+        <span class="material-icons hc-row__check-icon">check</span>
+      }
+    </span>
+    <span class="hc-row__icon" aria-hidden="true">{{ habit.icon ?? '✓' }}</span>
+    <span class="hc-row__label">{{ habit.label }}</span>
+  </button>
+}

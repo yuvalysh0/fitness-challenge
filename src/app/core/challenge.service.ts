@@ -80,6 +80,7 @@ function rowToHabit(row: HabitRow): HabitDefinition {
     label: row.label,
     icon: row.icon ?? undefined,
     order: row.order,
+    isDefault: row.is_default,
   };
 }
 
@@ -333,17 +334,31 @@ export class ChallengeService {
         }
       });
 
-    if (s.habits.length > 0) {
-      const rows = s.habits.map((h) => ({
-        id: h.id,
-        user_id: userId,
-        label: h.label,
-        icon: h.icon ?? null,
-        order: h.order,
-      }));
-      sb.from(DbTable.Habits)
-        .upsert(rows, { onConflict: 'user_id,id' })
-        .then(() => {});
-    }
+    const habitRows = s.habits.map((h) => ({
+      id: h.id,
+      user_id: userId,
+      label: h.label,
+      icon: h.icon ?? null,
+      order: h.order,
+      is_default: h.isDefault ?? false,
+    }));
+    const habitIds = s.habits.map((h) => h.id);
+    // Upsert current habits, then delete any DB rows no longer in the list
+    sb.from(DbTable.Habits)
+      .upsert(habitRows, { onConflict: 'user_id,id' })
+      .then(() => {
+        if (habitIds.length > 0) {
+          sb.from(DbTable.Habits)
+            .delete()
+            .eq('user_id', userId)
+            .not('id', 'in', `(${habitIds.join(',')})`)
+            .then(() => {});
+        } else {
+          sb.from(DbTable.Habits)
+            .delete()
+            .eq('user_id', userId)
+            .then(() => {});
+        }
+      });
   }
 }
