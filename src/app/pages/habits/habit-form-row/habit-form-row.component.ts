@@ -1,6 +1,6 @@
 import { Component, input, OnInit, output, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { MatMenuModule } from '@angular/material/menu';
+import { EmojiPickerComponent } from '../../../shared/emoji-picker/emoji-picker.component';
 
 export interface HabitFormValue {
   label: string;
@@ -10,7 +10,7 @@ export interface HabitFormValue {
 @Component({
   selector: 'app-habit-form-row',
   standalone: true,
-  imports: [FormsModule, MatMenuModule],
+  imports: [FormsModule, EmojiPickerComponent],
   templateUrl: './habit-form-row.component.html',
   styleUrl: './habit-form-row.component.scss',
 })
@@ -28,10 +28,6 @@ export class HabitFormRowComponent implements OnInit {
   ngOnInit(): void {
     this.label.set(this.initialLabel());
     this.icon.set(this.initialIcon());
-  }
-
-  setIcon(emoji: string): void {
-    this.icon.set(emoji);
   }
 
   save(): void {

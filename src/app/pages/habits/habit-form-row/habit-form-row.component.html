@@ -1,24 +1,6 @@
 <div class="habit-form-row">
   <div class="habit-form-row__icon-cell">
-    <div class="habit-form-row__icon-picker">
-      <button type="button" [matMenuTriggerFor]="emojiPicker" class="habit-form-row__icon-trigger">
-        <span aria-hidden="true">{{ icon() }}</span>
-      </button>
-      <mat-menu #emojiPicker="matMenu" panelClass="habit-form-row__emoji-menu">
-        <div class="habit-form-row__emoji-grid">
-          @for (emoji of emojiOptions(); track emoji) {
-            <button
-              mat-menu-item
-              type="button"
-              (click)="setIcon(emoji)"
-              class="habit-form-row__emoji-btn"
-            >
-              {{ emoji }}
-            </button>
-          }
-        </div>
-      </mat-menu>
-    </div>
+    <app-emoji-picker [options]="emojiOptions()" [(value)]="icon" />
   </div>
 
   <div class="habit-form-row__label-cell field min-w-0">

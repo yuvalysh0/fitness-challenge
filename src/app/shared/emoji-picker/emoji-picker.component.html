@@ -1,0 +1,28 @@
+<div class="emoji-picker">
+  <button
+    type="button"
+    class="emoji-picker__trigger"
+    [attr.aria-expanded]="pickerOpen()"
+    aria-label="Pick icon"
+    (click)="togglePicker($event)"
+  >
+    {{ value() }}
+  </button>
+
+  @if (pickerOpen()) {
+    <div class="emoji-picker__dropdown" (click)="$event.stopPropagation()">
+      <div class="emoji-picker__grid">
+        @for (emoji of options(); track emoji) {
+          <button
+            type="button"
+            class="emoji-picker__btn"
+            [class.emoji-picker__btn--active]="emoji === value()"
+            (click)="selectEmoji(emoji)"
+          >
+            {{ emoji }}
+          </button>
+        }
+      </div>
+    </div>
+  }
+</div>

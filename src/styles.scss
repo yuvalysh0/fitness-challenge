@@ -1,5 +1,16 @@
 @use '@angular/material' as mat;
 
+:root {
+  @include mat.menu-overrides(
+    (
+      container-color: var(--card-bg),
+      container-shape: var(--radius-lg),
+      item-hover-state-layer-color: transparent,
+      item-focus-state-layer-color: transparent,
+    )
+  );
+}
+
 html {
   height: 100%;
   @include mat.theme(
