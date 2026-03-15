@@ -87,7 +87,42 @@
     />
   </div>
 
-  <!-- ─── 3. Photo verification ───────────────────────────────── -->
+  <!-- ─── 3. Reading tracker ──────────────────────────────────── -->
+  @if (hasReadingHabit()) {
+    <div class="log-card">
+      <h2 class="log-card__title">Reading</h2>
+      <div class="dl-reading">
+        <div class="field">
+          <label class="field__label" for="readingPages">Pages read today</label>
+          <input
+            id="readingPages"
+            class="field__input dl-reading__pages"
+            type="number"
+            min="0"
+            max="9999"
+            [value]="log().readingPages ?? ''"
+            (change)="setReadingPages($any($event.target).value)"
+            placeholder="0"
+          />
+        </div>
+        <div class="field">
+          <label class="field__label" for="readingBook"
+            >Book <span class="dl-reading__optional">(optional)</span></label
+          >
+          <input
+            id="readingBook"
+            class="field__input"
+            type="text"
+            [value]="log().readingBook ?? ''"
+            (change)="setReadingBook($any($event.target).value)"
+            placeholder="Book title…"
+          />
+        </div>
+      </div>
+    </div>
+  }
+
+  <!-- ─── 4. Photo verification ───────────────────────────────── -->
   <div class="log-card">
     <h2 class="log-card__title">Photo Verification</h2>
     <div class="dl-photos">

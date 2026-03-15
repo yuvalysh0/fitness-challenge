@@ -60,4 +60,20 @@
     font-size: 0.875rem;
     color: var(--text-muted);
   }
+
+  &__reading {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.25rem;
+  }
+
+  &__reading-icon {
+    font-size: 0.9375rem;
+    opacity: 0.7;
+  }
+
+  &__reading-book {
+    opacity: 0.75;
+    font-style: italic;
+  }
 }

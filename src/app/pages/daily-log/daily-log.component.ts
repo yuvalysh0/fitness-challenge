@@ -63,6 +63,8 @@ export class DailyLogComponent {
 
   readonly allHabitsComplete = computed(() => this.habitsCompleted() === this.habits().length);
 
+  readonly hasReadingHabit = computed(() => this.habits().some((h) => h.id === 'read'));
+
   readonly photoUploadingFront = signal(false);
   readonly photoUploadingSide = signal(false);
   readonly photoOverlayUrl = signal<string | null>(null);
@@ -150,6 +152,18 @@ export class DailyLogComponent {
     if (type === 'front')
       this.store.updateDayLog(date, { photoDataUrl: undefined, photoPath: undefined });
     else this.store.updateDayLog(date, { photoDataUrlSide: undefined, photoPathSide: undefined });
+  }
+
+  // ── Reading ────────────────────────────────────────────────────────────────
+  setReadingPages(value: string): void {
+    const pages = parseInt(value, 10);
+    this.store.updateDayLog(this.date(), {
+      readingPages: isNaN(pages) || pages < 0 ? undefined : pages,
+    });
+  }
+
+  setReadingBook(value: string): void {
+    this.store.updateDayLog(this.date(), { readingBook: value.trim() || undefined });
   }
 
   // ── Habits ─────────────────────────────────────────────────────────────────

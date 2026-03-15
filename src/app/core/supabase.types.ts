@@ -31,6 +31,8 @@ export interface DayLogRow {
   habit_checks: Record<string, boolean>;
   habit_notes: Record<string, string>;
   food_entries: Array<{ id: string; time: string; description: string; calories?: number }>;
+  reading_pages: number | null;
+  reading_book: string | null;
   photo_path: string | null;
   photo_path_side: string | null;
   created_at: string;

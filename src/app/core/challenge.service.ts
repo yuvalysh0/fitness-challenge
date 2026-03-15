@@ -53,6 +53,8 @@ function rowToDayLog(row: DayLogRow): DayLog {
     mood: row.mood ?? undefined,
     notes: row.notes ?? undefined,
     habitChecks: (row.habit_checks as Record<string, boolean>) ?? {},
+    readingPages: row.reading_pages ?? undefined,
+    readingBook: row.reading_book ?? undefined,
     photoPath: row.photo_path ?? undefined,
     photoPathSide: row.photo_path_side ?? undefined,
   };
@@ -300,6 +302,8 @@ export class ChallengeService {
       mood: log.mood ?? null,
       notes: log.notes ?? null,
       habit_checks: log.habitChecks,
+      reading_pages: log.readingPages ?? null,
+      reading_book: log.readingBook ?? null,
       photo_path: log.photoPath ?? null,
       photo_path_side: log.photoPathSide ?? null,
       updated_at: new Date().toISOString(),

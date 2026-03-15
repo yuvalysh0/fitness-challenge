@@ -38,6 +38,17 @@
             >
               <span>Weight: {{ entry.weightKg != null ? entry.weightKg + ' kg' : '—' }}</span>
               <span>Mood: {{ moodPreview(entry.mood) }}</span>
+              @if (entry.readingPages != null) {
+                <span class="history__reading">
+                  <span class="material-icons history__reading-icon" aria-hidden="true"
+                    >menu_book</span
+                  >
+                  {{ entry.readingPages }} pg{{ entry.readingPages !== 1 ? 's' : '' }}
+                  @if (entry.readingBook) {
+                    <span class="history__reading-book">· {{ entry.readingBook }}</span>
+                  }
+                </span>
+              }
             </div>
           </a>
         </li>

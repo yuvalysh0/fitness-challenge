@@ -16,6 +16,8 @@ export interface DayLog {
   mood?: string;
   notes?: string;
   habitChecks: Record<string, boolean>;
+  readingPages?: number;
+  readingBook?: string;
 }
 
 export interface FoodEntry {
